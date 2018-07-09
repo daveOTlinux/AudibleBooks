@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Episodes Dashboard</title>
+	<title>Audible Books Dashboard</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script
@@ -70,11 +70,11 @@
 			<div class="row" style="height: 75px;">
 				<div class="pt-2 col-sm-6">
 					<div class="page-header clearfix">
-						<h2 class="pull-left">Show Episodes</h2>
+						<h2 class="pull-left">Audible Books</h2>
 					</div>
 				</div>
 				<div class="pt-2 col-sm-6">  		
-					<a href="create.php" class="btn btn-success pull-right">Add New Show</a>
+					<a href="create.php" class="btn btn-success pull-right">Add New Audible Book</a>
 				</div>
 			</div>
            <div class="row" style="height: 50px;">    
@@ -83,7 +83,7 @@
 					        <a data-target="#" href="index.php" data-toggle="dropdown" class="dropdown-toggle">Sort By <b class="caret"></b></a>
 					        <ul class="dropdown-menu">
 					            <li><a href='index.php?sortfield=ModifiedDate DESC'>Latest Mods</a></li>
-					            <li><a href='index.php?sortfield=ShowName ASC'>Show Name</a></li>
+					            <li><a href='index.php?sortfield=Title ASC'>Title</a></li>
 					        </ul>
 					    </div>
 					</div>
@@ -107,43 +107,33 @@
               require_once 'config.php';
               
               // Attempt select query execution
-              $sql = "SELECT * FROM tvEpisodes ORDER BY ". $sortField ;
+              $sql = "SELECT * FROM AudibleBooks ORDER BY ". $sortField ;
               if($result = $mysqli->query($sql)){
                   if($result->num_rows > 0){
                       echo "<table class='table table-bordered table-hover'>";
                           echo "<thead>";
                               echo "<tr>";
                                   echo "<th style='width: 8%'>ID</th>";
-                                  echo "<th style='width: 40%'>Show Name</th>";
-                                  echo "<th style='width: 5%'>Next Episode</th>";
-                                  echo "<th style='width: 5%'>Season</th>";
-                                  echo "<th style='width: 20%'>Show Source</th>";
+                                  echo "<th style='width: 40%'>Title</th>";
+                                  echo "<th style='width: 20%'>Author</th>";
+                                  echo "<th style='width: 20%'>Series</th>";
                                   echo "<th style='width: 22%'>Action</th>";
                               echo "</tr>";
                           echo "</thead>";
                           echo "<tbody>";
-                          while($row = $result->fetch_array()){
-                              echo "<tr>";
-											echo "<td>" . $row['ID'] . "</td>";
-											echo "<td>" . $row['ShowName'] . "</td>";
-											echo "<td>";
-												echo "<span>" . $row['NextEpisode'] . "  " . "</span>";
-												echo "<a href='nextEpisode.php?ID=". $row['ID'] ."' title='Increment Episode' data-toggle='tooltip'>";
-												echo "<span class='fa fa-arrow-up'></span></a>";
-											echo "</td>";
-											echo "<td>";
-												echo "<span>" . $row['Season'] . "  " . "</span>";
-												echo "<a href='nextSeason.php?ID=". $row['ID'] ."' title='Increment Season' data-toggle='tooltip'>";
-												echo "<span class='fa fa-arrow-up'></span></a>";
-											echo "</td>";
-                                 echo "<td>" . $row['ShowSource'] . "</td>";
-                                 echo "<td>";
-                                     echo "<a href='read.php?ID=". $row['ID'] ."' title='View Record' data-toggle='tooltip'><span class='fa fa-eye'></span></a>";
-                                     echo "<a href='update.php?ID=". $row['ID'] ."' title='Update Record' data-toggle='tooltip'><span class='fa fa-pencil'></span></a>";
-                                     echo "<a href='delete.php?ID=". $row['ID'] ."' title='Delete Record' data-toggle='tooltip'><span class='fa fa-trash'></span></a>";
-                                 echo "</td>";
-                             echo "</tr>";
-                          }
+							while($row = $result->fetch_array()){
+								echo "<tr>";
+									echo "<td>" . $row['ID'] . "</td>";
+									echo "<td>" . $row['Title'] . "</td>";
+									echo "<td>" . $row['Author'] . "</td>";
+									echo "<td>" . $row['Action'] . "</td>";
+									echo "<td>";
+										echo "<a href='read.php?ID=". $row['ID'] ."' title='View Record' data-toggle='tooltip'><span class='fa fa-eye'></span></a>";
+										echo "<a href='update.php?ID=". $row['ID'] ."' title='Update Record' data-toggle='tooltip'><span class='fa fa-pencil'></span></a>";
+										echo "<a href='delete.php?ID=". $row['ID'] ."' title='Delete Record' data-toggle='tooltip'><span class='fa fa-trash'></span></a>";
+									echo "</td>";
+								echo "</tr>";
+							}
                           echo "</tbody>";                            
                       echo "</table>";
                       // Free result set

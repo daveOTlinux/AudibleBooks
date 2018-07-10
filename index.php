@@ -81,10 +81,22 @@
 					<div class="col-sm-6">
 					   <div class="dropdown">
 					        <a data-target="#" href="index.php" data-toggle="dropdown" class="dropdown-toggle">Sort By <b class="caret"></b></a>
-					        <ul class="dropdown-menu">
-					            <li><a href='index.php?sortfield=ModifiedDate DESC'>Latest Mods</a></li>
-					            <li><a href='index.php?sortfield=Title ASC'>Title</a></li>
-					        </ul>
+							<?php
+								// Include config file
+								require 'config.php';
+								  
+								// Attempt select query execution
+								$sql = "SELECT `itemData0`, `itemData1` FROM `pageObjects` WHERE `SearchTerm` = 'sortOrder' ORDER BY `orderItems` ASC";
+								if($result = $mysqli->query($sql)){
+									if($result->num_rows > 0){
+										echo "<ul class='dropdown-menu'>";
+										while($row = $result->fetch_array()){
+											echo "<li><a href='index.php?sortfield=" . $row['itemData1'] . "'>" . $row['itemData0'] . "</a></li>";
+										}
+									echo "</ul>";
+									}
+								}
+							?>					        
 					    </div>
 					</div>
 					<div class="col-sm-6" id="content">
@@ -104,10 +116,10 @@
               	$sortField = "ModifiedDate DESC";
               }
               // Include config file
-              require_once 'config.php';
+              require 'config.php';
               
               // Attempt select query execution
-              $sql = "SELECT * FROM AudibleBooks ORDER BY ". $sortField ;
+              $sql = "SELECT `ID`, `Title`, `Author`, `Series` FROM AudibleBooks ORDER BY " . $sortField;
               if($result = $mysqli->query($sql)){
                   if($result->num_rows > 0){
                       echo "<table class='table table-bordered table-hover'>";
@@ -126,7 +138,7 @@
 									echo "<td>" . $row['ID'] . "</td>";
 									echo "<td>" . $row['Title'] . "</td>";
 									echo "<td>" . $row['Author'] . "</td>";
-									echo "<td>" . $row['Action'] . "</td>";
+									echo "<td>" . $row['Series'] . "</td>";
 									echo "<td>";
 										echo "<a href='read.php?ID=". $row['ID'] ."' title='View Record' data-toggle='tooltip'><span class='fa fa-eye'></span></a>";
 										echo "<a href='update.php?ID=". $row['ID'] ."' title='Update Record' data-toggle='tooltip'><span class='fa fa-pencil'></span></a>";

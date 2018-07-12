@@ -1,6 +1,17 @@
 <?php
-// Start the session  NOTE Must be at top of file before any HTML
-session_start();
+	// Start the session  NOTE Must be at top of file before any HTML
+	session_start();
+	
+	//Check if $_SESSION["sortfieldSet"] exists.
+	if(!isset($_SESSION["sortfieldSet"]) && empty(trim($_SESSION["sortfieldSet"]))){
+		$_SESSION["sortfieldSet"] = FALSE;
+	}
+
+	//Check if $_SESSION["wherePartSet"] exists.
+	if(!isset($_SESSION["wherePartSet"]) && empty(trim($_SESSION["wherePartSet"]))){
+		$_SESSION["wherePartSet"] = FALSE;
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -29,27 +40,31 @@ session_start();
 
 	<link href="style.css" rel="stylesheet">
 	
-	<script>
-		 $(document).ready(function () {
-		     $("#searchbox").on('keyup',function () {
-		         var key = $(this).val();
-		
-		         $.ajax({
-		             url:'fetch.php',
-		             type:'POST',
-		             data:'keyword='+key,
-		             beforeSend:function () {
-		                 $("#results").slideUp('fast');
-		             },
-		             success:function (data) {
-		                 $("#results").html(data);
-		                 $("#results").slideDown('fast');
-		             }
-		         });
-		     });
+<script>
+	$(document).ready(function () {
+		$('#searchbox').on('keyup',function () {
+			var key = $(this).val();
+			var strSQL = 'SELECT DISTINCT `Author` ' +
+				'FROM AudibleBooks ' +
+				'WHERE `Author` like "%' + key +
+				'%" ORDER BY `Author` ASC';
+	    	
+		    $.ajax({
+		        url:'fetch.php',
+		        type:'POST',
+		        data: { 'strSQL' : strSQL },
+		        beforeSend:function () {
+		            $("#results").slideUp('fast');
+		        },
+		        success:function (data) {
+		            $("#results").html(data);
+		            $("#results").slideDown('fast');
+		        }
+		    });
 		 });
-    
+	 });
 </script>
+
 	<style type="text/css">
 	    .wrapper{
 	        width: 700px;
@@ -131,8 +146,12 @@ session_start();
               
               // Attempt select query execution $sortField has ORDER BY command included
               $sql = "SELECT `ID`, `Title`, `Author`, `Series` ".
-              	"FROM AudibleBooks ".
-              	"ORDER BY " . $_SESSION["currentSortField"];
+              	"FROM AudibleBooks ";
+              if($_SESSION["wherePartSet"]) {
+              	
+              }else {
+              	$sql = $sql . "ORDER BY " . $_SESSION["currentSortField"];
+              }
               if($result = $mysqli->query($sql)){
                   if($result->num_rows > 0){
                       echo "<table class='table table-bordered table-hover'>";

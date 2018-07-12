@@ -1,3 +1,8 @@
+<?php
+// Start the session  NOTE Must be at top of file before any HTML
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,19 +50,19 @@
 		 });
     
 </script>
-    <style type="text/css">
-        .wrapper{
-            width: 650px;
-            margin: 0 auto;
-        }
-        .page-header h2{
-            margin-top: 0;
-        }
-        table tr td:last-child a{
-            margin-right: 15px;
-            white-space: pre;
-        }
-    </style>    
+	<style type="text/css">
+	    .wrapper{
+	        width: 700px;
+	        margin: 0 auto;
+	    }
+	    .page-header h2{
+	        margin-top: 0;
+	    }
+	    table tr td:last-child a{
+	        margin-right: 15px;
+	        white-space: pre;
+	    }
+	</style>    
 	 <script type="text/javascript">
 	     $(document).ready(function(){
 	         $('[data-toggle="tooltip"]').tooltip();   
@@ -79,25 +84,28 @@
 			</div>
            <div class="row" style="height: 50px;">    
 					<div class="col-sm-6">
-					   <div class="dropdown">
-					        <a data-target="#" href="index.php" data-toggle="dropdown" class="dropdown-toggle">Sort By <b class="caret"></b></a>
-							<?php
+						<div class='dropdown'>
+					        <a data-target'#' href='index.php' data-toggle='dropdown' class='dropdown-toggle'>Sort By <b class='caret'></b></a>
+				        	<?php
 								// Include config file
-								require 'config.php';
+								require_once 'config.php';
 								  
 								// Attempt select query execution
-								$sql = "SELECT `itemData0`, `itemData1` FROM `pageObjects` WHERE `SearchTerm` = 'sortOrder' ORDER BY `orderItems` ASC";
+								$sql = "SELECT `ID`, `itemDisplay`, `itemSQL` ".
+									"FROM `pageObjects` ".
+									"WHERE `SearchTerm` = 'sortOrder00' ".
+									"ORDER BY `orderItems` ASC";
 								if($result = $mysqli->query($sql)){
 									if($result->num_rows > 0){
 										echo "<ul class='dropdown-menu'>";
 										while($row = $result->fetch_array()){
-											echo "<li><a href='index.php?sortfield=" . $row['itemData1'] . "'>" . $row['itemData0'] . "</a></li>";
+											echo "<li><a id='sortItem". $row['ID'] . "' href='index.php?sortfield=" . $row['itemSQL'] . "'>" . $row['itemDisplay'] . "</a></li>";
 										}
 									echo "</ul>";
 									}
 								}
-							?>					        
-					    </div>
+							?>						
+						</div>					        					    
 					</div>
 					<div class="col-sm-6" id="content">
 						<input type="search" name="keyword" placeholder="Search Names" id="searchbox">
@@ -108,18 +116,23 @@
 				</div>
 				<div class="row">
               <?php
-					
+											
               //Setup field to sort database or use default field
+
               if(isset($_GET["sortfield"]) && !empty(trim($_GET["sortfield"]))){
-              	$sortField = trim($_GET["sortfield"]);	                    
-              } else {
-              	$sortField = "ModifiedDate DESC";
+              	$_SESSION["currentSortField"] = trim($_GET["sortfield"]);
+				//$_SESSION["currentSortField"] = $sortField;
+				$_SESSION["sortfieldSet"] = TRUE;
+              } else if(!$_SESSION["sortfieldSet"]){
+              	$_SESSION["currentSortField"] = "`ModifiedDate` DESC";
               }
               // Include config file
-              require 'config.php';
+              require_once 'config.php';
               
-              // Attempt select query execution
-              $sql = "SELECT `ID`, `Title`, `Author`, `Series` FROM AudibleBooks ORDER BY " . $sortField;
+              // Attempt select query execution $sortField has ORDER BY command included
+              $sql = "SELECT `ID`, `Title`, `Author`, `Series` ".
+              	"FROM AudibleBooks ".
+              	"ORDER BY " . $_SESSION["currentSortField"];
               if($result = $mysqli->query($sql)){
                   if($result->num_rows > 0){
                       echo "<table class='table table-bordered table-hover'>";

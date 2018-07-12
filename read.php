@@ -1,4 +1,6 @@
 <?php
+// Start the session  NOTE Must be at top of file before any HTML
+session_start();
 
 // Check existence of id parameter before processing further
 if(isset($_GET["ID"]) && !empty(trim($_GET["ID"]))){
@@ -6,7 +8,7 @@ if(isset($_GET["ID"]) && !empty(trim($_GET["ID"]))){
     require_once 'config.php';
     
     // Prepare a select statement
-    $sql = "SELECT * FROM tvEpisodes WHERE ID = ?";
+    $sql = "SELECT * FROM AudibleBooks WHERE ID = ?";
     
    if($stmt = $mysqli->prepare($sql)){
         // Bind variables to the prepared statement as parameters
@@ -26,10 +28,20 @@ if(isset($_GET["ID"]) && !empty(trim($_GET["ID"]))){
                 
                 // Retrieve individual field value
                 $ID = $row["ID"];
-                $ShowName = $row["ShowName"];
-                $NextEpisode = $row["NextEpisode"];
-                $Season = $row["Season"];
-                $ShowSource	 = $row["ShowSource"];
+                $Title = $row["Title"];
+                $Author = $row["Author"];
+                $Series = $row["Series"];
+                $BookNumber	 = $row["BookNumber"];
+                $ReadOrderNumber = $row["ReadOrderNumber"];
+                $ReadOrder = $row["ReadOrder"];
+                $Categories = $row["Categories"];
+                $PurchaseRequired = $row["PurchaseRequired"];
+                $ListenedTo = $row["ListenedTo"];
+                $DateAdded = $row["DateAdded"];
+                $MyRating = $row["MyRating"];
+                $CoverArt = $row["CoverArt"];
+                $Notes = $row["Notes"];
+				$ModifiedDate = $row["ModifiedDate"];
             } else{
                 // URL doesn't contain valid id parameter. Redirect to error page
                 header("location: error.php");
@@ -79,7 +91,15 @@ if(isset($_GET["ID"]) && !empty(trim($_GET["ID"]))){
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 	<link href="style.css" rel="stylesheet">
-	
+	<style type="text/css">
+	    .wrapper{
+	        width: 750px;
+	        margin: 0 auto;
+	    }
+	    .page-header h2{
+	        margin-top: 0;
+	    }
+	</style>    
 </head>
 <body>
     <div class="wrapper">
@@ -87,48 +107,88 @@ if(isset($_GET["ID"]) && !empty(trim($_GET["ID"]))){
             <div class="row" style="height: 75px;">
                 <div class="pt-2 col-sm-8">
                     <div class="page-header">
-                        <h2>View Record</h2>
+                        <?php echo "<h2>View Record  ID- " . $ID . "</h2>";?>
                     </div>
-					</div>
+				</div>
 					<div class="pt-2 col-sm-4">
 						<?php  		
-							echo "<a href='update.php?ID=". $ID . "' class='btn btn-success pull-right'>Edit Show</a>";
+							echo "<a href='update.php?ID=". $ID . "' class='btn btn-success pull-right'>Edit Book</a>";
 						?>
 					</div>
-				</div>
-				<div class="row">	
-	            <div class="form-group">
-		            <label>Show Name</label>
-		            <p class="form-control-static"><?php echo $ShowName; ?></p>
-	            </div>
-				</div>
-				<div class="row">
-					<div class="text-right pr-0 col-sm-3">Next Episode</div>
-					<div class="text-right pr-0 col-sm-1" >E</div>	
-					<div class="pl-0 text-left col-sm-1">
-						<p><?php echo ltrim($NextEpisode, "a..zA..Z"); ?></p>
-					</div>
-					<div class="col-sm-1">
-						<?php echo "<a href='nextEpisode.php?ID=". $ID. "' title='Increment Episode' data-toggle='tooltip' class='fa fa-arrow-up'></a>"; ?>
-					</div>
-					<div class="text-right pr-0 col-sm-2">Season</div>
-					<div class="text-right pr-0 col-sm-1" >S</div>						
-					<div class="pl-0 text-left col-sm-1">
-						<p><?php echo ltrim($Season, "a..zA..Z"); ?></p>
-					</div>
-					<div class="col-sm-1">
-						<?php echo "<a href='nextSeason.php?ID=". $ID. "' title='Increment Season' data-toggle='tooltip' class='fa fa-arrow-up'></a>"; ?>
-					</div>
-					<div class="col-sm-1" ></div>
-				</div>
-				<div class="row">
-					<div class="form-group">
-						<label>Show Source</label>
-						<p class="form-control-static"><?php echo $ShowSource; ?></p>
-					</div>
-				</div>
-				<div class="row">                    
-              <p><a href="index.php" class="btn btn-primary">Back</a></p>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">				
+            		<?php echo "<img src='" . $CoverArt . "' alt='" . $Title . "' style='width:150px;height:210px;'>";?>
+            	</div>
+            	<div class="col-sm-8">
+            		
+					<div class="row">            		
+						<div class='text-right pr-0 col-sm-3'>
+							<p>Title:</p>
+						</div>
+						<div class='text-left col-sm-9'>
+	    					<p><?php echo $Title ?></p>
+	    				</div>
+
+	    			</div>
+					<div class="row">            		
+						<div class='text-right pr-0 col-sm-3'>
+							<p>Author:</p>
+						</div>
+						<div class='text-left col-sm-9'>
+	    					<p><?php echo $Author ?></p>
+	    				</div>
+
+	    			</div>
+					<div class="row">            		
+						<div class='text-right pr-0 col-sm-3'>
+							<p>Series:</p>
+						</div>
+						<div class='text-left col-sm-9'>
+	    					<?php
+								if($BookNumber==0) {
+				    				echo "<p>" . $Series . "</p>";
+				    			}else {
+				    				echo "<p>" . $Series . " -- Book " . $BookNumber . "</p>";
+				    			}
+	    					?>
+	    				</div>
+	    			</div>			
+					<div class="row">            		
+						<div class='text-right pr-0 col-sm-3'>
+							<p>Read Order:</p>
+						</div>
+						<div class='text-left col-sm-9'>
+	    					<p><?php echo $ReadOrderNumber ?></p>
+	    				</div>
+	    			</div>
+					<div class="row">            		
+						<div class='text-right pr-0 col-sm-3'>
+							<p>Categories:</p>
+						</div>
+						<div class='text-left col-sm-9'>
+	    					<p><?php echo $Categories ?></p>
+	    				</div>
+
+	    			</div>
+					<div class="row">            		
+						<div class='text-right pr-0 col-sm-3'>
+							<p>Listened To:</p>
+						</div>
+						<div class='text-left col-sm-9'>
+	    					<?php
+								if($ListenedTo==TRUE) {
+				    				echo "<p>YES</p>";
+				    			}else {
+				    				echo "<p>NO</p>";
+			            		}	    					
+	    					?>
+	    				</div>
+	    			</div>
+            	</div>
+            </div>
+			<div class="row">                    
+				<p><a href="index.php" class="btn btn-primary">Back</a></p>
             </div>        
         </div>
     </div>

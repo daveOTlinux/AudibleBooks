@@ -5,7 +5,10 @@
 
         $keyword = $_POST['keyword'];
         $keyword="$keyword%";
-        $query = "SELECT ID, ShowName FROM tvEpisodes WHERE ShowName like ? ORDER BY ShowName DESC";
+        $query = "SELECT `ID`, `Author` "
+        	"FROM AudibleBooks "
+        	"WHERE `Author` like ? "
+        	"ORDER BY `Author` ASC";
         $statement = $mysqli->prepare($query);
         $statement->bind_param('s',$keyword);
         $statement->execute();
@@ -18,9 +21,9 @@
         }
         else {
 				echo "<ul class='shownames'>";            
-	         $statement->bind_result($ID, $ShowName);
+	         $statement->bind_result($ID, $Author);
 	         while ($statement->fetch()) {  //outputs the records
-					echo "<div class='showitem' id='item$ID' onclick='location.href=`read.php?ID=$ID`'> $ShowName </div>";					
+					echo "<div class='showitem' id='item" . $ID . "' onclick='location.href=`read.php?ID=$ID`'> $Author </div>";					
 	         }
 				echo '</ul>';            
             $statement->close();

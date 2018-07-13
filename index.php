@@ -39,32 +39,38 @@
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 	<link href="style.css" rel="stylesheet">
-	
+		
+	<script src="index.js"></script>
+<!--	
 <script>
 	$(document).ready(function () {
 		$('#searchbox').on('keyup',function () {
 			var key = $(this).val();
-			var strSQL = 'SELECT DISTINCT `Author` ' +
-				'FROM AudibleBooks ' +
-				'WHERE `Author` like "%' + key +
-				'%" ORDER BY `Author` ASC';
-	    	
-		    $.ajax({
-		        url:'fetch.php',
-		        type:'POST',
-		        data: { 'strSQL' : strSQL },
-		        beforeSend:function () {
-		            $("#results").slideUp('fast');
-		        },
-		        success:function (data) {
-		            $("#results").html(data);
-		            $("#results").slideDown('fast');
-		        }
-		    });
+			if (key.length > 0)	{	
+				var strSQL = 'SELECT DISTINCT `Author` ' +
+					'FROM AudibleBooks ' +
+					'WHERE `Author` LIKE "%' + key +
+					'%" ORDER BY `Author` ASC';
+		    	
+			    $.ajax({
+			        url:'fetch.php',
+			        type:'POST',
+			        data: { 'strSQL' : strSQL },
+			        beforeSend:function () {
+			            $("#results").slideUp('fast');
+			        },
+			        success:function (data) {
+			            $("#results").html(data);
+			            $("#results").slideDown('fast');
+			        }
+			    });
+			} else {
+				$("#results").slideUp('fast');	
+			}
 		 });
 	 });
 </script>
-
+-->
 	<style type="text/css">
 	    .wrapper{
 	        width: 700px;
@@ -78,11 +84,11 @@
 	        white-space: pre;
 	    }
 	</style>    
-	 <script type="text/javascript">
+<!--	 <script type="text/javascript">
 	     $(document).ready(function(){
 	         $('[data-toggle="tooltip"]').tooltip();   
 	     });
-	 </script>    
+	 </script> -->   
 </head>
 <body>
     <div class="wrapper">
@@ -98,9 +104,9 @@
 				</div>
 			</div>
            <div class="row" style="height: 50px;">    
-					<div class="col-sm-6">
+					<div class="col-sm-4">
 						<div class='dropdown'>
-					        <a data-target'#' href='index.php' data-toggle='dropdown' class='dropdown-toggle'>Sort By <b class='caret'></b></a>
+					        <a id='sortby' data-target'#' href='index.php' data-toggle='dropdown' class='dropdown-toggle'>Sort By <b class='caret'></b></a>
 				        	<?php
 								// Include config file
 								require_once 'config.php';
@@ -122,7 +128,31 @@
 							?>						
 						</div>					        					    
 					</div>
-					<div class="col-sm-6" id="content">
+					<div class="col-sm-4">
+						<div class='dropdown'>
+					        <a id='filterby' data-target'#' href='index.php' data-toggle='dropdown' class='dropdown-toggle'>Filter By <b class='caret'></b></a>
+				        	<?php
+								// Include config file
+								require_once 'config.php';
+								  
+								// Attempt select query execution
+								$sql = "SELECT `ID`, `itemDisplay`, `itemSQL` ".
+									"FROM `pageObjects` ".
+									"WHERE `SearchTerm` = 'filterBy00' ".
+									"ORDER BY `orderItems` ASC";
+								if($result = $mysqli->query($sql)){
+									if($result->num_rows > 0){
+										echo "<ul class='dropdown-menu'>";
+										while($row = $result->fetch_array()){
+											echo "<li><a id='filterItem". $row['ID'] . "' href='index.php?filterfield=" . $row['itemSQL'] . "'>" . $row['itemDisplay'] . "</a></li>";
+										}
+									echo "</ul>";
+									}
+								}
+							?>						
+						</div>					        					    
+					</div>
+					<div class="col-sm-4" id="content">
 						<input type="search" name="keyword" placeholder="Search Names" id="searchbox">
 						<div id="results">
 							<!--<a href="post-location">Fetched Item</a>-->

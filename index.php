@@ -7,10 +7,17 @@
 		$_SESSION["sortfieldSet"] = FALSE;
 	}
 
-	//Check if $_SESSION["wherePartSet"] exists.
+/*	//Check if $_SESSION["wherePartSet"] exists.
 	if(!isset($_SESSION["wherePartSet"]) && empty(trim($_SESSION["wherePartSet"]))){
 		$_SESSION["wherePartSet"] = FALSE;
+	}*/
+	
+	//Check if $_SESSION["mainSQLset"] exists.
+	if(!isset($_SESSION["mainSQLset"]) && empty(trim($_SESSION["mainSQLset"]))){
+		$_SESSION["mainSQLset"] = FALSE;
 	}
+
+
 
 ?>
 
@@ -41,36 +48,7 @@
 	<link href="style.css" rel="stylesheet">
 		
 	<script src="index.js"></script>
-<!--	
-<script>
-	$(document).ready(function () {
-		$('#searchbox').on('keyup',function () {
-			var key = $(this).val();
-			if (key.length > 0)	{	
-				var strSQL = 'SELECT DISTINCT `Author` ' +
-					'FROM AudibleBooks ' +
-					'WHERE `Author` LIKE "%' + key +
-					'%" ORDER BY `Author` ASC';
-		    	
-			    $.ajax({
-			        url:'fetch.php',
-			        type:'POST',
-			        data: { 'strSQL' : strSQL },
-			        beforeSend:function () {
-			            $("#results").slideUp('fast');
-			        },
-			        success:function (data) {
-			            $("#results").html(data);
-			            $("#results").slideDown('fast');
-			        }
-			    });
-			} else {
-				$("#results").slideUp('fast');	
-			}
-		 });
-	 });
-</script>
--->
+
 	<style type="text/css">
 	    .wrapper{
 	        width: 700px;
@@ -84,11 +62,7 @@
 	        white-space: pre;
 	    }
 	</style>    
-<!--	 <script type="text/javascript">
-	     $(document).ready(function(){
-	         $('[data-toggle="tooltip"]').tooltip();   
-	     });
-	 </script> -->   
+
 </head>
 <body>
     <div class="wrapper">
@@ -154,8 +128,9 @@
 					</div>
 					<div class="col-sm-4" id="content">
 						<input type="search" name="keyword" placeholder="Search Names" id="searchbox">
-						<div id="results">
+						<div id='results'>
 							<!--<a href="post-location">Fetched Item</a>-->
+							<ul class='list-unstyled' id='resultlist'></ul>
 						</div>
 					</div>
 				</div>
@@ -164,25 +139,36 @@
 											
               //Setup field to sort database or use default field
 
-              if(isset($_GET["sortfield"]) && !empty(trim($_GET["sortfield"]))){
-              	$_SESSION["currentSortField"] = trim($_GET["sortfield"]);
+			if(isset($_GET["sortfield"]) && !empty(trim($_GET["sortfield"]))){
+				$_SESSION["currentSortField"] = trim($_GET["sortfield"]);
 				//$_SESSION["currentSortField"] = $sortField;
 				$_SESSION["sortfieldSet"] = TRUE;
-              } else if(!$_SESSION["sortfieldSet"]){
-              	$_SESSION["currentSortField"] = "`ModifiedDate` DESC";
-              }
-              // Include config file
-              require_once 'config.php';
-              
-              // Attempt select query execution $sortField has ORDER BY command included
-              $sql = "SELECT `ID`, `Title`, `Author`, `Series` ".
-              	"FROM AudibleBooks ";
-              if($_SESSION["wherePartSet"]) {
-              	
-              }else {
-              	$sql = $sql . "ORDER BY " . $_SESSION["currentSortField"];
-              }
-              if($result = $mysqli->query($sql)){
+			} else if(!$_SESSION["sortfieldSet"]){
+				$_SESSION["currentSortField"] = "`ModifiedDate` DESC";
+			}
+
+			//Store main SQL for index.php page in $_SESSION[] variables
+			if(!$_SESSION["mainSQLset"]){
+				$_SESSION["mainSELECT"] = "SELECT `ID`, `Title`, `Author`, `Series` ";
+				$_SESSION["mainFROM"] = "FROM AudibleBooks ";
+				$_SESSION["mainWHERE"] = "";
+				$_SESSION["mainORDERBY"] = "ORDER BY ";
+				$_SESSION["mainSQLset"] = TRUE;
+			}
+
+			// Include config file
+			require_once 'config.php';
+			
+			// Attempt select query execution $sortField has ORDER BY command included
+			//$mainSQL = "SELECT `ID`, `Title`, `Author`, `Series` ". "FROM AudibleBooks ";
+
+			$mainSQL = $_SESSION["mainSELECT"] .
+				$_SESSION["mainFROM"] .
+				$_SESSION["mainWHERE"] .
+				$_SESSION["mainORDERBY"] .
+				$_SESSION["currentSortField"];
+
+              if($result = $mysqli->query($mainSQL)){
                   if($result->num_rows > 0){
                       echo "<table class='table table-bordered table-hover'>";
                           echo "<thead>";

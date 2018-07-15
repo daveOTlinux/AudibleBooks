@@ -7,10 +7,10 @@
 		$_SESSION["sortfieldSet"] = FALSE;
 	}
 
-/*	//Check if $_SESSION["wherePartSet"] exists.
-	if(!isset($_SESSION["wherePartSet"]) && empty(trim($_SESSION["wherePartSet"]))){
-		$_SESSION["wherePartSet"] = FALSE;
-	}*/
+	//Check if $_SESSION["searchWHEREset"] exists.
+	if(!isset($_SESSION["searchWHEREset"]) && empty(trim($_SESSION["searchWHEREset"]))){
+		$_SESSION["searchWHEREset"] = FALSE;
+	}
 	
 	//Check if $_SESSION["mainSQLset"] exists.
 	if(!isset($_SESSION["mainSQLset"]) && empty(trim($_SESSION["mainSQLset"]))){
@@ -94,7 +94,7 @@
 									if($result->num_rows > 0){
 										echo "<ul class='dropdown-menu'>";
 										while($row = $result->fetch_array()){
-											echo "<li><a id='sortItem". $row['ID'] . "' href='index.php?sortfield=" . $row['itemSQL'] . "'>" . $row['itemDisplay'] . "</a></li>";
+											echo "<li class='showitem'><a id='sortItem". $row['ID'] . "' href='index.php?sortfield=" . $row['itemSQL'] . "'>" . $row['itemDisplay'] . "</a></li>";
 										}
 									echo "</ul>";
 									}
@@ -118,7 +118,7 @@
 									if($result->num_rows > 0){
 										echo "<ul class='dropdown-menu'>";
 										while($row = $result->fetch_array()){
-											echo "<li><a id='filterItem". $row['ID'] . "' href='index.php?filterfield=" . $row['itemSQL'] . "'>" . $row['itemDisplay'] . "</a></li>";
+											echo "<li class='showitem'><a id='filterItem". $row['ID'] . "' href='index.php?filterfield=" . $row['itemSQL'] . "'>" . $row['itemDisplay'] . "</a></li>";
 										}
 									echo "</ul>";
 									}
@@ -151,9 +151,11 @@
 			if(!$_SESSION["mainSQLset"]){
 				$_SESSION["mainSELECT"] = "SELECT `ID`, `Title`, `Author`, `Series` ";
 				$_SESSION["mainFROM"] = "FROM AudibleBooks ";
-				$_SESSION["mainWHERE"] = "";
 				$_SESSION["mainORDERBY"] = "ORDER BY ";
 				$_SESSION["mainSQLset"] = TRUE;
+				if(!$_SESSION["searchWHEREset"]) {
+					$_SESSION["mainWHERE"] = "";
+				}
 			}
 
 			// Include config file

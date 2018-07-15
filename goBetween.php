@@ -16,6 +16,7 @@
 		case "searchbox":
 			$strSQL = $sqlCommand . " `" . $fieldName . "` = '" . $clickedData ."' ";
 			$_SESSION["mainWHERE"] = $strSQL;
+			$_SESSION["searchWHEREset"] = TRUE;
 			break;
 	
 	}

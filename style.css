@@ -58,12 +58,17 @@
     border-bottom:1px solid #bdbdbd;
 }
 .showitem {
+	color: white;
     box-sizing: border-box;
     padding:10px;
     font-size:18px;
     width: 100%;
     background:  grey;
     border-bottom:1px solid #bdbdbd;
+}
+.showitem a {
+	color: white;
+
 }
 .showitem:hover {
 	color: white;

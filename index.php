@@ -77,11 +77,11 @@
 					<a href="create.php" class="btn btn-success pull-right">Add New Audible Book</a>
 				</div>
 			</div>
-           <div class="row" style="height: 50px;">    
+			<div class="row" style="height: 50px;">    
 					<div class="col-sm-4">
 						<div class='dropdown'>
-					        <a id='sortby' data-target'#' href='index.php' data-toggle='dropdown' class='dropdown-toggle'>Sort by Last Edit <b class='caret'></b></a>
-<!--					        <a id='sortby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Sort by Last Edit <b class='caret'></b></a>-->
+<!--					        <a id='sortby' data-target'#' href='index.php' data-toggle='dropdown' class='dropdown-toggle'>Sort by Last Edit <b class='caret'></b></a>-->
+					        <a id='sortby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Sort by Last Edit <b class='caret'></b></a>
 				        	<?php
 								// Include config file
 								require_once 'config.php';
@@ -95,8 +95,8 @@
 									if($result->num_rows > 0){
 										echo "<ul id='sortDropdown' class='dropdown-menu'>";
 										while($row = $result->fetch_array()){
-											echo "<li id='sortItem". $row['ID'] . "'  class='showitem'><a id='sortItem". $row['ID'] . "' href='index.php?sortfield=" . $row['itemSQL'] . "'>" . $row['itemDisplay'] . "</a></li>";
-//											echo "<li id='sortItem". $row['ID'] . "' class='showitem'>" . $row['itemDisplay'] . "</li>";
+//											echo "<li id='sortItem". $row['ID'] . "'  class='showitem'><a id='sortItem". $row['ID'] . "' href='index.php?sortfield=" . $row['itemSQL'] . "'>" . $row['itemDisplay'] . "</a></li>";
+											echo "<li id='sortItem". $row['ID'] . "' class='showitem'>" . $row['itemDisplay'] . "</li>";
 
 										}
 									echo "</ul>";
@@ -137,8 +137,9 @@
 							<ul class='list-unstyled' id='resultlist'></ul>
 						</div>
 					</div>
-				</div>
-				<div class="row">
+			</div>
+			<div id='maintable-wrapper'>			
+			<div id='maintable'  class='row'>
               <?php
 											
               //Setup field to sort database or use default field
@@ -156,7 +157,7 @@
 			if(!$_SESSION["mainSQLset"]){
 				$_SESSION["mainSELECT"] = "SELECT `ID`, `Title`, `Author`, `Series` ";
 				$_SESSION["mainFROM"] = "FROM AudibleBooks ";
-				$_SESSION["mainORDERBY"] = "ORDER BY ";
+				$_SESSION["mainORDERBY"] = "";
 				$_SESSION["mainSQLset"] = TRUE;
 				if(!$_SESSION["searchWHEREset"]) {
 					$_SESSION["mainWHERE"] = "";
@@ -217,7 +218,8 @@
               $mysqli->close();
               ?>
             </div>
-			</div>        
+			</div>			
+		</div>        
     </div>
 </body>
 </html>

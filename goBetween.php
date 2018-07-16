@@ -61,19 +61,17 @@
 				//$returnStatus = array(array());
 				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
 				$returnStatus = getPageObjectByID($itemID);
-				//if($returnStatus[0]["status"] == "FAILED") {
+				
+				if($returnStatus[0]["status"] == "Success") {
+					//$_SESSION["mainORDERBY"] = "ORDER BY " . $returnStatus[0]["info"];					
 					//$returnStatus[0]["status"] = $itemSQL;
 					//$returnStatus[0]["info"] = "Failed getPageObjectByID() function";
 					//header('Content-type: application/json');					
 					//echo json_encode($returnStatus);
-				//} else {
-					//$returnStatus[0]["status"] = "Success";
-					//$returnStatus[0]["info"] = $itemSQL;
-					
-					//header('Content-type: application/json');					
+				}
 					echo json_encode($returnStatus);
-				//}
 				break;
+				
 		}
 	
 		//echo json_encode($clickedData);

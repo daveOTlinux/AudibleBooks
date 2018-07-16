@@ -7,6 +7,7 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 		"sqlCommand":"WHERE",
 		"fieldname":"Author",
 		"clickedData":itemClicked,
+		"pageObject":"NOT_USED"
 		};
 	var dataString = JSON.stringify(postData);	//convert "Author" SQL string to JSON
 	$.ajax({
@@ -63,9 +64,9 @@ $(document).ready(function (){
 		}
 	});
 
-	$('.showitem').on('click',function(){
+	$('.showitem').on('click',function(){	//When either SortBy or Filter By dropdown data <li> is clicked
 		var liID = $(this).attr('id')
-		var liText = document.getElementById(liID).innerHTML;
+		var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
 		switch(liID.slice(0,5)) {
 			case 'sortI':
 				document.getElementById('sortby').innerHTML = 'Sort by ' + liText;
@@ -90,9 +91,17 @@ $(document).ready(function (){
 		    type:'POST',
 		    data: {postOBJ: dataString},
 			success:function(returnData) {
-				//console.log("returnData -- " + returnData);				
-				//alert("Success with Ajax sortfield -- " + returnData)				
-				//location.reload();
+				var obj = JSON.parse(returnData.substring(1, returnData .length-1));
+				//var newStr = returnData.substring(1, returnData .length-1);
+				//console.log("returnData -- " + obj.status);
+				if (obj.status == 'Success') {				
+					//console.log("returnData -- " + returnData);				
+					alert("Success with Ajax sortfield -- " + location.href);				
+					//$("#maintable-wrapper").load(location.href + " #maintable-wrapper");
+					//location.reload();
+				} else {
+					alert("Failed Ajax sortfield -- " + returnData);
+				}
 			},
 	        error: function() {
 	        	alert('Error on sortby or filterby item clicked.');

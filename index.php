@@ -80,7 +80,8 @@
            <div class="row" style="height: 50px;">    
 					<div class="col-sm-4">
 						<div class='dropdown'>
-					        <a id='sortby' data-target'#' href='index.php' data-toggle='dropdown' class='dropdown-toggle'>Sort By <b class='caret'></b></a>
+					        <a id='sortby' data-target'#' href='index.php' data-toggle='dropdown' class='dropdown-toggle'>Sort by Last Edit <b class='caret'></b></a>
+<!--					        <a id='sortby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Sort by Last Edit <b class='caret'></b></a>-->
 				        	<?php
 								// Include config file
 								require_once 'config.php';
@@ -92,9 +93,11 @@
 									"ORDER BY `orderItems` ASC";
 								if($result = $mysqli->query($sql)){
 									if($result->num_rows > 0){
-										echo "<ul class='dropdown-menu'>";
+										echo "<ul id='sortDropdown' class='dropdown-menu'>";
 										while($row = $result->fetch_array()){
-											echo "<li class='showitem'><a id='sortItem". $row['ID'] . "' href='index.php?sortfield=" . $row['itemSQL'] . "'>" . $row['itemDisplay'] . "</a></li>";
+											echo "<li id='sortItem". $row['ID'] . "'  class='showitem'><a id='sortItem". $row['ID'] . "' href='index.php?sortfield=" . $row['itemSQL'] . "'>" . $row['itemDisplay'] . "</a></li>";
+//											echo "<li id='sortItem". $row['ID'] . "' class='showitem'>" . $row['itemDisplay'] . "</li>";
+
 										}
 									echo "</ul>";
 									}
@@ -104,7 +107,7 @@
 					</div>
 					<div class="col-sm-4">
 						<div class='dropdown'>
-					        <a id='filterby' data-target'#' href='index.php' data-toggle='dropdown' class='dropdown-toggle'>Filter By <b class='caret'></b></a>
+					        <a id='filterby' data-target'#' href='index.php' data-toggle='dropdown' class='dropdown-toggle'>Filter by Nothing<b class='caret'></b></a>
 				        	<?php
 								// Include config file
 								require_once 'config.php';
@@ -116,9 +119,10 @@
 									"ORDER BY `orderItems` ASC";
 								if($result = $mysqli->query($sql)){
 									if($result->num_rows > 0){
-										echo "<ul class='dropdown-menu'>";
+										echo "<ul id='filterDropdown' class='dropdown-menu'>";
 										while($row = $result->fetch_array()){
-											echo "<li class='showitem'><a id='filterItem". $row['ID'] . "' href='index.php?filterfield=" . $row['itemSQL'] . "'>" . $row['itemDisplay'] . "</a></li>";
+//											echo "<li class='showitem'><a id='filterItem". $row['ID'] . "' href='index.php?filterfield=" . $row['itemSQL'] . "'>" . $row['itemDisplay'] . "</a></li>";
+											echo "<li id='filterItem". $row['ID'] . "' class='showitem'>" . $row['itemDisplay'] . "</li>";
 										}
 									echo "</ul>";
 									}
@@ -145,6 +149,7 @@
 				$_SESSION["sortfieldSet"] = TRUE;
 			} else if(!$_SESSION["sortfieldSet"]){
 				$_SESSION["currentSortField"] = "`ModifiedDate` DESC";
+				$_SESSION["sortfieldSet"] = TRUE;
 			}
 
 			//Store main SQL for index.php page in $_SESSION[] variables
@@ -155,6 +160,7 @@
 				$_SESSION["mainSQLset"] = TRUE;
 				if(!$_SESSION["searchWHEREset"]) {
 					$_SESSION["mainWHERE"] = "";
+					$_SESSION["searchWHEREset"] = TRUE;
 				}
 			}
 

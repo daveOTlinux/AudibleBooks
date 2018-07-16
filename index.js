@@ -1,5 +1,5 @@
 
-function searchResults(thisID) {
+function searchResults(thisID) {	//Called when item in Live Search box is clicked
 	var $searchbox = $('#searchbox');
 	var itemClicked = document.getElementById(thisID.id).innerHTML	 
 	var postData = {
@@ -8,17 +8,14 @@ function searchResults(thisID) {
 		"fieldname":"Author",
 		"clickedData":itemClicked,
 		};
-	var dataString = JSON.stringify(postData);
+	var dataString = JSON.stringify(postData);	//convert "Author" SQL string to JSON
 	$.ajax({
 	    url:'goBetween.php',
 	    type:'POST',
 	    data: {postOBJ: dataString},
 		success:function(clickedData) {
-			document.getElementById("searchbox").placeholder = clickedData;
-			var $test1 = document.getElementById("searchbox").placeholder;
-			alert("Return from goBetween.php clickedData -- " + clickedData + "test1 -- " + $test1);
-			console.log(document.getElementById("searchbox"));
 			$("#results").slideUp('fast');
+			location.reload();
 		},
         error: function() {
         	alert('Error on search item clicked.');
@@ -66,7 +63,52 @@ $(document).ready(function (){
 		}
 	});
 
+	$('.showitem').on('click',function(){
+		var liID = $(this).attr('id')
+		var liText = document.getElementById(liID).innerHTML;
+		switch(liID.slice(0,5)) {
+			case 'sortI':
+				document.getElementById('sortby').innerHTML = 'Sort by ' + liText;
+				var searchTerm = "sortOrder00"
+				console.log("sortItem text -- " + liText + " li ID -- " + liID);
+				break;
+			case 'filte':
+				document.getElementById('filterby').innerHTML = 'Filter by ' + liText;
+				//console.log("filterItem" + " li ID -- " + liID);
+				break;
+		}
+		var postData = {
+			"forObject":"sortfield",
+			"sqlCommand":"ORDER",
+			"pageObject":searchTerm,
+			"fieldname":liText,
+			"clickedData":liID,
+			};
+		var dataString = JSON.stringify(postData);	//convert dataString string to JSON
+		$.ajax({
+		    url:'goBetween.php',
+		    type:'POST',
+		    data: {postOBJ: dataString},
+			success:function(returnData) {
+				//console.log("returnData -- " + returnData);				
+				//alert("Success with Ajax sortfield -- " + returnData)				
+				//location.reload();
+			},
+	        error: function() {
+	        	alert('Error on sortby or filterby item clicked.');
+	        }
+	    //console.log("Out of switch");
+	    });
+	});
 
+
+
+});
+
+$(document).ready(function(){
+	//Code to run when page finishes loading
+	
+	//alert("Document has finished loading.");
 });
 
 $(document).ready(function(){

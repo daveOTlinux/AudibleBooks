@@ -78,37 +78,21 @@
 				</div>
 			</div>
 			<div class="row" style="height: 50px;">    
-					<div class="col-sm-4">
-						<div class='dropdown'>
-<!--					        <a id='sortby' data-target'#' href='index.php' data-toggle='dropdown' class='dropdown-toggle'>Sort by Last Edit <b class='caret'></b></a>-->
-					        <a id='sortby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Sort by Last Edit <b class='caret'></b></a>
-							<ul id='sortDropdown' class='dropdown-menu'>
-							
-							<?php	/*
-								// Include config file
-								require_once 'config.php';
-								  
-								// Attempt select query execution
-								$sql = "SELECT `ID`, `itemDisplay`, `itemSQL` ".
-									"FROM `pageObjects` ".
-									"WHERE `SearchTerm` = 'sortOrder00' ".
-									"ORDER BY `orderItems` ASC";
-								if($result = $mysqli->query($sql)){
-									if($result->num_rows > 0){
-										echo "<ul id='sortDropdown' class='dropdown-menu'>";
-										while($row = $result->fetch_array()){
-//											echo "<li id='sortItem". $row['ID'] . "'  class='showitem'><a id='sortItem". $row['ID'] . "' href='index.php?sortfield=" . $row['itemSQL'] . "'>" . $row['itemDisplay'] . "</a></li>";
-											echo "<li id='sortItem". $row['ID'] . "' class='showitem'>" . $row['itemDisplay'] . "</li>";
-
-										}
-									echo "</ul>";
-									}
-								}
-						*/	?>
-						
-							</ul>						
-						</div>
+				<div class="col-sm-4">
+					<div id='sortbydiv' class='dropdown'>
+				        <a id='sortby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Sort by Last Edit <b class='caret'></b></a>
+						<ul id='sortDropdown' class='dropdown-menu'></ul>
 					</div>
+				</div>
+				<div class="col-sm-4">
+					<div id='filterbydiv' class='dropdown'>
+				        <a id='filterby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Filter by Nothing<b class='caret'></b></a>
+						<ul id='filterDropdown' class='dropdown-menu'></ul>
+					</div>
+				</div>
+				<div class="col-sm-4">
+				
+				</div>
 			</div>						
 		</div>        
     </div>

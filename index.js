@@ -11,7 +11,7 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 		};
 	var dataString = JSON.stringify(postData);	//convert "Author" SQL string to JSON
 	$.ajax({
-	    url:'goBetween.php',
+	    url:'pageObjects.php',
 	    type:'POST',
 	    data: {postOBJ: dataString},
 		success:function(clickedData) {
@@ -24,6 +24,33 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 	});
 }	
 
+function pageObjectsList(searchTerm, forObject, $elementID) {	//Get row data from pageObjects table where = searchTerm
+	var postData = {
+		"forObject":forObject,	//forObject used in pageObjects.php by switch case for custom code
+		"sqlCommand":"",
+		"pageObject":searchTerm,	//used to get row items
+		"fieldname":"",
+		"clickedData":"",
+	};
+	var dataString = JSON.stringify(postData);
+    $.ajax({
+        url:'pageObjects.php',
+        type:'POST',
+        data: {postOBJ: dataString},
+        success:function(returnData) {
+			console.log("returnData -- " + returnData);			
+			var myOBJ = document.getElementById($elementID);
+			//alert("element -- " +  myOBJ.id + $elementID)
+			$.each(returnData, function(i, resultitem){
+				$('#' + myOBJ.id).append("<li id='sortItem" + resultitem.ID + "' class='showitem'>" + resultitem.itemDisplay + "</li>");
+			});				
+        },
+        error: function() {
+        	alert('Error with getting sortBy data.');
+        }
+	});
+	
+}
 
 $(document).ready(function (){
 	var $resultlist = $('#resultlist');
@@ -87,7 +114,7 @@ $(document).ready(function (){
 			};
 		var dataString = JSON.stringify(postData);	//convert dataString string to JSON
 		$.ajax({
-		    url:'goBetween.php',
+		    url:'pageObjects.php',
 		    type:'POST',
 		    data: {postOBJ: dataString},
 			success:function(returnData) {
@@ -116,42 +143,11 @@ $(document).ready(function (){
 
 $(document).ready(function(){
 	//Code to run when page finishes loading
-	var searchTerm = 'sortOrder00';
-		
-//	$('#searchbox').on('keyup',function () {
-		//var key = $(this).val();
-		var searchTerm = 'sortOrder00' ;
-		var postData = {
-			"forObject":"sortDropdown",
-			"sqlCommand":"",
-			"pageObject":searchTerm,
-			"fieldname":"",
-			"clickedData":"",
-		};
-		var dataString = JSON.stringify(postData);
 
-	    $.ajax({
-	        url:'goBetween.php',
-	        type:'POST',
-	        data: {postOBJ: dataString},
-	        success:function(returnData) {
-				console.log("returnData -- " + returnData);				
-				//var obj = JSON.parse(returnData.substring(1, returnData .length-1));				
-				$.each(returnData, function(i, resultitem){
-					alert("results ID-- " + resultitem.ID + "itemDisplay -- " + resultitem.itemDisplay);
-				});				
-				
-				//alert("return from gobetween. results -- " + results);	            
-	            //$.each(results, function(i, resultitem){
-	            	//$resultlist.append("<li id='sortItem". $row['ID'] . "' class='showitem'>" . $row['itemDisplay'] . "</li>");
-				//};		            
+	//searchResults(searchTerm, forObject, elementID)
+	pageObjectsList('sortOrder00', 'sortDropdown', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
+	pageObjectsList('filterBy00', 'filterDropdown', 'filterDropdown');	//Fill in <li> values for sortBy dropdown
 
-	        },
-	        error: function() {
-	        	alert('Error with getting sortBy data.');
-	        }
-
-	});
 });
 
 $(document).ready(function(){

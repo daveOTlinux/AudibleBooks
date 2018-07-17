@@ -116,8 +116,42 @@ $(document).ready(function (){
 
 $(document).ready(function(){
 	//Code to run when page finishes loading
-	
-	//alert("Document has finished loading.");
+	var searchTerm = 'sortOrder00';
+		
+//	$('#searchbox').on('keyup',function () {
+		//var key = $(this).val();
+		var searchTerm = 'sortOrder00' ;
+		var postData = {
+			"forObject":"sortDropdown",
+			"sqlCommand":"",
+			"pageObject":searchTerm,
+			"fieldname":"",
+			"clickedData":"",
+		};
+		var dataString = JSON.stringify(postData);
+
+	    $.ajax({
+	        url:'goBetween.php',
+	        type:'POST',
+	        data: {postOBJ: dataString},
+	        success:function(returnData) {
+				console.log("returnData -- " + returnData);				
+				//var obj = JSON.parse(returnData.substring(1, returnData .length-1));				
+				$.each(returnData, function(i, resultitem){
+					alert("results ID-- " + resultitem.ID + "itemDisplay -- " + resultitem.itemDisplay);
+				});				
+				
+				//alert("return from gobetween. results -- " + results);	            
+	            //$.each(results, function(i, resultitem){
+	            	//$resultlist.append("<li id='sortItem". $row['ID'] . "' class='showitem'>" . $row['itemDisplay'] . "</li>");
+				//};		            
+
+	        },
+	        error: function() {
+	        	alert('Error with getting sortBy data.');
+	        }
+
+	});
 });
 
 $(document).ready(function(){

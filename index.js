@@ -4,10 +4,19 @@ function onclickDropdowns(element) {
 	var filterBysearchTerm = sessionStorage.getItem("filterBysearchTerm");	//current filterBy pageObj search term
 	var liID = element.id;
 	var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
+	alert("clicked dropdown text -- " + liText);
+	if (liText == "Latest Modified") {
+		$('#searchbox').attr("placeholder", "");	//removed for disabled element
+		$('#searchbox').prop('disabled', true);	//Disable searchbox when in "Last Edit" sortBy and filterBy Nothing mode.
+	} else {
+		$('#searchbox').prop('disabled', false);	//Enable searchbox when not sortBy "Last Edit"  and filterBy Nothing mode.
+		$('#searchbox').attr("placeholder", "Search by " + liText);	//placeholder give idea of what to type
+	}
+
 	//alert("element click ID -- " + liID + " clicked element text -- " + liText);
 	switch(element.id.slice(0,5)) {
 		case 'sortI':
-			document.getElementById('sortby').innerHTML = 'Sort by ' + liText;
+			document.getElementById('sortby').innerHTML = 'Sort by ' + liText;			
 			var searchTerm = sortBysearchTerm;
 			console.log("sortItem text -- " + liText + " li ID -- " + liID);
 			break;
@@ -214,9 +223,14 @@ $(document).ready(function (){
 		var element = event.target;
 		alert("Object in sortDropdown has been clicked -- " + element.id);		
 		onclickDropdowns(element)	//function changes element text and gets SQL for <li> choice
-
-
 	});
+
+	$("#filterDropdown").on('click',function(){	//When SortBy dropdown data <li> is clicked
+		var element = event.target;
+		alert("Object in sortDropdown has been clicked -- " + element.id);		
+		onclickDropdowns(element)	//function changes element text and gets SQL for <li> choice
+	});
+
 });
 
 $(document).ready(function(){
@@ -259,7 +273,9 @@ alert("In if() statement -- " + typeof testSession);
 
 	//alert("SQL string before call -- " + select + from + where + order + limits + searchkey)
 	//fetchTableResults(select, from, where, order, limits, searchkey) uses variables
-	fetchTableResults(select, from, where, order, limits, searchkey);	
+	fetchTableResults(select, from, where, order, limits, searchkey);
+	
+	$('#searchbox').prop('disabled', true);		//Disable searchbox when in "Last Edit" sortBy and filterBy Nothing mode.
 
 });
 

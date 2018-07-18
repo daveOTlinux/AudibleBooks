@@ -91,30 +91,33 @@
 					</div>
 				</div>
 				<div class="col-sm-4">
-				
+					<input type="search" name="keyword" placeholder="" id="searchbox">
+					<div id='searchresults'>
+						<!--<a href="post-location">Fetched Item</a>-->
+						<ul class='list-unstyled' id='resultlist'></ul>
+					</div>				
 				</div>
 			</div>
 
-			<div id='maintable-wrapper'>
-				<div class='row'id='maintable'>
-					<table class='table table-bordered table-hover'>
-						<thead>
-							<tr>
-								<th style='width: 8%'>ID</th>
-								<th style='width: 40%'>Title</th>
-								<th style='width: 20%'>Author</th>
-								<th style='width: 20%'>Series</th>
-								<th style='width: 22%'>Action</th>
-							</tr>
-						</thead>
-						<tbody id='maintablebody'>
+			<div class='row'id='maintable'>
+				<table class='table table-bordered table-hover'>
+					<thead>
+						<tr>
+							<th style='width: 8%'>ID</th>
+							<th style='width: 40%'>Title</th>
+							<th style='width: 20%'>Author</th>
+							<th style='width: 20%'>Series</th>
+							<th style='width: 22%'>Action</th>
+						</tr>
+					</thead>
+					<tbody id='maintablebody'>
 
-						</tbody>
-					</table>
+					</tbody>
+				</table>
 
 
-				</div>
 			</div>
+
 
 
 		</div>        

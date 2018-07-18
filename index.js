@@ -1,4 +1,47 @@
 
+function fetchTableResults(select, from, where, order, limits, searchkey) {
+	var $tablebody = $('#maintablebody');
+	var postData = {
+	 	"select":select,
+		"from":from,
+		"where":where,
+		"order":order,
+		"limits":limits,
+		"searchkey":searchkey
+	};
+	var dataString = JSON.stringify(postData);
+    $.ajax({
+        url:'getMainTableRows.php',
+        type:'POST',
+        data: {postOBJ: dataString},
+        success:function(returnData) {
+			console.log("returnData -- " + returnData);
+			$.each(returnData, function(i, resultitem){
+		       	var tablerowtemplate = "<tr>" +
+		       			"<td>" + resultitem.ID + "</td>" +
+						"<td>" + resultitem.Title + "</td>" +
+						"<td>" + resultitem.Author + "</td>" +
+						"<td>" + resultitem.Series + "</td>" +
+						"<td>" +
+						"<a href='read.php?ID=" + resultitem.ID + "' title='View Record' data-toggle='tooltip'>" +
+							"<span class='fa fa-eye'></span></a>" +
+						"<a href='update.php?ID=" + resultitem.ID + "' title='Update Record' data-toggle='tooltip'>" +
+							"<span class='fa fa-pencil'></span></a>" +
+						"<a href='delete.php?ID=" + resultitem.ID + "' title='Delete Record' data-toggle='tooltip'>" +
+							"<span class='fa fa-trash'></span></a>" +
+						"</td>" +
+						"</tr>";
+				//alert("table row --" + tablerowtemplate);
+				$tablebody.append(tablerowtemplate);
+			});
+        },
+        error: function() {
+
+        	alert('Error with getting row data from getMainTableRows.php.');
+        }
+	});
+}
+
 function searchResults(thisID) {	//Called when item in Live Search box is clicked
 	var $searchbox = $('#searchbox');
 	var itemClicked = document.getElementById(thisID.id).innerHTML	 
@@ -38,9 +81,10 @@ function pageObjectsList(searchTerm, forObject, $elementID) {	//Get row data fro
         type:'POST',
         data: {postOBJ: dataString},
         success:function(returnData) {
-			console.log("returnData -- " + returnData);			
+			//console.log("returnData -- " + returnData);			
 			var myOBJ = document.getElementById($elementID);
-			//alert("element -- " +  myOBJ.id + $elementID)
+			//alert("element -- " +  myOBJ.id + $elementID);
+			//$('#' + myOBJ.id).append
 			$.each(returnData, function(i, resultitem){
 				$('#' + myOBJ.id).append("<li id='sortItem" + resultitem.ID + "' class='showitem'>" + resultitem.itemDisplay + "</li>");
 			});				
@@ -70,7 +114,7 @@ $(document).ready(function (){
 
 		if (key.length > 0)	{	    	
 		    $.ajax({
-		        url:'fetch.php',
+		        url:'fetchSearchData.php',
 		        type:'POST',
 		        data: {postOBJ: dataString},
 		        beforeSend:function () {
@@ -144,9 +188,19 @@ $(document).ready(function (){
 $(document).ready(function(){
 	//Code to run when page finishes loading
 
-	//searchResults(searchTerm, forObject, elementID)
+	//pageObjectsList(searchTerm, forObject, $elementID)
 	pageObjectsList('sortOrder00', 'sortDropdown', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
 	pageObjectsList('filterBy00', 'filterDropdown', 'filterDropdown');	//Fill in <li> values for sortBy dropdown
+
+	var select = "SELECT `ID`, `Title`, `Author`, `Series` ";
+	var from = "FROM AudibleBooks ";
+	var where = "";
+	var order = "";
+	var limits = "LIMIT 1, 3";
+	var searchkey = "";
+
+	//fetchTableResults('select', 'from', 'where', 'order', 'limits', 'searchkey')
+	fetchTableResults(select, from, where, order, limits, searchkey);	
 
 });
 

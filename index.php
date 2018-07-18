@@ -93,7 +93,30 @@
 				<div class="col-sm-4">
 				
 				</div>
-			</div>						
+			</div>
+
+			<div id='maintable-wrapper'>
+				<div class='row'id='maintable'>
+					<table class='table table-bordered table-hover'>
+						<thead>
+							<tr>
+								<th style='width: 8%'>ID</th>
+								<th style='width: 40%'>Title</th>
+								<th style='width: 20%'>Author</th>
+								<th style='width: 20%'>Series</th>
+								<th style='width: 22%'>Action</th>
+							</tr>
+						</thead>
+						<tbody id='maintablebody'>
+
+						</tbody>
+					</table>
+
+
+				</div>
+			</div>
+
+
 		</div>        
     </div>
 </body>

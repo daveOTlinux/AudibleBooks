@@ -1,4 +1,6 @@
 
+
+
 function fetchTableResults(select, from, where, order, limits, searchkey) {
 	var $tablebody = $('#maintablebody');
 	var postData = {
@@ -85,8 +87,17 @@ function pageObjectsList(searchTerm, forObject, $elementID) {	//Get row data fro
 			var myOBJ = document.getElementById($elementID);
 			//alert("element -- " +  myOBJ.id + $elementID);
 			//$('#' + myOBJ.id).append
+			var idname = "";
+			switch(forObject) {
+				case "sortDropdown":
+					idname = "sortItem";
+					break;
+				case "filterDropdown":
+					idname = "filteritem";
+					break;
+			};
 			$.each(returnData, function(i, resultitem){
-				$('#' + myOBJ.id).append("<li id='sortItem" + resultitem.ID + "' class='showitem'>" + resultitem.itemDisplay + "</li>");
+				$('#' + myOBJ.id).append("<li id='" + idname + resultitem.ID + "' class='showitem'>" + resultitem.itemDisplay + "</li>");
 			});				
         },
         error: function() {
@@ -135,17 +146,24 @@ $(document).ready(function (){
 		}
 	});
 
-	$('.showitem').on('click',function(){	//When either SortBy or Filter By dropdown data <li> is clicked
-		var liID = $(this).attr('id')
+
+	$("#sortDropdown").on('click',function(){	//When SortBy dropdown data <li> is clicked
+		//alert("Object in sortDropdown has been clicked");		
+		var sortBysearchTerm = sessionStorage.getItem("sortBysearchTerm");
+		var filterBysearchTerm = sessionStorage.getItem("filterBysearchTerm");
+		var element = event.target;
+		var liID = element.id;
 		var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
-		switch(liID.slice(0,5)) {
+		//alert("element click ID -- " + liID + " clicked element text -- " + liText);
+		switch(element.id.slice(0,5)) {
 			case 'sortI':
 				document.getElementById('sortby').innerHTML = 'Sort by ' + liText;
-				var searchTerm = "sortOrder00"
+				var searchTerm = sortBysearchTerm;
 				console.log("sortItem text -- " + liText + " li ID -- " + liID);
 				break;
 			case 'filte':
 				document.getElementById('filterby').innerHTML = 'Filter by ' + liText;
+				var searchTerm = filterBysearchTerm;
 				//console.log("filterItem" + " li ID -- " + liID);
 				break;
 		}
@@ -167,7 +185,9 @@ $(document).ready(function (){
 				//console.log("returnData -- " + obj.status);
 				if (obj.status == 'Success') {				
 					//console.log("returnData -- " + returnData);				
-					alert("Success with Ajax sortfield -- " + location.href);				
+					alert("Success with Ajax sortfield -- ");				
+					
+										
 					//$("#maintable-wrapper").load(location.href + " #maintable-wrapper");
 					//location.reload();
 				} else {
@@ -188,9 +208,15 @@ $(document).ready(function (){
 $(document).ready(function(){
 	//Code to run when page finishes loading
 
+	//javascript session storage
+	sessionStorage.setItem("sortBysearchTerm", "sortOrder00");
+	sessionStorage.setItem("filterBysearchTerm", "filterBy00");
+	var sortBysearchTerm = sessionStorage.getItem("sortBysearchTerm");
+	var filterBysearchTerm = sessionStorage.getItem("filterBysearchTerm");
+	
 	//pageObjectsList(searchTerm, forObject, $elementID)
-	pageObjectsList('sortOrder00', 'sortDropdown', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
-	pageObjectsList('filterBy00', 'filterDropdown', 'filterDropdown');	//Fill in <li> values for sortBy dropdown
+	pageObjectsList(sortBysearchTerm, 'sortDropdown', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
+	pageObjectsList(filterBysearchTerm, 'filterDropdown', 'filterDropdown');	//Fill in <li> values for sortBy dropdown
 
 	var select = "SELECT `ID`, `Title`, `Author`, `Series` ";
 	var from = "FROM AudibleBooks ";

@@ -39,6 +39,9 @@ function onclickDropdowns(element) {
 	    type:'POST',
 	    data: {postOBJ: dataString},
 		success:function(returnData) {
+			console.log("returnData onclickDropdowns -- " + returnData);
+//			var myObj = $.parseJSON(returnData);
+//			alert("In onclickDropdowns returnData length -- " + myObj.length);
 			var obj = JSON.parse(returnData.substring(1, returnData .length-1));
 			//var newStr = returnData.substring(1, returnData .length-1);
 			//console.log("returnData -- " + obj.status);
@@ -87,7 +90,8 @@ function fetchTableResults(select, from, where, order, limits, searchkey) {
         type:'POST',
         data: {postOBJ: dataString},
         success:function(returnData) {
-			//console.log("returnData -- " + returnData);
+			//console.log("returnData fetchTableResults -- " + returnData);
+			//alert("In fetchTableResults returnData length -- " + returnData.length);
 			$tablebody.empty();
 			$.each(returnData, function(i, resultitem){
 		       	var tablerowtemplate = "<tr>" +
@@ -109,7 +113,6 @@ function fetchTableResults(select, from, where, order, limits, searchkey) {
 			});
         },
         error: function() {
-
         	alert('Error with getting row data from getMainTableRows.php.');
         }
 	});
@@ -130,7 +133,10 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 	    url:'pageObjects.php',
 	    type:'POST',
 	    data: {postOBJ: dataString},
-		success:function(clickedData) {
+		success:function(returnData) {
+			console.log("returnData searchResults -- " + returnData);
+			var myObj = $.parseJSON(returnData);
+			alert("In searchResults returnData length -- " + myObj.length);			
 			$("#results").slideUp('fast');
 			location.reload();
 		},
@@ -157,7 +163,6 @@ function pageObjectsList(searchTerm, forObject, $elementID) {	//Get row data fro
 			//console.log("returnData -- " + returnData);			
 			var myOBJ = document.getElementById($elementID);
 			//alert("element -- " +  myOBJ.id + $elementID);
-			//$('#' + myOBJ.id).append
 			var idname = "";
 			switch(forObject) {
 				case "sortDropdown":
@@ -173,7 +178,7 @@ function pageObjectsList(searchTerm, forObject, $elementID) {	//Get row data fro
 			});				
         },
         error: function() {
-        	alert('Error with getting sortBy data.');
+        	alert('In pageObjectsList().  Error with getting data from pageObjects.php');
         }
 	});
 	
@@ -182,15 +187,24 @@ function pageObjectsList(searchTerm, forObject, $elementID) {	//Get row data fro
 $(document).ready(function (){
 	var $resultlist = $('#resultlist');
 		
-	$('#searchbox').on('keyup',function () {
+	$('#searchbox').on('keyup',function () {	//Ajax Live Search. Comes here on ever keyup.
 		var key = $(this).val();
-		var searchKEY = '%' + key + '%';
+		var searchKEY = key + '%';
+
+		//alert("sortby dropdown -- " + $('#sortby').attr('id'));
+		var objID = $('#sortby').attr('id');
+		var objText = document.getElementById(objID).innerHTML;	//Current text in <sortBy> dropdown
+		var sortBytext = objText.slice(objText.lastIndexOf(" ") + 1,objText.length);	//Get the last word
+		alert("text in sortby -- " + sortBytext);
+
+
 		var postData = {
-			"field1":"Author",
-		 	"select":"SELECT DISTINCT `Author` ",
+			"field1":sortBytext,
+		 	"select":"SELECT DISTINCT `" + sortBytext + "` AS field1 ",
 			"from":"FROM AudibleBooks " ,
-			"where":"WHERE `Author` LIKE " ,
-			"order":" ORDER BY `Author` ASC" ,
+			"where":"WHERE `" + sortBytext + "` LIKE " ,
+			"order":"ORDER BY `" + sortBytext + "` ASC " ,
+			"limit":"LIMIT 10",
 			"searchkey":searchKEY
 		};
 		var dataString = JSON.stringify(postData);
@@ -201,20 +215,28 @@ $(document).ready(function (){
 		        type:'POST',
 		        data: {postOBJ: dataString},
 		        beforeSend:function () {
-		            $("#results").slideUp('fast');
+		            $("#resultlist").slideUp('fast');
 		        },
-		        success:function(results) {
-		            $.each(results, function(i, resultitem){
-		            	$resultlist.append('<li onclick="searchResults(this)" + id=item' + resultitem.id +' class="showitem">' + resultitem.author + '</li>');
-					});		            
-		            $('#results').slideDown('fast');
+		        success:function(returnData) {
+					//console.log("returnData '#searchbox').on('keyup' -- " + returnData);
+					//alert("In '#searchbox').on('keyup' returnData length -- " + returnData.length)
+					$resultlist.empty();
+
+		            $.each(returnData, function(i, resultitem){
+		            	//alert("id -- " + resultitem.id + " " + sortBytext +" -- " + resultitem.field1);
+		            	var searchItemTemplate = "<li onclick='searchResults(this)' " +
+		            		 "id=searchitem" + resultitem.id +
+		            		 " class='showitem'>" + resultitem.field1 + "</li>";
+		    			$resultlist.append(searchItemTemplate);
+					});
+					$('#resultlist').slideDown('fast');
 		        },
 		        error: function() {
-		        	alert('Error with Live Search.');
+		        	alert('Error with Live Search. NO data from fetchSearchData.php');
 		        }
 		    });
 		} else {
-			$('#results').slideUp('fast');	
+			$('#resultlist').slideUp('fast');	
 		}
 	});
 
@@ -241,7 +263,7 @@ $(document).ready(function(){
 	//alert("Init Document load testSession -- " + typeof testSession);
 	
 	if ((typeof testSession == "undefined") || (testSession == null)) {	//Check if not true. Initilize session variables
-alert("In if() statement -- " + typeof testSession);
+		alert("In if() statement -- " + typeof testSession);
 		sessionStorage.setItem("sessionStorageInit", "TRUE");
 
 		sessionStorage.setItem("sortBysearchTerm", "sortOrder00");	//setup sortBy pageObj session storage

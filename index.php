@@ -1,6 +1,6 @@
 <?php
 	// Start the session  NOTE Must be at top of file before any HTML
-	session_start();
+	//session_start();
 /*	
 	//Check if $_SESSION["sortfieldSet"] exists.
 	if(!isset($_SESSION["sortfieldSet"]) && empty(trim($_SESSION["sortfieldSet"]))){

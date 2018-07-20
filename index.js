@@ -1,22 +1,28 @@
 
-function onclickDropdowns(element) {
+function onclickDropdowns(element) {	//comes here for when an item in the dropdowns is clicked 
 	var sortBysearchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 	var filterBysearchTerm = sessionStorage.getItem("filterBysearchTerm");	//current filterBy pageObj search term
 	var liID = element.id;
 	var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
-	alert("clicked dropdown text -- " + liText);
+	sessionStorage.setItem("sortBysearchSelected", liText);	//Set storage variable to new value in sortBy
+	alert("clicked dropdown item ID -- " + liID + " item text -- " + liText);
 	if (liText == "Latest Modified") {
+		//sessionStorage.setItem("sortBysearchSelected", "Latest Modified");
+		sessionStorage.setItem("searchboxPlaceholder", "");
 		$('#searchbox').attr("placeholder", "");	//removed for disabled element
 		$('#searchbox').prop('disabled', true);	//Disable searchbox when in "Last Edit" sortBy and filterBy Nothing mode.
 	} else {
 		$('#searchbox').prop('disabled', false);	//Enable searchbox when not sortBy "Last Edit"  and filterBy Nothing mode.
 		$('#searchbox').attr("placeholder", "Search by " + liText);	//placeholder give idea of what to type
+		sessionStorage.setItem("searchboxPlaceholder", "Search by " + liText);
 	}
 
 	//alert("element click ID -- " + liID + " clicked element text -- " + liText);
 	switch(element.id.slice(0,5)) {
 		case 'sortI':
-			document.getElementById('sortby').innerHTML = 'Sort by ' + liText;			
+			document.getElementById('sortby').innerHTML = 'Sort by ' + liText;
+			//sessionStorage.setItem("searchboxPlaceholder", "Search by " + liText);
+			sessionStorage.setItem("sortBysearchSelected", "Sort by " + liText);
 			var searchTerm = sortBysearchTerm;
 			console.log("sortItem text -- " + liText + " li ID -- " + liID);
 			break;
@@ -50,19 +56,11 @@ function onclickDropdowns(element) {
 				alert("Success with Ajax sortfield -- " + obj.info);				
 				sessionStorage.setItem("mainTable_Order", "ORDER BY " + obj.info + " ")
 
-				var select = sessionStorage.getItem("mainTable_Select");	//Get select session value
-				var from = sessionStorage.getItem("mainTable_From");	//Get from session value
-				var where = sessionStorage.getItem("mainTable_Where");	//Get where session value
-				var order = sessionStorage.getItem("mainTable_Order");	//Get select session value
-				var limits = sessionStorage.getItem("mainTable_Limits");	//Get select session value
 				var searchkey = "";			
-				//alert("SQL string before call -- " + select + from + where + order + limits + searchkey)
 
-				//fetchTableResults(select, from, where, order, limits, searchkey) uses variables
-				fetchTableResults(select, from, where, order, limits, searchkey);
-				
-				//$("#maintable-wrapper").load(location.href + " #maintable-wrapper");
-				//location.reload();
+				//fetchTableResults(searchkey) uses variables
+				fetchTableResults(searchkey);
+
 			} else {
 				alert("Failed Ajax sortfield -- " + returnData);
 			}
@@ -74,8 +72,19 @@ function onclickDropdowns(element) {
     });	
 }
 
-function fetchTableResults(select, from, where, order, limits, searchkey) {
+function fetchTableResults(searchkey) {
 	var $tablebody = $('#maintablebody');
+
+	var select = sessionStorage.getItem("mainTable_Select");	//Get select session value
+	var from = sessionStorage.getItem("mainTable_From");	//Get from session value
+	var where = sessionStorage.getItem("mainTable_Where");	//Get where session value
+	var order = sessionStorage.getItem("mainTable_Order");	//Get select session value
+	var limits = sessionStorage.getItem("mainTable_Limits");	//Get select session value
+
+
+	alert("SQL string before call -- \n " + select + "\n" + from + "\n" +
+		 where + "\n" + order + "\n" + limits + "\n" + searchkey)
+
 	var postData = {
 	 	"select":select,
 		"from":from,
@@ -119,31 +128,18 @@ function fetchTableResults(select, from, where, order, limits, searchkey) {
 }
 
 function searchResults(thisID) {	//Called when item in Live Search box is clicked
-	var $searchbox = $('#searchbox');
+	//var $searchbox = $('#searchbox');
 	var itemClicked = document.getElementById(thisID.id).innerHTML	 
-	var postData = {
-		"forObject":"searchbox",
-		"sqlCommand":"WHERE",
-		"fieldname":"Author",
-		"clickedData":itemClicked,
-		"pageObject":"NOT_USED"
-		};
-	var dataString = JSON.stringify(postData);	//convert "Author" SQL string to JSON
-	$.ajax({
-	    url:'pageObjects.php',
-	    type:'POST',
-	    data: {postOBJ: dataString},
-		success:function(returnData) {
-			console.log("returnData searchResults -- " + returnData);
-			var myObj = $.parseJSON(returnData);
-			alert("In searchResults returnData length -- " + myObj.length);			
-			$("#results").slideUp('fast');
-			location.reload();
-		},
-        error: function() {
-        	alert('Error on search item clicked.');
-        }		
-	});
+
+	alert("Clicked element innerHTML -- " + itemClicked );	
+
+	sessionStorage.setItem("mainTable_Where", "WHERE `Author` = '" + itemClicked + "' ");	//update mainTable SQL with selected search value. 
+	var searchkey = "";
+	//fetchTableResults(searchkey) uses variables
+	fetchTableResults(searchkey);	//Get table rows based on new WHERE
+	$("#resultlist").slideUp('fast');	//hid results list
+	$('#searchbox').attr("placeholder", sessionStorage.getItem("searchboxPlaceholder"));	//placeholder give idea of what to type
+
 }	
 
 function pageObjectsList(searchTerm, forObject, $elementID) {	//Get row data from pageObjects table where = searchTerm
@@ -184,7 +180,7 @@ function pageObjectsList(searchTerm, forObject, $elementID) {	//Get row data fro
 	
 }
 
-$(document).ready(function (){
+$(document).ready(function (){	//searchbox keyuup. dropdowns clicked.
 	var $resultlist = $('#resultlist');
 		
 	$('#searchbox').on('keyup',function () {	//Ajax Live Search. Comes here on ever keyup.
@@ -247,7 +243,7 @@ $(document).ready(function (){
 		onclickDropdowns(element)	//function changes element text and gets SQL for <li> choice
 	});
 
-	$("#filterDropdown").on('click',function(){	//When SortBy dropdown data <li> is clicked
+	$("#filterDropdown").on('click',function(){	//When FilterBy dropdown data <li> is clicked
 		var element = event.target;
 		alert("Object in sortDropdown has been clicked -- " + element.id);		
 		onclickDropdowns(element)	//function changes element text and gets SQL for <li> choice
@@ -255,30 +251,42 @@ $(document).ready(function (){
 
 });
 
-$(document).ready(function(){
-	//Code to run when page finishes loading
+$(document).ready(function(){	//Code to run when page finishes loading
 
 	//javascript session storage
 	var testSession = sessionStorage.getItem("sessionStorageInit");
 	//alert("Init Document load testSession -- " + typeof testSession);
 	
 	if ((typeof testSession == "undefined") || (testSession == null)) {	//Check if not true. Initilize session variables
-		alert("In if() statement -- " + typeof testSession);
+		alert("In if() statement. Initilize sessionStorage -- " + typeof testSession);
 		sessionStorage.setItem("sessionStorageInit", "TRUE");
 
 		sessionStorage.setItem("sortBysearchTerm", "sortOrder00");	//setup sortBy pageObj session storage
+		sessionStorage.setItem("sortBysearchSelected", "Latest Modified");	//setup sortBy current selection session storage
 		sessionStorage.setItem("filterBysearchTerm", "filterBy00");	//setup filterBy pageObj session storage
+		sessionStorage.setItem("filterBysearchSelected", "Nothing");	//setup sortBy current selection session storage
+		sessionStorage.setItem("searchboxPlaceholder", "");	//setup searchbox Placeholder current selection session storage
 	
 		sessionStorage.setItem("mainTable_Select", "SELECT `ID`, `Title`, `Author`, `Series` ");	//setup filterBy pageObj session storage
 		sessionStorage.setItem("mainTable_From", "FROM AudibleBooks ");	//setup filterBy pageObj session storage
 		sessionStorage.setItem("mainTable_Where", "");	//setup filterBy pageObj session storage
 		sessionStorage.setItem("mainTable_Order", "ORDER BY `ModifiedDate` DESC ");	//setup filterBy pageObj session storage
-		sessionStorage.setItem("mainTable_Limits", "LIMIT 1, 3");	//setup filterBy pageObj session storage		
+		sessionStorage.setItem("mainTable_Limits", "LIMIT 0, 15");	//setup filterBy pageObj session storage		
 	}
 	
-
-
-
+	document.getElementById('sortby').innerHTML = sessionStorage.getItem("sortBysearchSelected");
+	document.getElementById('filterby').innerHTML = sessionStorage.getItem("filterBysearchSelected");
+	if (sessionStorage.getItem("sortBysearchSelected") == "Latest Modified") {
+		$('#searchbox').attr("placeholder", "");	//removed for disabled element
+		$('#searchbox').prop('disabled', true);	//Disable searchbox when in "Last Edit" sortBy and filterBy Nothing mode.
+	} else {
+		$('#searchbox').prop('disabled', false);	//Enable searchbox when not sortBy "Last Edit"  and filterBy Nothing mode.
+		$('#searchbox').attr("placeholder", sessionStorage.getItem("searchboxPlaceholder"));	//placeholder give idea of what to type
+		//alert("sortby text -- "+ sessionStorage.getItem("sortBysearchSelected") + 
+		//	"\n searchbox placeholder -- " + sessionStorage.getItem("searchboxPlaceholder") +
+		//	" searchbox disabled -- " + $('#searchbox').prop('disabled'));
+	}
+	
 	var sortBysearchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 	var filterBysearchTerm = sessionStorage.getItem("filterBysearchTerm");	//current filterBy pageObj search term
 	
@@ -286,21 +294,14 @@ $(document).ready(function(){
 	pageObjectsList(sortBysearchTerm, 'sortDropdown', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
 	pageObjectsList(filterBysearchTerm, 'filterDropdown', 'filterDropdown');	//Fill in <li> values for sortBy dropdown
 
-	var select = sessionStorage.getItem("mainTable_Select");	//Get select session value
-	var from = sessionStorage.getItem("mainTable_From");	//Get from session value
-	var where = sessionStorage.getItem("mainTable_Where");	//Get where session value
-	var order = sessionStorage.getItem("mainTable_Order");	//Get select session value
-	var limits = sessionStorage.getItem("mainTable_Limits");	//Get select session value
 	var searchkey = "";
 
-	//alert("SQL string before call -- " + select + from + where + order + limits + searchkey)
-	//fetchTableResults(select, from, where, order, limits, searchkey) uses variables
-	fetchTableResults(select, from, where, order, limits, searchkey);
+	//fetchTableResults(searchkey) uses variables
+	fetchTableResults(searchkey);
 	
-	$('#searchbox').prop('disabled', true);		//Disable searchbox when in "Last Edit" sortBy and filterBy Nothing mode.
 
 });
 
-$(document).ready(function(){
+$(document).ready(function(){	//tooltip
 	$('[data-toggle="tooltip"]').tooltip();   
 });

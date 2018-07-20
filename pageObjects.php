@@ -1,6 +1,6 @@
 <?php
 	// Start the session  NOTE Must be at top of file before any HTML
-	session_start();
+	//session_start();
 
 
 	//Functions
@@ -10,14 +10,15 @@
 	function getPageObjectByID($pageObjectID) {
 		// Include config file
 	    require_once 'config.php';
-    
+		
 		$select = "SELECT `ID`, `itemDisplay`, `itemSQL` ";
 		$from = "FROM `pageObjects` ";
 		$where = "WHERE `ID` = " . $pageObjectID;
 
 		$strSQL = $select . $from . $where;
 				
-		//echo $strSQL;
+		echo $strSQL;
+	    
 	    $result = $mysqli->query($strSQL);
 
 	    $returnStatus = array(array());

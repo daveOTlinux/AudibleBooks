@@ -1,6 +1,6 @@
 <?php
 // Start the session  NOTE Must be at top of file before any HTML
-session_start();
+//session_start();
 
 // Check existence of id parameter before processing further
 if(isset($_GET["ID"]) && !empty(trim($_GET["ID"]))){

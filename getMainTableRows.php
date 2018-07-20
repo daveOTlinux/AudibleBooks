@@ -1,13 +1,13 @@
 <?php
 	// Start the session  NOTE Must be at top of file before any HTML
-	session_start();
+	//session_start();
 	
     //if($_POST['keyword'] && !empty($_POST['keyword'])){
 	if($_POST['postOBJ'] && !empty($_POST['postOBJ'])){
 		// Include config file
-	    require 'config.php';
+	    require_once 'config.php';
 
-		$postOBJ = json_decode($_POST['postOBJ'], TRUE);	    
+		$postOBJ = json_decode($_POST['postOBJ'], TRUE);
 		
 		$select = $postOBJ["select"];
 		$from = $postOBJ["from"];
@@ -21,7 +21,8 @@
 		//global $javascript; 
 		//$javascript = $strSQL;
 		//echo "The current SQL string --" . $strSQL;
-		//echo json_encode($strSQL);		
+		//echo json_encode($strSQL);
+//		/*		
 		
 	    $result = $mysqli->query($strSQL);
 	    
@@ -56,5 +57,6 @@
 	        $result->close();
 	        $mysqli->close();
 	    };
+//	*/
 	};
 ?>

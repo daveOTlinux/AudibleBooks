@@ -98,7 +98,7 @@
 		$pageObject = $postOBJ["pageObject"];
 
 		switch ($forObject) {
-			case "searchbox":
+			case "searchbox":	//might not be used now??
 				$strSQL = $sqlCommand . " `" . $fieldName . "` = '" . $clickedData ."' ";
 				$_SESSION["mainWHERE"] = $strSQL;
 				$_SESSION["searchWHEREset"] = TRUE;
@@ -128,7 +128,14 @@
 				}
 				echo json_encode($returnStatus);
 				break;
-
+			case "uitilityDropdown":
+				//$count = 0;
+				$returnStatus = getObjectsBySearch($pageObject);
+				//if($count > 1) {
+					header('Content-type: application/json');
+				//}
+				echo json_encode($returnStatus);
+				break;
 		}
 	
 		//echo json_encode($clickedData);

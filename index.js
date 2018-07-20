@@ -25,7 +25,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 			//sessionStorage.setItem("searchboxPlaceholder", "Search by " + liText);
 			sessionStorage.setItem("sortBysearchSelected", "Sort by " + liText);
 			var searchTerm = sortBysearchTerm;
-			var objName = "sortby"
+			var objName = "sortby";
 			var forObject = "sortfield";
 			var sqlCommand = "ORDER";
 			console.log("sortItem text -- " + liText + " li ID -- " + liID);
@@ -33,13 +33,15 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 		case 'filte':
 			document.getElementById('filterby').innerHTML = 'Filter by ' + liText;
 			var searchTerm = filterBysearchTerm;
-			var objName = "filterby"
+			var objName = "filterby";
 			//console.log("filterItem" + " li ID -- " + liID);
 			break;
 		case 'utili':
 			document.getElementById('utilities').innerHTML = 'Utilities - ' + liText;
 			var searchTerm = filterBysearchTerm;
-			var objName = "utilities"
+			var objName = "utilities";
+			var forObject = "uitilityDropdown";
+			var sqlCommand = "ORDER";
 			//console.log("filterItem" + " li ID -- " + liID);
 			break;
 	}
@@ -340,7 +342,7 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	//pageObjectsList(searchTerm, forObject, $elementID)
 	pageObjectsList(sortBysearchTerm, 'sortDropdown', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
 	pageObjectsList(filterBysearchTerm, 'filterDropdown', 'filterDropdown');	//Fill in <li> values for sortBy dropdown
-	pageObjectsList("utilities0", 'utilitiesDropdown', 'utilitiesDropdown');	//Fill in <li> values for utilities dropdown
+	pageObjectsList("utilities0", 'uitilityDropdown', 'utilitiesDropdown');	//Fill in <li> values for utilities dropdown
 
 	var searchkey = "";
 

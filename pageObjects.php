@@ -17,7 +17,7 @@
 
 		$strSQL = $select . $from . $where;
 				
-		echo $strSQL;
+		//echo $strSQL;
 	    
 	    $result = $mysqli->query($strSQL);
 
@@ -99,36 +99,49 @@
 
 		switch ($forObject) {
 			case "searchbox":	//might not be used now??
-				$strSQL = $sqlCommand . " `" . $fieldName . "` = '" . $clickedData ."' ";
-				$_SESSION["mainWHERE"] = $strSQL;
-				$_SESSION["searchWHEREset"] = TRUE;
+				echo "pageObjects.php switch case: => searchbox!";
+				$returnStatus[0]["status"] = "FAILED";
+				$returnStatus[0]["info"] = "No POST data.";
+				//header('Content-type: application/json');	//required if more than 1 row to return!!
+				echo json_encode($returnStatus);
+				//$strSQL = $sqlCommand . " `" . $fieldName . "` = '" . $clickedData ."' ";
+				//$_SESSION["mainWHERE"] = $strSQL;
+				//$_SESSION["searchWHEREset"] = TRUE;
 				break;
 			case "sortfield":
 				//$returnStatus = array(array());
 				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
 				$returnStatus = getPageObjectByID($itemID);
-				
-				if($returnStatus[0]["status"] == "Success") {
-				}
+				//header('Content-type: application/json'); is never needed since only 1 entry in $returnStatus
+				//if($returnStatus[0]["status"] == "Success") {
+				//}
 				echo json_encode($returnStatus);
 				break;
 			case "sortDropdown":
 				//$count = 0;
 				$returnStatus = getObjectsBySearch($pageObject);
-				if($count > 1) {
+				//if($count > 1) {
 					header('Content-type: application/json');
-				}
+				//}
 				echo json_encode($returnStatus);
 				break;
 			case "filterDropdown":
 				//$count = 0;
 				$returnStatus = getObjectsBySearch($pageObject);
-				if($count > 1) {
+				//if($count > 1) {
 					header('Content-type: application/json');
-				}
+				//}
 				echo json_encode($returnStatus);
 				break;
-			case "uitilityDropdown":
+			case "utilities":
+				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
+				$returnStatus = getPageObjectByID($itemID);
+				
+				//if($returnStatus[0]["status"] == "Success") {
+				//}
+				echo json_encode($returnStatus);
+				break;
+			case "utilityDropdown":
 				//$count = 0;
 				$returnStatus = getObjectsBySearch($pageObject);
 				//if($count > 1) {

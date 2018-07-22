@@ -7,3 +7,6 @@
 #Bluefish project file
 *.bfproject
 
+# Used in Audible Books site
+CoverArt/
+

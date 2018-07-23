@@ -10,3 +10,5 @@
 # Used in Audible Books site
 CoverArt/
 
+# Javascript Librarys
+mustache.js

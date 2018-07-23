@@ -56,13 +56,17 @@
     
 		$select = "SELECT * ";
 		$from = "FROM `pageObjects` ";
-		$where = "WHERE `SearchTerm` = '" . $objectSearch . "' ";
+		if($sqlCommand == "") {
+			$where = "WHERE `SearchTerm` = '" . $objectSearch . "' ";
+		} else {
+			$where = $sqlCommand;
+		}
 		$orderby = "ORDER BY `orderItems` ASC";
 
 		$strSQL = $select . $from . $where . $orderby;
 				
 		//echo $strSQL;
-		
+		 
 	    $result = $mysqli->query($strSQL);
 
 	    $fieldDATA = array(array());

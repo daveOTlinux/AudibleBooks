@@ -3,7 +3,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 	var $tablebody = $('#maintablebody');	
 	var liID = element.id;
 	var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
-
+	var tableRowTemplate = $('#pageObjectRow-template').html(); 
 
 	alert("element click ID -- " + liID + " clicked element text -- " + liText);
 	switch(element.id.slice(0,5)) {
@@ -45,25 +45,20 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 				switch(objName) {
 					case "searchtem":
 						$tablebody.empty();
-						$.each(returnData, function(i, resultitem){
-					       	var tablerowtemplate = "<tr>" +
-					       			"<td>" + resultitem.ID + "</td>" +
-									"<td>" + resultitem.SearchTerm + "</td>" +
-									"<td>" + resultitem.orderItems + "</td>" +
-									"<td>" + resultitem.itemDisplay + "</td>" +
-									"<td>" + resultitem.itemSQL + "</td>" +
-									"<td>" + resultitem.ModifiedDate + "</td>" +
-									"<td>" +
-									"<a href='read.php?ID=" + resultitem.ID + "' title='View Record' data-toggle='tooltip'>" +
+						//var tableRowTemplate = $('#pageObjectRow-template').html();
+						//console.log("tableRowTemplate -- " + tableRowTemplate);
+/*						var tableRowTemplate = "<tr><td>{{ID}}</td><td>{{SearchTerm}}</td><td>{{orderItems}}</td>" +
+							"<td>{{itemDisplay}}</td><td>{{itemSQL}}</td><td>{{ModifiedDate}}</td>" +
+							"<td><a href='read.php?ID={{ID}}' title='View Record' data-toggle='tooltip'>" +
 										"<span class='fa fa-eye'></span></a>" +
-									"<a href='update.php?ID=" + resultitem.ID + "' title='Update Record' data-toggle='tooltip'>" +
+							"<a href='update.php?ID={{ID}}' title='Update Record' data-toggle='tooltip'>" +
 										"<span class='fa fa-pencil'></span></a>" +
-									"<a href='delete.php?ID=" + resultitem.ID + "' title='Delete Record' data-toggle='tooltip'>" +
+							"<a href='delete.php?ID={{ID}}' title='Delete Record' data-toggle='tooltip'>" +
 										"<span class='fa fa-trash'></span></a>" +
-									"</td>" +
-									"</tr>";
+							"</td></tr>";	*/
+						$.each(returnData, function(i, resultitem){
 							//alert("table row --" + tablerowtemplate);
-							$tablebody.append(tablerowtemplate);
+							$tablebody.append(Mustache.render(tableRowTemplate, resultitem));
 						});
 						break;
 				}
@@ -143,4 +138,10 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	pageObjectsList("selfUnique", 'searchTermDropdown', 'searchTermDropdown');	//Fill in <li> values for utilities dropdown
 
 
+});
+
+$(document).ready(function(){	//for the modal popup
+    $("#myBtn").click(function(){
+        $("#myModal").modal();
+    });
 });

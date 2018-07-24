@@ -1,11 +1,61 @@
 
+function modalOpenUpdate(element) {	//come here if any update buttons clicked in table rows
+	var tdItemID = element.id;
+	var modalContent = $("#update-modal");
+	var modalTemplate = $('#itemUpdate-modal-template').html(); 
+	//var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
+	//alert("element click ID -- " + tdItemID);
+
+	//var cllickedItem = element;
+	var postData = {
+		"forObject":"pageObjectRow",	//forObject used in pageObjects.php by switch case for custom code
+		"sqlCommand":"",	//SQL to get ID row data
+		"pageObject":"",	//used to get row items
+		"fieldname":"",
+		"clickedData":tdItemID,	//clicked item. The number part is removed and passed as ID of row
+	};
+	//alert("in pageObjectsList \n searchTerm -- " + searchTerm + "\n forObject -- " + forObject + "\n elementID -- " + elementID);
+	var dataString = JSON.stringify(postData);
+    $.ajax({
+        url:'pageObjectsCRUD.php',
+        type:'POST',
+        data: {postOBJ: dataString},
+        success:function(returnData) {
+			//console.log("returnData onclickDropdowns -- " + returnData + " returnData length -- " + returnData.length);
+/*			if (returnData.length <= 1) {			
+				//var obj = $.parseJSON(returnData);
+				var myObj = JSON.parse(returnData.substring(1, returnData.length-1));
+			}	*/
+			modalContent.empty();				
+			$.each(returnData, function(i, resultitem){
+				var modalData = {
+					"ID":resultitem.ID.toString(),
+					"SearchTerm-modal":resultitem.SearchTerm,
+					"orderItems-modal":resultitem.orderItems,
+					"itemDisplay-modal":resultitem.itemDisplay,
+					"itemSQL-modal":resultitem.itemSQL,
+				};
+				alert("modalData ID -- " + resultitem.ID.toString());
+				modalContent.append(Mustache.render(modalTemplate, modalData));
+	
+			});
+			$("#myModal").modal();	//opens modal
+		},
+        error:function() {
+        	alert('In pageObjectsList().  Error with getting data from pageObjects.php');
+        }
+	});
+	
+
+}
+
 function onclickDropdowns(element) {	//comes here for when an item in the dropdowns is clicked 
-	var $tablebody = $('#maintablebody');	
+	var tablebody = $('#maintablebody');
 	var liID = element.id;
 	var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
 	var tableRowTemplate = $('#pageObjectRow-template').html(); 
 
-	alert("element click ID -- " + liID + " clicked element text -- " + liText);
+	//alert("element click ID -- " + liID + " clicked element text -- " + liText);
 	switch(element.id.slice(0,5)) {
 		case 'searc':
 			var searchTerm = liText;	//current utility pageObj search term
@@ -33,38 +83,16 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 				var obj = $.parseJSON(returnData);
 				var myObj = JSON.parse(returnData.substring(1, returnData.length-1));
 			}
-			/*alert("In onclickDropdowns returnData length -- " + obj.length +
-			 "\n obj.status -- " + obj.status +
-			 "\n myObj.lenght -- " + myObj.length + 
-			 "\n myObj.status -- " + myObj.status);*/
-			//var newStr = returnData.substring(1, returnData .length-1);
-			//console.log("returnData -- " + myObj.status); //this breaks code when myObj.length = 1 !!
-//			if (myObj.status == 'Success') {				
-				//console.log("returnData -- " + returnData);				
-				//alert("Success with Ajax onclickDropdowns()) -- " + myObj.info);				
+
 				switch(objName) {
 					case "searchtem":
-						$tablebody.empty();
-						//var tableRowTemplate = $('#pageObjectRow-template').html();
-						//console.log("tableRowTemplate -- " + tableRowTemplate);
-/*						var tableRowTemplate = "<tr><td>{{ID}}</td><td>{{SearchTerm}}</td><td>{{orderItems}}</td>" +
-							"<td>{{itemDisplay}}</td><td>{{itemSQL}}</td><td>{{ModifiedDate}}</td>" +
-							"<td><a href='read.php?ID={{ID}}' title='View Record' data-toggle='tooltip'>" +
-										"<span class='fa fa-eye'></span></a>" +
-							"<a href='update.php?ID={{ID}}' title='Update Record' data-toggle='tooltip'>" +
-										"<span class='fa fa-pencil'></span></a>" +
-							"<a href='delete.php?ID={{ID}}' title='Delete Record' data-toggle='tooltip'>" +
-										"<span class='fa fa-trash'></span></a>" +
-							"</td></tr>";	*/
+						tablebody.empty();
 						$.each(returnData, function(i, resultitem){
 							//alert("table row --" + tablerowtemplate);
-							$tablebody.append(Mustache.render(tableRowTemplate, resultitem));
+							tablebody.append(Mustache.render(tableRowTemplate, resultitem));
 						});
 						break;
 				}
-//			} else {
-//				alert("Failed Ajax sortfield -- " + returnData);
-//			}
 		},
         error: function() {
         	alert('Error on sortby or filterby item clicked.');
@@ -74,6 +102,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 }
 
 function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from pageObjects table where = searchTerm
+	var myOBJ = document.getElementById(elementID);
 	var postData = {
 		"forObject":forObject,	//forObject used in pageObjects.php by switch case for custom code
 		"sqlCommand":"",
@@ -89,15 +118,14 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
         data: {postOBJ: dataString},
         success:function(returnData) {
 			console.log("returnData -- " + returnData);			
-			var myOBJ = document.getElementById(elementID);
 			//alert("element myOBJ.id  -- " +  myOBJ.id + " elementID -- " + elementID);
 			var objIDname = "searchterm";
-			switch(forObject) {
+/*			switch(forObject) {
 				case "searchTermDropdown":
 					var objIDname = "searchTerm";
 					break;
 
-			};
+			};*/
 			//alert("in pageObjectsList: idname -- " + objIDname);
 			$('#' + myOBJ.id).empty();
 			$.each(returnData, function(i, resultitem){
@@ -114,7 +142,7 @@ $(document).ready(function (){	// dropdowns clicked.
 	
 	$("#searchTermDropdown").on('click',function(){	//When SortBy dropdown data <li> is clicked
 		var element = event.target;
-		alert("Object in sortDropdown has been clicked -- " + element.id);		
+		//alert("Object in sortDropdown has been clicked -- " + element.id);		
 		onclickDropdowns(element)	//function changes element text and gets SQL for <li> choice
 	});
 
@@ -144,4 +172,15 @@ $(document).ready(function(){	//for the modal popup
     $("#myBtn").click(function(){
         $("#myModal").modal();
     });
+
+    $('#myModal').on('shown.bs.modal', function (element) {
+        document.getElementById("h4-modal").value = "Testing";
+        document.getElementById("SearchTerm-modal").value = "Testing";
+    	//alert("Modal shown. \n Element -- " + element + " \n  SearchTerm = " + document.getElementById("SearchTerm-modal").value);
+    });    
+
+	$("#maintablebody").on('click',function(){	//When SortBy dropdown data <li> is clicked
+		var element = event.target;
+		alert("Object in maintablebody has been clicked -- " + element.id);
+	});
 });

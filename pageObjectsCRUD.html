@@ -38,9 +38,13 @@
 	    .page-header h2{
 	        margin-top: 0;
 	    } -->
+	    table tr td {
+	    font-size:90%;
+	    }
 	    table tr td:last-child a{
 	        margin-right: 15px;
 	        white-space: pre;
+	        font-size:initial;
 	    }
 	</style>
   <style>	<!--For Modal -->
@@ -73,7 +77,11 @@
 				<div class="col-sm-4">
 					<div id='searchtermdiv' class='dropdown'>
 				        <a id='searchterm' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Search Term<b class='caret'></b></a>
-						<ul id='searchTermDropdown' class='dropdown-menu'></ul>
+						<ul id='searchTermDropdown' class='dropdown-menu'>
+			<!--				<template id='searchTerm-template'>
+								"<li id='" + objIDname + resultitem.ID + "' class='showitem'>" + resultitem.SearchTerm + "</li>
+							</template>	-->
+						</ul>
 					</div>
 					<div class="col-sm-8"></div>
 				</div>
@@ -82,13 +90,13 @@
 				<table class='table table-bordered table-hover'>
 					<thead>
 						<tr>
-							<th style='width: 8'>ID</th>
-							<th style='width: 20'>SearchTerm</th>
-							<th style='width: 20'>orderItems</th>
-							<th style='width: 20'>itemDisplay</th>
-							<th style='width: 40'>itemSQL</th>
-							<th style='width: 20'>ModifiedDate</th>
-							<th style='width: 22'>Action</th>
+							<th style='width: 5'>ID</th>
+							<th style='width: 15'>SearchTerm</th>
+							<th style='width: 15'>orderItems</th>
+							<th style='width: 15'>itemDisplay</th>
+							<th style='width: 15'>itemSQL</th>
+							<th style='width: 15'>ModifiedDate</th>
+							<th style='width: 20'>Action</th>
 						</tr>
 					</thead>
 					<tbody id='maintablebody'>
@@ -100,8 +108,9 @@
 								<td>{{itemDisplay}}</td>
 								<td>{{itemSQL}}</td>
 								<td>{{ModifiedDate}}</td>
-								<td><a class='mr-1' href='read.php?ID={{ID}}' title='View Record' data-toggle='tooltip'><span class='fa fa-eye'></span></a>
-									<a class='mr-1' href='update.php?ID={{ID}}' title='Update Record' data-toggle='tooltip'><span class='fa fa-pencil'></span></a>
+								<td class="px-1">
+									<a class='mr-1' href='read.php?ID={{ID}}' title='View Record' data-toggle='tooltip'><span class='fa fa-eye'></span></a>
+									<a class='mr-1' onclick='modalOpenUpdate(this)' id='rowitemUpdate{{ID}}' title='Update Record' data-toggle='tooltip'><span class='fa fa-pencil'></span></a>
 									<a class='mr-1' href='delete.php?ID={{ID}}' title='Delete Record' data-toggle='tooltip'><span class='fa fa-trash'></span></a>
 								</td>
 							</tr>
@@ -111,87 +120,63 @@
 				</table>				
 			</div>
 
-<!--
-<!DOCTYPE html>
-<html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <style>
-  .modal-header, h4, .close {
-      background-color: #5cb85c;
-      color:white !important;
-      text-align: center;
-      font-size: 30px;
-  }
-  .modal-footer {
-      background-color: #f9f9f9;
-  }
-  </style>	-->
-<!--
-</head>
-<body>	-->
-
-<div class="container">
-  <h2>Modal Login Example</h2>
-  <!-- Trigger the modal with a button -->
-  <button type="button" class="btn btn-default btn-lg" id="myBtn">Login</button>
-
-  <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header" style="padding:35px 50px;">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4><span class="glyphicon glyphicon-lock"></span> Login</h4>
-        </div>
-        <div class="modal-body" style="padding:40px 50px;">
-          <form role="form">
-            <div class="form-group">
-              <label for="usrname"><span class="glyphicon glyphicon-user"></span> Username</label>
-              <input type="text" class="form-control" id="usrname" placeholder="Enter email">
-            </div>
-            <div class="form-group">
-              <label for="psw"><span class="glyphicon glyphicon-eye-open"></span> Password</label>
-              <input type="text" class="form-control" id="psw" placeholder="Enter password">
-            </div>
-            <div class="checkbox">
-              <label><input type="checkbox" value="" checked>Remember me</label>
-            </div>
-              <button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Login</button>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
-          <p>Not a member? <a href="#">Sign Up</a></p>
-          <p>Forgot <a href="#">Password?</a></p>
-        </div>
-      </div>
-      
+		</div>
     </div>
-  </div> 
-</div>
-
-<!-- 
-<script>
-$(document).ready(function(){
-    $("#myBtn").click(function(){
-        $("#myModal").modal();
-    });
-});
-</script>
-
-</body>
-</html>	-->
-
-
-
-		</div>        
-    </div>
+	<div id="update-modal">
+		<template id="itemUpdate-modal-template">				
+			<div class="container">
+				  <h2>Modal Login Example</h2>
+				  <!-- Trigger the modal with a button -->
+				  <button type="button" class="btn btn-default btn-lg" id="myBtn">Login</button>
+				  <!-- Modal -->
+				<div class="modal fade" id="myModal" role="dialog">
+					<div class="modal-dialog">
+					
+						<!-- Modal content-->
+						<div class="modal-content">
+							<div class="modal-header" style="padding:35px 50px;">
+								<div class="col-sm-6">
+									<h4 id="h4-modal"> Record ID - {{ID}}</h4>
+								</div>
+								<div class="col-sm-6">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+								</div>
+							</div>
+							<div class="modal-body" style="padding:40px 50px;">
+								<form role="form">
+									<div class="form-group">
+										<label for="SearchTerm"> SearchTerm</label>
+										<input type="text" id="SearchTerm-modal" placeholder="Enter SearchTerm" value="{{SearchTerm-modal}}" class="form-control">
+									</div>
+									<div class="form-group">
+										<label for="orderItems"> orderItems</label>
+										<input type="text" id="orderItems-modal" placeholder="Enter orderItems" value="{{orderItems-modal}}" class="form-control">
+									</div>
+									<div class="form-group">
+										<label for="itemDisplay"> itemDisplay</label>
+										<input type="text" id="itemDisplay-modal" placeholder="Enter itemDisplay" value="{{itemDisplay-modal}}" class="form-control">
+									</div>
+									<div class="form-group">
+										<label for="itemSQL"> itemSQL</label>
+										<input type="text" id="itemSQL-modal" placeholder="Enter itemSQL" value="{{itemSQL-modal}}" class="form-control">
+									</div>
+								</form>
+							</div>
+							<div class="modal-footer">
+								<div class="col-sm-6">
+									<button type="submit" class="btn btn-success btn-block"> Save Entry</button>
+								</div>
+								<div class="col-sm-6">
+									<button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"> Cancel</button>
+								</div>
+							</div>
+						</div>
+						  
+					</div>
+				</div> 
+			</div>
+		</template>
+	</div>
 </body>
 </html>						
 

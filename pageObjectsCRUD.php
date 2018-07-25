@@ -174,7 +174,7 @@
 
 	//function pass SearchTerm of pageObjects in $objectSearch
 	// return returnStatus contains the rows of data from search
-	function getObjectsBySearch($objectSearch) {
+	function getObjectsBySearch($objectSearch, $sqlCommand) {
 		// Include config file
 	    require_once 'config.php';
     
@@ -261,7 +261,7 @@
 				break;
 
 			case "sortDropdown":
-				$returnStatus = getObjectsBySearch($pageObject);
+				$returnStatus = getObjectsBySearch($pageObject, $sqlCommand);
 				header('Content-type: application/json');				
 				echo json_encode($returnStatus);
 				break;
@@ -273,10 +273,10 @@
 				echo json_encode($returnStatus);
 				break;
 			case "searchTermRows":
-				$returnStatus = getObjectsBySearch($pageObject);
-				if($count > 1) {
+				$returnStatus = getObjectsBySearch($pageObject, $sqlCommand);
+				//if($count > 1) {
 					header('Content-type: application/json');
-				}
+				//}
 				echo json_encode($returnStatus);
 				
 				break;

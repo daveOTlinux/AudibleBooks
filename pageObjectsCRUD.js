@@ -79,10 +79,10 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 	    data: {postOBJ: dataString},
 		success:function(returnData) {
 			console.log("returnData onclickDropdowns -- " + returnData + " returnData length -- " + returnData.length);
-			if (returnData.length <= 1) {			
-				var obj = $.parseJSON(returnData);
-				var myObj = JSON.parse(returnData.substring(1, returnData.length-1));
-			}
+/*			if (returnData.length <= 1) {			
+				//var obj = $.parseJSON(returnData);
+				//var myObj = JSON.parse(returnData.substring(1, returnData.length-1));
+			}	*/
 
 				switch(objName) {
 					case "searchtem":

@@ -1,10 +1,55 @@
 
+function modalCloseUpdate() {
+	var rowID = $('#ID-modal').val();
+	var searchTermUpdate = $('#SearchTerm-modal').val();
+	var orderItemsUpdate = $('#orderItems-modal').val();
+	var itemDisplayUpdate = $('#itemDisplay-modal').val();
+	var itemSQLUpdate = $('#itemSQL-modal').val();
+	var currentSearchTermDropDown = sessionStorage.getItem("sessionCurrentSearchTermDropdown")
+	alert("Update modal closed. currentSearchTermDropDown -- " + currentSearchTermDropDown);
+
+	var sqlCommand = "SET `SearchTerm` = '" + searchTermUpdate +
+		"', `orderItems` = '" + orderItemsUpdate +
+		"', `itemDisplay` = '" + itemDisplayUpdate +
+		"', `itemSQL` = '" + itemSQLUpdate +
+		"', `ModifiedDate` = NOW() ";
+		
+	var postData = {
+		"forObject":"updatePageObject",	//used in switch() to customize code and function called in pageObjects.php
+		"sqlCommand":sqlCommand,	//used in creating SQL for data search
+		"pageObject":"",
+		"fieldname":"",
+		"clickedData":rowID,
+		};
+	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
+	$.ajax({
+	    url:'pageObjectsCRUD.php',
+	    type:'POST',
+	    data: {postOBJ: dataString},
+		success:function(returnData) {
+			//console.log("returnData modalCloseUpdate() status-- " + returnData.status + " returnData length -- " + returnData.length);
+			//alert("modalCloseUpdate() AJAX success \n returnData.status -- " + returnData.status);
+			$.each(returnData, function(i, resultitem){
+				if (resultitem.status == 'Success') {
+					onclickDropdowns(currentSearchTermDropDown)	//redraw current rows
+				} else {
+					alert("modalCloseUpdate() AJAX failed \n resultitem.info -- " + resultitem.info);
+				}				
+			});
+		},
+        error: function() {
+        	alert('Error in modalCloseUpdate() no return from PHP call.');
+        }
+    });	
+	
+}
+
 function modalOpenUpdate(element) {	//come here if any update buttons clicked in table rows
 	var tdItemID = element.id;
 	var modalContent = $("#update-modal");
 	var modalTemplate = $('#itemUpdate-modal-template').html(); 
 	//var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
-	//alert("element click ID -- " + tdItemID);
+	//alert("element click ID -- " + tdItemID + "Element -- " + element);
 
 	//var cllickedItem = element;
 	var postData = {
@@ -49,14 +94,14 @@ function modalOpenUpdate(element) {	//come here if any update buttons clicked in
 
 }
 
-function onclickDropdowns(element) {	//comes here for when an item in the dropdowns is clicked 
+function onclickDropdowns(idClickedItem) {	//comes here for when an item in the dropdowns is clicked 
 	var tablebody = $('#maintablebody');
-	var liID = element.id;
-	var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
+	var liID = idClickedItem;
+	var liText = document.getElementById(idClickedItem).innerHTML;	//Current text in <li>
 	var tableRowTemplate = $('#pageObjectRow-template').html(); 
 
 	//alert("element click ID -- " + liID + " clicked element text -- " + liText);
-	switch(element.id.slice(0,5)) {
+	switch(idClickedItem.slice(0,5)) {
 		case 'searc':
 			var searchTerm = liText;	//current utility pageObj search term
 			var objName = "searchtem";	//used in success: switch
@@ -78,12 +123,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 	    type:'POST',
 	    data: {postOBJ: dataString},
 		success:function(returnData) {
-			console.log("returnData onclickDropdowns -- " + returnData + " returnData length -- " + returnData.length);
-/*			if (returnData.length <= 1) {			
-				//var obj = $.parseJSON(returnData);
-				//var myObj = JSON.parse(returnData.substring(1, returnData.length-1));
-			}	*/
-
+			//console.log("returnData onclickDropdowns -- " + returnData + " returnData length -- " + returnData.length);
 				switch(objName) {
 					case "searchtem":
 						tablebody.empty();
@@ -97,7 +137,6 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
         error: function() {
         	alert('Error on sortby or filterby item clicked.');
         }
-    //console.log("Out of switch");
     });	
 }
 
@@ -120,12 +159,6 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 			console.log("returnData -- " + returnData);			
 			//alert("element myOBJ.id  -- " +  myOBJ.id + " elementID -- " + elementID);
 			var objIDname = "searchterm";
-/*			switch(forObject) {
-				case "searchTermDropdown":
-					var objIDname = "searchTerm";
-					break;
-
-			};*/
 			//alert("in pageObjectsList: idname -- " + objIDname);
 			$('#' + myOBJ.id).empty();
 			$.each(returnData, function(i, resultitem){
@@ -138,15 +171,20 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 	});
 };
 
-$(document).ready(function (){	// dropdowns clicked.
+$(document).ready(function (){	// html elements clicked.
 	
 	$("#searchTermDropdown").on('click',function(){	//When SortBy dropdown data <li> is clicked
 		var element = event.target;
-		//alert("Object in sortDropdown has been clicked -- " + element.id);		
-		onclickDropdowns(element)	//function changes element text and gets SQL for <li> choice
+		var idClickedItem = element.id;
+		sessionStorage.setItem("sessionCurrentSearchTermDropdown", idClickedItem)
+		//alert("Object in sortDropdown has been clicked -- " + idClickedItem);		
+		onclickDropdowns(idClickedItem)	//function changes element text and gets SQL for <li> choice
 	});
 
-
+	$("#maintablebody").on('click',function(){	//When "update" icon in row is clicked
+		var element = event.target;
+		//alert("Object in maintablebody has been clicked -- " + element.id);
+	});
 
 	
 });
@@ -160,6 +198,7 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	if ((typeof testSession == "undefined") || (testSession == null)) {	//Check if not true. Initilize session variables
 		alert("In if() statement. Initilize sessionStorage -- " + typeof testSession);
 		sessionStorage.setItem("sessionStorageInit", "TRUE");
+		sessionStorage.setItem("currentSearchTermDropDown", "");
 
 	}
 	//pageObjectsList(searchTerm, forObject, $elementID)
@@ -168,19 +207,4 @@ $(document).ready(function(){	//Code to run when page finishes loading
 
 });
 
-$(document).ready(function(){	//for the modal popup
-    $("#myBtn").click(function(){
-        $("#myModal").modal();
-    });
 
-    $('#myModal').on('shown.bs.modal', function (element) {
-        document.getElementById("h4-modal").value = "Testing";
-        document.getElementById("SearchTerm-modal").value = "Testing";
-    	//alert("Modal shown. \n Element -- " + element + " \n  SearchTerm = " + document.getElementById("SearchTerm-modal").value);
-    });    
-
-	$("#maintablebody").on('click',function(){	//When SortBy dropdown data <li> is clicked
-		var element = event.target;
-		alert("Object in maintablebody has been clicked -- " + element.id);
-	});
-});

@@ -219,7 +219,34 @@
         $mysqli->close();
 		return $fieldDATA;
 	}
-	
+
+	//function pass SQL SET part in $sqlSET, and the required row in $rowID
+	// return success or fail
+	function updatePageObjectrow($sqlSET, $rowID) {
+		// Include config file
+	    require_once 'config.php';
+    
+		$update = "UPDATE `pageObjects` ";
+		$where = "WHERE `ID` = " . $rowID;
+
+		$strSQL = $update . $sqlSET . $where;
+				
+		//echo $strSQL;
+
+	    $returnStatus = array(array());
+
+		if($mysqli->query($strSQL) === TRUE) {
+			$returnStatus[0]["status"] = "Success";
+			$returnStatus[0]["info"] = "Record updated successfully";				
+		} else {
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error updating record: " . $mysqli->error;
+		}
+
+		return $returnStatus;
+	}	
+
+//******************************************************************	
 	//if($_POST['keyword'] && !empty($_POST['keyword'])){
 	if($_POST['postOBJ'] && !empty($_POST['postOBJ'])){
 		$postOBJ = json_decode($_POST['postOBJ'], TRUE);
@@ -280,8 +307,15 @@
 				echo json_encode($returnStatus);
 				
 				break;
-					}
-	
+			case "updatePageObject":
+				$returnStatus = updatePageObjectrow($sqlCommand, $clickedData);
+
+				header('Content-type: application/json');
+				echo json_encode($returnStatus);
+				break;
+
+		}
+
 		//echo json_encode($clickedData);
 
 	} else {

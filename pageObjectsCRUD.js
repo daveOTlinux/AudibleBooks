@@ -46,6 +46,8 @@ function modalCloseUpdate() {
 
 function modalOpenUpdate(element) {	//come here if any update buttons clicked in table rows
 	var tdItemID = element.id;
+
+
 	var modalContent = $("#update-modal");
 	var modalTemplate = $('#itemUpdate-modal-template').html(); 
 	//var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
@@ -80,10 +82,13 @@ function modalOpenUpdate(element) {	//come here if any update buttons clicked in
 					"itemDisplay-modal":resultitem.itemDisplay,
 					"itemSQL-modal":resultitem.itemSQL,
 				};
-				alert("modalData ID -- " + resultitem.ID.toString());
+				//alert("modalData ID -- " + resultitem.ID.toString());
 				modalContent.append(Mustache.render(modalTemplate, modalData));
 	
 			});
+			//pageObjectsList(dbFieldName, forObject, $elementID)		
+			pageObjectsList("SearchTerm", 'searchTermDropdown', 'listSsearchtermDropdown-modal');	//Fill in <li> values for dropdown
+
 			$("#myModal").modal();	//opens modal
 		},
         error:function() {
@@ -172,6 +177,15 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 };
 
 $(document).ready(function (){	// html elements clicked.
+
+	$("#listSsearchtermDropdown-modal").on('click',function(){	//When dropdown data <li> is clicked
+		var element = event.target;
+		var idClickedItem = element.id;
+		//sessionStorage.setItem("sessionCurrentSearchTermDropdown", idClickedItem)
+		alert("Object in listSsearchtermDropdown-modal has been clicked -- " + idClickedItem);		
+
+		//onclickDropdowns(idClickedItem)	//function changes element text and gets SQL for <li> choice
+	});
 	
 	$("#searchTermDropdown").on('click',function(){	//When SortBy dropdown data <li> is clicked
 		var element = event.target;
@@ -202,7 +216,7 @@ $(document).ready(function(){	//Code to run when page finishes loading
 
 	}
 	//pageObjectsList(searchTerm, forObject, $elementID)
-	pageObjectsList("selfUnique", 'searchTermDropdown', 'searchTermDropdown');	//Fill in <li> values for utilities dropdown
+	pageObjectsList("SearchTerm", 'searchTermDropdown', 'searchTermDropdown');	//Fill in <li> values for utilities dropdown
 
 
 });

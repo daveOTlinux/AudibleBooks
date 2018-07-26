@@ -78,9 +78,7 @@
 					<div id='searchtermdiv' class='dropdown'>
 				        <a id='searchterm' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Search Term<b class='caret'></b></a>
 						<ul id='searchTermDropdown' class='dropdown-menu'>
-			<!--				<template id='searchTerm-template'>
-								"<li id='" + objIDname + resultitem.ID + "' class='showitem'>" + resultitem.SearchTerm + "</li>
-							</template>	-->
+	
 						</ul>
 					</div>
 					<div class="col-sm-8"></div>
@@ -119,7 +117,7 @@
 			<td>{{ModifiedDate}}</td>
 			<td class="px-1">
 				<a class='mr-1' href='read.php?ID={{ID}}' title='View Record' data-toggle='tooltip'><span class='fa fa-eye'></span></a>
-				<a class='mr-1' onclick='modalOpenUpdate(this)' id='rowitemUpdate{{ID}}' title='Update Record' data-toggle='tooltip'><span class='fa fa-pencil'></span></a>
+				<a class='mr-1' href="#" onclick='modalOpenUpdate(this)' id='rowitemUpdate{{ID}}' title='Update Record' data-toggle='tooltip'><span class='fa fa-pencil'></span></a>
 				<a class='mr-1' href='delete.php?ID={{ID}}' title='Delete Record' data-toggle='tooltip'><span class='fa fa-trash'></span></a>
 			</td>
 		</tr>
@@ -145,8 +143,15 @@
 							<form id="modalUpdateForm" role="form">
 								<input type="hidden" id="ID-modal" name="recordID" value="{{ID}}">
 								<div class="form-group">
-									<label for="SearchTerm"> SearchTerm</label>
-									<input type="text" id="SearchTerm-modal" placeholder="Enter SearchTerm" value="{{SearchTerm-modal}}" class="form-control">
+									<div id='searchtermdiv-modal' class='dropdown'>
+										<label for="SearchTerm"> SearchTerm<b class='caret'></b></label>
+										<input type="text" id="inputSearchTerm-modal" placeholder="Enter SearchTerm" value="{{SearchTerm-modal}}"
+											 class="form-control" data-target'#' data-toggle='dropdown' class='dropdown-toggle'>
+										<!--<a id='searchtermDropdown-modal' data-target'#' data-toggle='dropdown' class='dropdown-toggle'><b class='caret'></b></a>-->
+										<ul id='listSsearchtermDropdown-modal' class='dropdown-menu'>
+						
+										</ul>
+									</div>
 								</div>
 								<div class="form-group">
 									<label for="orderItems"> orderItems</label>
@@ -175,6 +180,16 @@
 				</div>
 			</div> 
 		</div>
+		<script type="text/javascript">
+			$(document).ready(function(){	//Code to run when page finishes loading
+				$("#listSsearchtermDropdown-modal").on('click',function(){	//When dropdown data <li> is clicked
+					var element = event.target;
+					var idClickedItem = element.id;
+					//sessionStorage.setItem("sessionCurrentSearchTermDropdown", idClickedItem)
+					alert("Object in listSsearchtermDropdown-modal has been clicked -- " + idClickedItem);		
+				});
+			});
+		</script>
 	</template>
 </body>
 </html>						

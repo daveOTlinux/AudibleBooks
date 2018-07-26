@@ -4,16 +4,16 @@
 	//Functions
 	
 	// return fieldDATA contains the rows of data from a SELECT DISTINCT `SearchTerm` search
-	function getDISTINCTSearchTerms() {
+	function getDISTINCTSearchTerms($fieldName) {
 		// Include config file
 	    require_once 'config.php';
 
 //SELECT DISTINCT `SearchTerm` FROM `pageObjects` ORDER BY `SearchTerm` LIMIT 0, 10
     
-		$select = "SELECT DISTINCT `SearchTerm` ";
+		$select = "SELECT DISTINCT `" . $fieldName . "` ";
 		$from = "FROM `pageObjects` ";
 		$where = "";
-		$orderby = "ORDER BY `SearchTerm` ";
+		$orderby = "ORDER BY `" . $fieldName . "` ";
 		$limit = "LIMIT 0, 10";
 
 		$strSQL = $select . $from . $where . $orderby . $limit;				
@@ -293,7 +293,7 @@
 				echo json_encode($returnStatus);
 				break;
 			case "searchTermDropdown":
-				$returnStatus = getDISTINCTSearchTerms();
+				$returnStatus = getDISTINCTSearchTerms($pageObject);
 				if($count > 1) {
 					header('Content-type: application/json');
 				}

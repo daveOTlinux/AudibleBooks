@@ -69,7 +69,7 @@
 						<h2 class="pull-left">Page Objects Edit</h2>
 					</div>
 				</div>
-				<div class="pt-2 col-sm-8">  		
+				<div class="pt-2 col-sm-6">  		
 					<a href="#" id="pageObjectsAdd" onclick="modalOpenAppend()" class="btn btn-success pull-right">Add New pageObject</a>
 				</div>
 			</div>
@@ -132,10 +132,10 @@
 					<!-- Modal content-->
 					<div class="modal-content">
 						<div class="modal-header" style="padding:35px 50px;">
-							<div class="col-sm-6">
+							<div class="col-sm-9">
 								<h4 id="h4-modal"> Record ID - {{ID}}</h4>
 							</div>
-							<div class="col-sm-6">
+							<div class="col-sm-3">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 							</div>
 						</div>
@@ -169,7 +169,7 @@
 						</div>
 						<div class="modal-footer">
 							<div class="col-sm-6">
-								<button id="modalSaveButton" type="submit" onclick="modalCloseUpdate()" value=" Send" data-dismiss="modal" class="btn btn-success"> Save Entry</button>
+								<button id="modalSaveButton" type="submit" onclick="{{onclick-modal}}" value=" Send" data-dismiss="modal" class="btn btn-success"> Save Entry</button>
 							</div>
 							<div class="col-sm-6">
 								<button type="submit" class="btn btn-danger btn-default" data-dismiss="modal"> Cancel</button>
@@ -188,9 +188,10 @@
 					var idClickedItem = element.id;
 					var textClickedItem = document.getElementById(idClickedItem).innerHTML;					
 					sessionStorage.setItem("sessionCurrentSearchTermDropdown", idClickedItem)
-					alert("Script in modat. \n Object in listSsearchtermDropdown-modal has been clicked -- " +
+					alert("Script in modal. \n Object in listSsearchtermDropdown-modal has been clicked -- " +
 						 idClickedItem + " \n Objects html -- " + textClickedItem);		
 					//onclickDropdowns(idClickedItem)	//function changes element text and gets SQL for <li> choice
+					$("#inputSearchTerm-modal").val(textClickedItem);
 				});
 			});
 		</script>

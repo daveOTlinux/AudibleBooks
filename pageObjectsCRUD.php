@@ -128,49 +128,6 @@
 		return $returnStatus;
 	}
 
-	//function pass SearchTerm of pageObjects in $objectSearch
-	// return returnStatus contains the rows of data from search
-/*	function getObjectsBySearch($objectSearch) {
-		// Include config file
-	    require_once 'config.php';
-    
-		$select = "SELECT `ID`, `itemDisplay`, `itemSQL` ";
-		$from = "FROM `pageObjects` ";
-		$where = "WHERE `SearchTerm` = '" . $objectSearch . "' ";
-		$orderby = "ORDER BY `orderItems` ASC";
-
-		$strSQL = $select . $from . $where . $orderby;
-				
-		//echo $strSQL;
-	    $result = $mysqli->query($strSQL);
-
-	    $fieldDATA = array(array());
-
-	    if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
-	        //echo '<div id="item">Ah snap...! No results found :/</div>';
-	        //$itemSQL = "Ah snap...! No results found : in getPageObjectByID()";
-	        $fieldDATA[0]["status"] = "FAILED";
-			$fieldDATA[0]["info"] = "Ah snap...! No results found : in getObjectsBySearch()";
-	    }
-	    else {
-	         // Get results of query
-	         $count = 0;
-	         while($row = $result->fetch_assoc()) {  //outputs the records
-				//$itemSQL = $row['itemSQL'];
-				$fieldDATA[$count]["ID"] = $row[ID];
-	         	$fieldDATA[$count]["itemDisplay"] = $row[itemDisplay];
-	         	$count++;
-				//echo "IN getObjectsBySearch  ID -- " . $row[$ID] . " itemDisplay -- " . $row[$itemDisplay];
-
-//		        $returnStatus[0]["status"] = "Success";
-//				$returnStatus[0]["info"] = $row['itemSQL'];				
-				//echo "<div > Success -- " . $itemSQL . " ID -- " . $pageObjectID . "</div>";	'"' . $itemSQL . '"'				
-	         }
-		}
-        $result->close();
-        $mysqli->close();
-		return $fieldDATA;
-	}	*/
 
 
 	//function pass SearchTerm of pageObjects in $objectSearch
@@ -245,7 +202,34 @@
 		}
 
 		return $returnStatus;
-	}	
+}	
+
+	//function pass SQL VALUES part in $sqlSET
+	// return success or fail
+	function appendPageObjectrow($sqlSET) {
+		// Include config file
+	    require_once 'config.php';
+    
+		$update = "INSERT INTO `pageObjects`(`SearchTerm`, `orderItems`, `itemDisplay`, `itemSQL`, `ModifiedDate`) ";
+
+		$strSQL = $update . $sqlSET;
+				
+		//echo $strSQL;
+
+	    $returnStatus = array(array());
+
+		if($mysqli->query($strSQL) === TRUE) {
+			$returnStatus[0]["status"] = "Success";
+			$returnStatus[0]["info"] = "Record Appended successfully";				
+		} else {
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error appending record: " . $mysqli->error;
+		}
+
+		return $returnStatus;	
+	}
+
+
 
 //******************************************************************	
 	//if($_POST['keyword'] && !empty($_POST['keyword'])){
@@ -310,6 +294,12 @@
 				break;
 			case "updatePageObject":
 				$returnStatus = updatePageObjectrow($sqlCommand, $clickedData);
+
+				header('Content-type: application/json');
+				echo json_encode($returnStatus);
+				break;
+			case "appendPageObject":
+				$returnStatus = appendPageObjectrow($sqlCommand);
 
 				header('Content-type: application/json');
 				echo json_encode($returnStatus);

@@ -1,9 +1,60 @@
 
+function modalCloseAppend() {
+	alert("IN modalCloseAppend()");
+
+	var rowID = $('#ID-modal').val();
+	var searchTermUpdate = $('#inputSearchTerm-modal').val();
+	var orderItemsUpdate = $('#orderItems-modal').val();
+	var itemDisplayUpdate = $('#itemDisplay-modal').val();
+	var itemSQLUpdate = $('#itemSQL-modal').val();
+	var currentSearchTermDropDown = sessionStorage.getItem("sessionCurrentSearchTermDropdown");
+
+/*	alert("Update modal closed.\n currentSearchTermDropDown -- " + currentSearchTermDropDown +
+		 "\nmodal searchTermUpdate -- " + searchTermUpdate);	*/
+
+	var sqlCommand = "VALUES ('" +
+		 searchTermUpdate + "','" +
+		 orderItemsUpdate + "','" +
+		 itemDisplayUpdate + "','" +
+		 itemSQLUpdate + "',NOW())";	
+
+	var postData = {
+		"forObject":"appendPageObject",	//used in switch() to customize code and function called in pageObjects.php
+		"sqlCommand":sqlCommand,	//used in creating SQL for data search
+		"pageObject":"",
+		"fieldname":"",
+		"clickedData":"",
+		};
+	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
+	$.ajax({
+	    url:'pageObjectsCRUD.php',
+	    type:'POST',
+	    data: {postOBJ: dataString},
+		success:function(returnData) {
+			//console.log("returnData modalCloseUpdate() status-- " + returnData.status + " returnData length -- " + returnData.length);
+			//alert("modalCloseUpdate() AJAX success \n returnData.status -- " + returnData.status);
+/*			alert("Update modal closed.\n currentSearchTermDropDown -- " + currentSearchTermDropDown +
+				"\nmodal searchTermUpdate -- " + searchTermUpdate);	*/
+			$.each(returnData, function(i, resultitem){
+				if (resultitem.status == 'Success') {
+					alert("modalCloseAppend() appendPageObject call to PHP Success! searhTermUpdate -- " + searchTermUpdate);					
+					checkSearchTermChange(searchTermUpdate, doListUpdateDisplayRefresh);
+				} else {
+					alert("modalCloseAppend() AJAX failed \n resultitem.info -- " + resultitem.info);
+				}
+			});
+		},
+        error: function() {
+        	alert('Error in modalCloseUpdate() no return from PHP call.');
+        }
+    });	
+
+}
 function modalOpenAppend() {
 	var modalContent = $("#update-modal");
 	var modalTemplate = $('#itemUpdate-modal-template').html();
 
-	alert("IN modalOpenAppend()");
+	//alert("IN modalOpenAppend()");
 
 	modalContent.empty();				
 
@@ -13,6 +64,7 @@ function modalOpenAppend() {
 			"orderItems-modal":"",
 			"itemDisplay-modal":"",
 			"itemSQL-modal":"",
+			"onclick-modal":"modalCloseAppend()",
 		};
 		//alert("modalData ID -- " + resultitem.ID.toString());
 		modalContent.append(Mustache.render(modalTemplate, modalData));
@@ -39,7 +91,7 @@ function doListUpdateDisplayRefresh(idClickedItem, searchTermUpdateText) {
 	onclickDropdowns(idClickedItem, searchTermUpdateText)	//redraw current rows
 }
 
-function checkSearchTermChange(searchTermUpdateText, callback) {	//pass searchTerm field text 
+function checkSearchTermChange(searchTermText, callback) {	//pass searchTerm field text 
 	var idClickedItem = "";	
 	var postData = {
 		"forObject":"searchTermDropdown",	//forObject used in pageObjects.php by switch case for custom code
@@ -60,7 +112,7 @@ function checkSearchTermChange(searchTermUpdateText, callback) {	//pass searchTe
 			$.each(returnData, function(i, resultitem){
 /*				alert("AJAX return. \n resultitem.SearchTerm -- " + resultitem.SearchTerm +
 					"\n resultitem.ID -- " + resultitem.ID);	*/
-				if (resultitem.SearchTerm == searchTermUpdateText) {
+				if (resultitem.SearchTerm == searchTermText) {
 					idClickedItem = "searchterm" + resultitem.ID;
 					//alert("checkSearchTermChange \n in if() idClickedItem -- " +idClickedItem);
 				}
@@ -70,7 +122,7 @@ function checkSearchTermChange(searchTermUpdateText, callback) {	//pass searchTe
 			// Make sure the callback is a function
 			if (typeof callback === "function") {
 				// Execute the callback function and pass the parameters to it
-				callback(idClickedItem, searchTermUpdateText);
+				callback(idClickedItem, searchTermText);
 			}
     		//return idClickedItem;
         },
@@ -162,6 +214,7 @@ function modalOpenUpdate(element) {	//come here if any update buttons clicked in
 					"orderItems-modal":resultitem.orderItems,
 					"itemDisplay-modal":resultitem.itemDisplay,
 					"itemSQL-modal":resultitem.itemSQL,
+					"onclick-modal":"modalCloseUpdate()",
 				};
 				//alert("modalData ID -- " + resultitem.ID.toString());
 				modalContent.append(Mustache.render(modalTemplate, modalData));

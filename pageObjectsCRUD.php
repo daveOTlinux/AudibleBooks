@@ -35,6 +35,7 @@
 	         $count = 0;
 	         while($row = $result->fetch_assoc()) {  //outputs the records
 				//$itemSQL = $row['itemSQL'];
+				//$fieldDATA[$count]["status"] = "Success";
 				$fieldDATA[$count]["ID"] = $count;
 	         	$fieldDATA[$count]["SearchTerm"] = $row['SearchTerm'];
 	         	$count++;
@@ -294,9 +295,9 @@
 				break;
 			case "searchTermDropdown":
 				$returnStatus = getDISTINCTSearchTerms($pageObject);
-				if($count > 1) {
+				//if($count > 1) {
 					header('Content-type: application/json');
-				}
+				//}
 				echo json_encode($returnStatus);
 				break;
 			case "searchTermRows":

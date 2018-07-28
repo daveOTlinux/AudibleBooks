@@ -69,8 +69,8 @@
 						<h2 class="pull-left">Page Objects Edit</h2>
 					</div>
 				</div>
-				<div class="pt-2 col-sm-6">  		
-					<a href="create.php" class="btn btn-success pull-right">Add New pageObject</a>
+				<div class="pt-2 col-sm-8">  		
+					<a href="#" id="pageObjectsAdd" onclick="modalOpenAppend()" class="btn btn-success pull-right">Add New pageObject</a>
 				</div>
 			</div>
 			<div class="row" style="height: 75px;">
@@ -148,7 +148,7 @@
 										<input type="text" id="inputSearchTerm-modal" placeholder="Enter SearchTerm" value="{{SearchTerm-modal}}"
 											 class="form-control" data-target'#' data-toggle='dropdown' class='dropdown-toggle'>
 										<!--<a id='searchtermDropdown-modal' data-target'#' data-toggle='dropdown' class='dropdown-toggle'><b class='caret'></b></a>-->
-										<ul id='listSsearchtermDropdown-modal' class='dropdown-menu'>
+										<ul id='listSearchtermDropdown-modal' class='dropdown-menu'>
 						
 										</ul>
 									</div>
@@ -180,13 +180,17 @@
 				</div>
 			</div> 
 		</div>
+
 		<script type="text/javascript">
 			$(document).ready(function(){	//Code to run when page finishes loading
-				$("#listSsearchtermDropdown-modal").on('click',function(){	//When dropdown data <li> is clicked
+				$("#listSearchtermDropdown-modal").on('click',function(){	//When dropdown data <li> is clicked
 					var element = event.target;
 					var idClickedItem = element.id;
-					//sessionStorage.setItem("sessionCurrentSearchTermDropdown", idClickedItem)
-					alert("Object in listSsearchtermDropdown-modal has been clicked -- " + idClickedItem);		
+					var textClickedItem = document.getElementById(idClickedItem).innerHTML;					
+					sessionStorage.setItem("sessionCurrentSearchTermDropdown", idClickedItem)
+					alert("Script in modat. \n Object in listSsearchtermDropdown-modal has been clicked -- " +
+						 idClickedItem + " \n Objects html -- " + textClickedItem);		
+					//onclickDropdowns(idClickedItem)	//function changes element text and gets SQL for <li> choice
 				});
 			});
 		</script>

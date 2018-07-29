@@ -105,20 +105,69 @@
 
 		</div>
     </div>
-	<div id="update-modal">
+	<div id="update-modal">		<!--where html code for modals is written by mustache.js -->
 	</div>
+
+<!-- ************************************************************************************************ -->
+
+	<template id='dialogBox-template'>	<!-- dialog box popup to ask question. -->
+		<div class="container">
+		<!-- Modal -->
+			<div class="modal fade" id="dialogBoxStatus" role="dialog">
+				<div class="modal-dialog modal-sm">
+					<div class="modal-content">
+						<div class="modal-header">
+							<div class="col-sm-11">
+								<h4 class="modal-title">{{dialogTitle-modal}}</h4>
+							</div>
+							<div class="col-sm-1">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+							</div>
+						</div>
+						<div class="modal-body">
+							<div class="col-sm-12">
+								<input type="hidden" id="dialogID-modal" name="recordID" value="{{dialogID-modal}}">
+								<p>{{dialogBody-modal}}</p>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="col-sm-4">
+								<button type="button" onclick="{{acceptFunction-modal}}" class="btn ">{{acceptButton-modal}}</button>
+							</div>
+							<div class="col-sm-4">
+								<button type="button" class="btn btn-default" data-dismiss="modal">{{cancelButton-modal}}</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</template>
+
 	<template id='pageObjectRow-template'>	<!--template for display of pageObject rows	-->
-		<tr>
-			<td>{{ID}}</td>
-			<td>{{SearchTerm}}</td>
-			<td>{{orderItems}}</td>
-			<td>{{itemDisplay}}</td>
-			<td>{{itemSQL}}</td>
-			<td>{{ModifiedDate}}</td>
+		<tr id="trPageObjRow{{trPageObjRow}}">
+			<td id="ID-tdPageObjRow">{{ID-tdPageObjRow}}</td>
+			<td id="SearchTerm-tdPageObjRow">{{SearchTerm-tdPageObjRow}}</td>
+			<td id="orderItems-tdPageObjRow">
+				<div class="row">
+					<div class=" pr-0 col-sm-4">
+						{{orderItems-tdPageObjRow}}				
+					</div>
+					<div class="px-0 col-sm-4">
+						<a href="#" id="tdRowArrowUp{{ID-tdPageObjRow}}" onclick="tdRowArrowUp(this)" class="fa fa-arrow-up"></a>
+					</div>
+					<div class="px-0 col-sm-4">
+						<a href="#" id="tdRowArrowDown{{ID-tdPageObjRow}}" onclick="tdRowArrowDown(this)" class="fa fa-arrow-down"></a>
+					</div>				
+				</div>
+			</td>
+			<td id="itemDisplay-tdPageObjRow">{{itemDisplay-tdPageObjRow}}</td>
+			<td id="itemSQL-tdPageObjRow">{{itemSQL-tdPageObjRow}}</td>
+			<td id="ModifiedDate-tdPageObjRow">{{ModifiedDate-tdPageObjRow}}</td>
 			<td class="px-1">
-				<a class='mr-1' href='read.php?ID={{ID}}' title='View Record' data-toggle='tooltip'><span class='fa fa-eye'></span></a>
-				<a class='mr-1' href="#" onclick='modalOpenUpdate(this)' id='rowitemUpdate{{ID}}' title='Update Record' data-toggle='tooltip'><span class='fa fa-pencil'></span></a>
-				<a class='mr-1' href='delete.php?ID={{ID}}' title='Delete Record' data-toggle='tooltip'><span class='fa fa-trash'></span></a>
+				<a class='mr-1' href='#' title='View Record' data-toggle='tooltip'><span class='fa fa-eye'></span></a>
+				<a class='mr-1' href="#" onclick='modalOpenUpdate(this)' id='rowitemUpdate{{ID-tdPageObjRow}}' title='Update Record' data-toggle='tooltip'><span class='fa fa-pencil'></span></a>
+				<a class='mr-1' href='#' onclick='deleteThisRow(this)' id='rowitemDelete{{ID-tdPageObjRow}}' title='Delete Record' data-toggle='tooltip'><span class='fa fa-trash'></span></a>
 			</td>
 		</tr>
 	</template>
@@ -181,6 +230,7 @@
 			</div> 
 		</div>
 
+<!-- **************************************************************************************** -->
 		<script type="text/javascript">
 			$(document).ready(function(){	//Code to run when page finishes loading
 				$("#listSearchtermDropdown-modal").on('click',function(){	//When dropdown data <li> is clicked
@@ -188,8 +238,8 @@
 					var idClickedItem = element.id;
 					var textClickedItem = document.getElementById(idClickedItem).innerHTML;					
 					sessionStorage.setItem("sessionCurrentSearchTermDropdown", idClickedItem)
-					alert("Script in modal. \n Object in listSsearchtermDropdown-modal has been clicked -- " +
-						 idClickedItem + " \n Objects html -- " + textClickedItem);		
+/*					alert("Script in modal. \n Object in listSsearchtermDropdown-modal has been clicked -- " +
+						 idClickedItem + " \n Objects html -- " + textClickedItem);	*/
 					//onclickDropdowns(idClickedItem)	//function changes element text and gets SQL for <li> choice
 					$("#inputSearchTerm-modal").val(textClickedItem);
 				});

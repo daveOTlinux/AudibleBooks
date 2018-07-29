@@ -229,6 +229,32 @@
 		return $returnStatus;	
 	}
 
+	//function pass ID of row in $whereID
+	// return success or fail
+	function deletePageObjectbyID($whereID) {
+		// Include config file
+	    require_once 'config.php';
+    
+		$delete = "DELETE FROM `pageObjects` WHERE `ID` = ";
+
+		$strSQL = $delete . $whereID;
+				
+		//echo $strSQL;
+
+	    $returnStatus = array(array());
+
+		if($mysqli->query($strSQL) === TRUE) {
+			$returnStatus[0]["status"] = "Success";
+			$returnStatus[0]["info"] = "Record Deleted successfully";				
+		} else {
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error deleteing record: " . $mysqli->error;
+		}
+
+		return $returnStatus;	
+	}
+
+
 
 
 //******************************************************************	
@@ -304,7 +330,13 @@
 				header('Content-type: application/json');
 				echo json_encode($returnStatus);
 				break;
+			case "deletePageObjectbyID":
+				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
+				$returnStatus = deletePageObjectbyID($itemID);
 
+				header('Content-type: application/json');
+				echo json_encode($returnStatus);
+				break;
 		}
 
 		//echo json_encode($clickedData);

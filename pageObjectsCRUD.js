@@ -1,6 +1,76 @@
 
-function modalCloseAppend() {
-	alert("IN modalCloseAppend()");
+function tdRowArrowDown(element) {	//ome here when the "DOWN-Arrow" in orderItems field is clicked
+	var tdItemID = element.id;
+	alert("In tdRowArrowDown() \n tdItemID -- " + tdItemID);
+
+
+}
+
+function tdRowArrowUp(element) {	//Come here when the "UP-Arrow" in orderItems field is clicked
+	var tdItemID = element.id;
+	alert("In tdRowArrowUp() \n tdItemID -- " + tdItemID);
+	
+	
+}
+
+function acknowledgeDeleteRow() {	//Open modal dialog Sure to "Delete" record
+	var rowID = $('#dialogID-modal').val();
+	var currentSearchTermDropDown = sessionStorage.getItem("sessionCurrentSearchTermDropdown");
+	$('#dialogBoxStatus').modal('hide');
+	
+	//	alert("In acknowledgeDeleteRow() rowID -- " + rowID);
+	var postData = {
+		"forObject":"deletePageObjectbyID",	//used in switch() to customize code and function called in pageObjects.php
+		"sqlCommand":"",
+		"pageObject":"",
+		"fieldname":"",
+		"clickedData":rowID,	//ID of row to be deleted
+		};
+	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
+	$.ajax({
+	    url:'pageObjectsCRUD.php',
+	    type:'POST',
+	    data: {postOBJ: dataString},
+		success:function(returnData) {
+			$.each(returnData, function(i, resultitem){
+				if (resultitem.status == 'Success') {
+					//alert("acknowledgeDeleteRow() deletePageObjectbyID call to PHP Success!");					
+					pageObjectsList("SearchTerm", 'searchTermDropdown', 'searchTermDropdown');	//Fill in <li> values for utilities dropdown
+					onclickDropdowns(currentSearchTermDropDown, "")	//redraw current rows
+				} else {
+					alert("acknowledgeDeleteRow() AJAX failed \n resultitem.info -- " + resultitem.info);
+				}
+			});
+		},
+        error: function() {
+        	alert('Error in acknowledgeDeleteRow() no return from PHP call.');
+        }
+    });
+}
+
+function deleteThisRow(element) {	//Come here when the "Delete" icon in row is clicked
+	var rowItemID = element.id;
+	var rowRecordID = rowItemID.slice(13, rowItemID.length);
+	var modalContent = $("#update-modal");
+	var modalTemplate = $('#dialogBox-template').html();
+/*	alert("In deleteThisRow() \n rowItemID to delete -- " + rowItemID +
+		"\n database row ID - " + rowRecordID);	*/
+
+	modalContent.empty();				
+	var modalData = {
+		"dialogID-modal":rowRecordID,
+		"dialogTitle-modal":"Delete Record",
+		"dialogBody-modal":"Delete Record ID - " + rowRecordID + " ?",
+		"acceptButton-modal":"Yes",
+		"cancelButton-modal":"No",
+		"acceptFunction-modal":"acknowledgeDeleteRow()",
+	};
+	modalContent.append(Mustache.render(modalTemplate, modalData));
+	$("#dialogBoxStatus").modal();	//opens modal
+}
+
+function modalCloseAppend() {	//Come here when append modal "Save" button is clicked
+	//alert("IN modalCloseAppend()");
 
 	var rowID = $('#ID-modal').val();
 	var searchTermUpdate = $('#inputSearchTerm-modal').val();
@@ -37,7 +107,7 @@ function modalCloseAppend() {
 				"\nmodal searchTermUpdate -- " + searchTermUpdate);	*/
 			$.each(returnData, function(i, resultitem){
 				if (resultitem.status == 'Success') {
-					alert("modalCloseAppend() appendPageObject call to PHP Success! searhTermUpdate -- " + searchTermUpdate);					
+					//alert("modalCloseAppend() appendPageObject call to PHP Success! searhTermUpdate -- " + searchTermUpdate);					
 					checkSearchTermChange(searchTermUpdate, doListUpdateDisplayRefresh);
 				} else {
 					alert("modalCloseAppend() AJAX failed \n resultitem.info -- " + resultitem.info);
@@ -50,7 +120,8 @@ function modalCloseAppend() {
     });	
 
 }
-function modalOpenAppend() {
+
+function modalOpenAppend() {	//Come here when "Add New pageObject" is clicked
 	var modalContent = $("#update-modal");
 	var modalTemplate = $('#itemUpdate-modal-template').html();
 
@@ -76,7 +147,7 @@ function modalOpenAppend() {
 
 }
 
-function doListUpdateDisplayRefresh(idClickedItem, searchTermUpdateText) {
+function doListUpdateDisplayRefresh(idClickedItem, searchTermUpdateText) {	//Refreshes dropdown list and table rows
 	var currentSearchTermDropDown = sessionStorage.getItem("sessionCurrentSearchTermDropdown");
 /*	alert("IN doListUpdateDisplayRefresh()\n idClickedItem -- " + idClickedItem +
 		"\nsearchTermUpdateText -- " + searchTermUpdateText +
@@ -132,7 +203,7 @@ function checkSearchTermChange(searchTermText, callback) {	//pass searchTerm fie
 	});
 }
 
-function modalCloseUpdate() {
+function modalCloseUpdate() {	//Come here when "Save" button on Update modal is clicked
 	var idClickedItem = "";	
 	var rowID = $('#ID-modal').val();
 	var searchTermUpdate = $('#inputSearchTerm-modal').val();
@@ -233,7 +304,7 @@ function modalOpenUpdate(element) {	//come here if any update buttons clicked in
 
 }
 
-function onclickDropdowns(idClickedItem, textClickedItem) {	//comes here for when an item in the dropdowns is clicked 
+function onclickDropdowns(idClickedItem, textClickedItem) {	//Writes table rows. when an item in the dropdowns is clicked 
 	var tablebody = $('#maintablebody');
 	var liID = idClickedItem;
 	if (textClickedItem == "") {
@@ -270,8 +341,19 @@ function onclickDropdowns(idClickedItem, textClickedItem) {	//comes here for whe
 				switch(objName) {
 					case "searchtem":
 						tablebody.empty();
+						var count = 0;
 						$.each(returnData, function(i, resultitem){
-							tablebody.append(Mustache.render(tableRowTemplate, resultitem));
+							var modalData = {
+								"trPageObjRow":count,
+								"ID-tdPageObjRow":resultitem.ID,
+								"SearchTerm-tdPageObjRow":resultitem.SearchTerm,
+								"orderItems-tdPageObjRow":resultitem.orderItems,
+								"itemDisplay-tdPageObjRow":resultitem.itemDisplay,
+								"itemSQL-tdPageObjRow":resultitem.itemSQL,
+								"ModifiedDate-tdPageObjRow":resultitem.ModifiedDateD,
+							};
+							tablebody.append(Mustache.render(tableRowTemplate, modalData));
+							count++;
 						});
 						break;
 				}

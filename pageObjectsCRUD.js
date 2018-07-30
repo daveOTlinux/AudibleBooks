@@ -1,8 +1,29 @@
 
-function tdRowArrowDown(element) {	//ome here when the "DOWN-Arrow" in orderItems field is clicked
-	var tdItemID = element.id;
-	alert("In tdRowArrowDown() \n tdItemID -- " + tdItemID);
+function fixRowArrows(count) {
+	var downArrow = "tdRowArrowDown"  + (parseInt(count) - 1).toString();
+	//alert("fixRowArrows() \n callback.  count -- " + count + " \n downArrow name -- " + downArrow);
+	$("#tdRowArrowUp0").removeAttr("href");	//remove blue link
+	$("#tdRowArrowUp0").removeAttr("onclick");	//remove link. Won't do anything when clicked
+	$("#" + downArrow).removeAttr("href");	//remove blue link
+	$("#" + downArrow).removeAttr("onclick");	//remove link. Won't do anything when clicked
 
+}
+
+function tdRowArrowDown(element) {	//ome here when the "DOWN-Arrow" in orderItems field is clicked
+	var tdItemID = element.id;	//element name of clicked Down-Arrow
+	var displayRowNumber = tdItemID.slice(14, tdItemID.length)	//display row number (starting at 0)
+	var rowItemID = "ID-tdPageObjRow" + displayRowNumber;	//id name of ID field
+	var rowItemOrder = "orderItemstdPageObjRow" + displayRowNumber;	//id name of orderItem field
+
+	var rowIDItem = $("#" + rowItemID).text()	//table td ID field of clicked row
+	var rowOrderItem = $("#" + rowItemOrder).text()	//table td orderItems field of clicked row
+	
+	alert("In tdRowArrowDown() \n tdItemID -- " + tdItemID +
+		"\n displayRowNumber -- " + displayRowNumber +
+		"\n ID-tdPageObjRow table data -- " + rowIDItem +
+		"\n orderItemstdPageObjRow data --" + rowOrderItem);
+
+	
 
 }
 
@@ -36,7 +57,7 @@ function acknowledgeDeleteRow() {	//Open modal dialog Sure to "Delete" record
 				if (resultitem.status == 'Success') {
 					//alert("acknowledgeDeleteRow() deletePageObjectbyID call to PHP Success!");					
 					pageObjectsList("SearchTerm", 'searchTermDropdown', 'searchTermDropdown');	//Fill in <li> values for utilities dropdown
-					onclickDropdowns(currentSearchTermDropDown, "")	//redraw current rows
+					onclickDropdowns(currentSearchTermDropDown, "", fixRowArrows)	//redraw current rows
 				} else {
 					alert("acknowledgeDeleteRow() AJAX failed \n resultitem.info -- " + resultitem.info);
 				}
@@ -159,7 +180,7 @@ function doListUpdateDisplayRefresh(idClickedItem, searchTermUpdateText) {	//Ref
 	}
 	//pageObjectsList(searchTerm, forObject, $elementID)
 	pageObjectsList("SearchTerm", 'searchTermDropdown', 'searchTermDropdown');	//Fill in <li> values for utilities dropdown
-	onclickDropdowns(idClickedItem, searchTermUpdateText)	//redraw current rows
+	onclickDropdowns(idClickedItem, searchTermUpdateText, fixRowArrows)	//redraw current rows
 }
 
 function checkSearchTermChange(searchTermText, callback) {	//pass searchTerm field text 
@@ -232,10 +253,6 @@ function modalCloseUpdate() {	//Come here when "Save" button on Update modal is 
 	    type:'POST',
 	    data: {postOBJ: dataString},
 		success:function(returnData) {
-			//console.log("returnData modalCloseUpdate() status-- " + returnData.status + " returnData length -- " + returnData.length);
-			//alert("modalCloseUpdate() AJAX success \n returnData.status -- " + returnData.status);
-/*			alert("Update modal closed.\n currentSearchTermDropDown -- " + currentSearchTermDropDown +
-				"\nmodal searchTermUpdate -- " + searchTermUpdate);	*/
 			$.each(returnData, function(i, resultitem){
 				if (resultitem.status == 'Success') {
 					checkSearchTermChange(searchTermUpdate, doListUpdateDisplayRefresh);
@@ -304,7 +321,7 @@ function modalOpenUpdate(element) {	//come here if any update buttons clicked in
 
 }
 
-function onclickDropdowns(idClickedItem, textClickedItem) {	//Writes table rows. when an item in the dropdowns is clicked 
+function onclickDropdowns(idClickedItem, textClickedItem, callback) {	//Writes table rows. when an item in the dropdowns is clicked 
 	var tablebody = $('#maintablebody');
 	var liID = idClickedItem;
 	if (textClickedItem == "") {
@@ -350,12 +367,18 @@ function onclickDropdowns(idClickedItem, textClickedItem) {	//Writes table rows.
 								"orderItems-tdPageObjRow":resultitem.orderItems,
 								"itemDisplay-tdPageObjRow":resultitem.itemDisplay,
 								"itemSQL-tdPageObjRow":resultitem.itemSQL,
-								"ModifiedDate-tdPageObjRow":resultitem.ModifiedDateD,
+								"ModifiedDate-tdPageObjRow":resultitem.ModifiedDate,
 							};
 							tablebody.append(Mustache.render(tableRowTemplate, modalData));
 							count++;
 						});
+						// Make sure the callback is a function
+						if (typeof callback === "function") {
+							// Execute the callback function and pass the parameters to it
+							callback(count);
+						}						
 						break;
+
 				}
 		},
         error: function() {
@@ -414,7 +437,7 @@ $(document).ready(function (){	// html elements clicked.
 /*		alert("Object in searchTermDropdown has been clicked \n " +
 			"idClickedItem -- " + idClickedItem + " \n textClickedItem -- " + textClickedItem);	*/
 		
-		onclickDropdowns(idClickedItem, "")	//function changes element text and gets SQL for <li> choice
+		onclickDropdowns(idClickedItem, "", fixRowArrows)	//function changes element text and gets SQL for <li> choice
 	});
 
 	$("#maintablebody").on('click',function(){	//When "update" icon in row is clicked

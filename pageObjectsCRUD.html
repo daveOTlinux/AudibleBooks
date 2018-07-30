@@ -146,24 +146,24 @@
 
 	<template id='pageObjectRow-template'>	<!--template for display of pageObject rows	-->
 		<tr id="trPageObjRow{{trPageObjRow}}">
-			<td id="ID-tdPageObjRow{{ID-tdPageObjRow}}">{{ID-tdPageObjRow}}</td>
-			<td id="SearchTerm-tdPageObjRow">{{SearchTerm-tdPageObjRow}}</td>
-			<td id="orderItems-tdPageObjRow">
+			<td id="ID-tdPageObjRow{{trPageObjRow}}">{{ID-tdPageObjRow}}</td>
+			<td id="SearchTerm-tdPageObjRow{{ID-tdPageObjRow}}">{{SearchTerm-tdPageObjRow}}</td>
+			<td>
 				<div class="row">
 					<div class=" pr-0 col-sm-4">
-						{{orderItems-tdPageObjRow}}				
+						<span id="orderItemstdPageObjRow{{trPageObjRow}}">{{orderItems-tdPageObjRow}}</span>
 					</div>
 					<div class="px-0 col-sm-4">
-						<a href="#" id="tdRowArrowUp{{ID-tdPageObjRow}}" onclick="tdRowArrowUp(this)" class="fa fa-arrow-up"></a>
+						<a href="#" id="tdRowArrowUp{{trPageObjRow}}" onclick="tdRowArrowUp(this)" class="fa fa-arrow-up"></a>
 					</div>
 					<div class="px-0 col-sm-4">
-						<a href="#" id="tdRowArrowDown{{ID-tdPageObjRow}}" onclick="tdRowArrowDown(this)" class="fa fa-arrow-down"></a>
+						<a href="#" id="tdRowArrowDown{{trPageObjRow}}" onclick="tdRowArrowDown(this)" class="fa fa-arrow-down"></a>
 					</div>				
 				</div>
 			</td>
-			<td id="itemDisplay-tdPageObjRow">{{itemDisplay-tdPageObjRow}}</td>
-			<td id="itemSQL-tdPageObjRow">{{itemSQL-tdPageObjRow}}</td>
-			<td id="ModifiedDate-tdPageObjRow">{{ModifiedDate-tdPageObjRow}}</td>
+			<td id="itemDisplaytdPageObjRow{{ID-tdPageObjRow}}">{{itemDisplay-tdPageObjRow}}</td>
+			<td id="itemSQLtdPageObjRow{{ID-tdPageObjRow}}">{{itemSQL-tdPageObjRow}}</td>
+			<td id="ModifiedDatetdPageObjRow{{ID-tdPageObjRow}}">{{ModifiedDate-tdPageObjRow}}</td>
 			<td class="px-1">
 				<a class='mr-1' href='#' title='View Record' data-toggle='tooltip'><span class='fa fa-eye'></span></a>
 				<a class='mr-1' href="#" onclick='modalOpenUpdate(this)' id='rowitemUpdate{{ID-tdPageObjRow}}' title='Update Record' data-toggle='tooltip'><span class='fa fa-pencil'></span></a>

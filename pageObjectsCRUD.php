@@ -180,7 +180,7 @@
 
 	//function pass SQL SET part in $sqlSET, and the required row in $rowID
 	// return success or fail
-	function updatePageObjectrow($sqlSET, $rowID) {
+	function updatePageObjectRow($sqlSET, $rowID) {
 		// Include config file
 	    require_once 'config.php';
     
@@ -206,7 +206,7 @@
 
 	//function pass SQL VALUES part in $sqlSET
 	// return success or fail
-	function appendPageObjectrow($sqlSET) {
+	function appendPageObjectRow($sqlSET) {
 		// Include config file
 	    require_once 'config.php';
     
@@ -319,13 +319,13 @@
 				
 				break;
 			case "updatePageObject":
-				$returnStatus = updatePageObjectrow($sqlCommand, $clickedData);
+				$returnStatus = updatePageObjectRow($sqlCommand, $clickedData);
 
 				header('Content-type: application/json');
 				echo json_encode($returnStatus);
 				break;
 			case "appendPageObject":
-				$returnStatus = appendPageObjectrow($sqlCommand);
+				$returnStatus = appendPageObjectRow($sqlCommand);
 
 				header('Content-type: application/json');
 				echo json_encode($returnStatus);
@@ -348,45 +348,4 @@
 		echo json_encode($returnStatus);		
 	}
 
-
-
-
-/*
-
-	//if($_POST['keyword'] && !empty($_POST['keyword'])){
-	if($_POST['postOBJ'] && !empty($_POST['postOBJ'])){
-		$postOBJ = json_decode($_POST['postOBJ'], TRUE);
-		$forObject = $postOBJ["forObject"];
-		$sqlCommand = $postOBJ["sqlCommand"];		
-		$fieldName = $postOBJ["fieldname"];
-		$clickedData = $postOBJ["clickedData"];
-		$pageObject = $postOBJ["pageObject"];
-
-		switch ($forObject) {
-			case "searchTermDropdown":
-				$returnStatus = getDISTINCTSearchTerms();
-				if($count > 1) {
-					header('Content-type: application/json');
-				}
-				echo json_encode($returnStatus);
-				break;
-			case "searchTermRows":
-				$returnStatus = getObjectsBySearch($pageObject);
-				if($count > 1) {
-					header('Content-type: application/json');
-				}
-				echo json_encode($returnStatus);
-				
-				break;
-			
-		}
-		
-
-	} else {
-		$returnStatus[0]["status"] = "FAILED";
-		$returnStatus[0]["info"] = "No POST data.";
-		//header('Content-type: application/json');	//required if more than 1 row to return!!
-		echo json_encode($returnStatus);		
-	}
-*/
 ?>

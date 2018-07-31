@@ -1,5 +1,41 @@
 
-function fixRowArrows(count) {
+function reorderRowsUpdate(rowID, orderItems, callback) {	//called to change the number in the orderItems field
+	var sqlCommand = "SET `orderItems` = " + orderItems + ", `ModifiedDate` = NOW() ";
+
+	var postData = {
+		"forObject":"updatePageObject",	//used in switch() to customize code and function called in pageObjects.php
+		"sqlCommand":sqlCommand,	//used in creating SQL for data search
+		"pageObject":"",
+		"fieldname":"",
+		"clickedData":rowID,
+		};
+	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
+	$.ajax({
+	    url:'pageObjectsCRUD.php',
+	    type:'POST',
+	    data: {postOBJ: dataString},
+		done:function(returnData) {
+			$.each(returnData, function(i, resultitem){
+				if (resultitem.status == 'Success') {
+					//alert(" call to PHP Success!");					
+				} else {
+					alert("acknowledgeDeleteRow() AJAX failed \n resultitem.info -- " + resultitem.info);
+				}
+			});
+			// Make sure the callback is a function
+			if (typeof callback === "function") {
+				// Execute the callback function and pass the parameters to it
+				callback();
+			}
+
+		},
+        fail: function() {
+        	alert('Error in modalCloseUpdate() no return from PHP call.');
+        }
+    });
+}
+
+function fixRowArrows(count) {	//callback. Disables top row up-arrow and bottom row down-arrow
 	var downArrow = "tdRowArrowDown"  + (parseInt(count) - 1).toString();
 	//alert("fixRowArrows() \n callback.  count -- " + count + " \n downArrow name -- " + downArrow);
 	$("#tdRowArrowUp0").removeAttr("href");	//remove blue link
@@ -11,19 +47,50 @@ function fixRowArrows(count) {
 
 function tdRowArrowDown(element) {	//ome here when the "DOWN-Arrow" in orderItems field is clicked
 	var tdItemID = element.id;	//element name of clicked Down-Arrow
+	var idClickedItem = sessionStorage.getItem("sessionCurrentSearchTermDropdown")
 	var displayRowNumber = tdItemID.slice(14, tdItemID.length)	//display row number (starting at 0)
-	var rowItemID = "ID-tdPageObjRow" + displayRowNumber;	//id name of ID field
-	var rowItemOrder = "orderItemstdPageObjRow" + displayRowNumber;	//id name of orderItem field
-
-	var rowIDItem = $("#" + rowItemID).text()	//table td ID field of clicked row
-	var rowOrderItem = $("#" + rowItemOrder).text()	//table td orderItems field of clicked row
+	var displayRowInt = parseInt(displayRowNumber);	
+	var i = 1;	
+	while (i < 3){
+		var rowItemID = "ID-tdPageObjRow" + displayRowInt.toString();	//id name of ID field
+		var rowItemOrder = "orderItemstdPageObjRow" + displayRowInt.toString();	//id name of orderItem field
 	
-	alert("In tdRowArrowDown() \n tdItemID -- " + tdItemID +
-		"\n displayRowNumber -- " + displayRowNumber +
-		"\n ID-tdPageObjRow table data -- " + rowIDItem +
-		"\n orderItemstdPageObjRow data --" + rowOrderItem);
+		var rowOrderItem = $("#" + rowItemOrder).text()	//table td orderItems field of clicked row
+		switch(i) {		
+			case 1:
+				var rowIDItemP = $("#" + rowItemID).text()	//table td ID field of clicked row
+				var orderItemsNumP = parseInt(rowOrderItem) + 1;
+/*				alert("In tdRowArrowDown() \n tdItemID -- " + tdItemID +
+					"\n displayRowNumber -- " + displayRowNumber +
+					"\n ID-tdPageObjRow table data, rowIDItem -- " + rowIDItemP +
+					"\n orderItemstdPageObjRow data, rowOrderItem --" + rowOrderItem +
+					"\n orderItemsNum -- " + orderItemsNumP +
+					"\n displayRowInt -- " + displayRowInt);	*/
+				break;
 
+			case 2:
+				var rowIDItemM = $("#" + rowItemID).text()	//table td ID field of clicked row
+				var orderItemsNumM = parseInt(rowOrderItem) - 1;
+/*				alert("In tdRowArrowDown() \n tdItemID -- " + tdItemID +
+					"\n displayRowNumber -- " + displayRowNumber +
+					"\n ID-tdPageObjRow table data, rowIDItem -- " + rowIDItemM +
+					"\n orderItemstdPageObjRow data, rowOrderItem --" + rowOrderItem +
+					"\n orderItemsNum -- " + orderItemsNumM +
+					"\n displayRowInt -- " + displayRowInt);	*/
+				break;
+		}
+	i++;
+	displayRowInt++;
 	
+
+	}
+//	$.when( reorderRowsUpdate(rowIDItemP, orderItemsNumP, ""), reorderRowsUpdate(rowIDItemM, orderItemsNumM, "") )
+//		.done( onclickDropdowns(idClickedItem, "", fixRowArrows), onclickDropdowns(idClickedItem, "", fixRowArrows); );
+	reorderRowsUpdate(rowIDItemP, orderItemsNumP, fixRowArrows);
+	reorderRowsUpdate(rowIDItemM, orderItemsNumM, fixRowArrows);
+
+//	reorderRowsUpdate(rowIDItem, orderItemsDownNum, "")	//set the orderItem value of the row moving down
+//	reorderRowsUpdate(rowIDItem, orderItemsUPNum, "")	//set the orderItem value of the row moving up
 
 }
 

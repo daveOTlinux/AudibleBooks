@@ -89,7 +89,7 @@ function tdRowArrowDown(element) {	//ome here when the "DOWN-Arrow" in orderItem
 
 	}
 
-	console.log("P Row data ID, Order - "+rowIDItemP + ", " +orderItemsNumP + "\n M Row data ID, Order - "+rowIDItemM + "," +orderItemsNumM);
+	//console.log("P Row data ID, Order - "+rowIDItemP + ", " +orderItemsNumP + "\n M Row data ID, Order - "+rowIDItemM + "," +orderItemsNumM);
 
 /*	var rowPlus = $.Deferred();
 	var rowMinus = $.Deferred();
@@ -102,7 +102,7 @@ function tdRowArrowDown(element) {	//ome here when the "DOWN-Arrow" in orderItem
 		.then(reorderRowsUpdate(rowIDItemP, orderItemsNumP, ""))
 		.then(reorderRowsUpdate(rowIDItemM, orderItemsNumM, ""))
 		.done(onclickDropdowns(idClickedItem, "", fixRowArrows));
-	deferred.resolve(0);
+	deferred.resolve();
 	
 //	reorderRowsUpdate(rowIDItemP, orderItemsNumP, fixRowArrows);
 //	reorderRowsUpdate(rowIDItemM, orderItemsNumM, fixRowArrows);
@@ -153,7 +153,7 @@ function tdRowArrowUp(element) {	//Come here when the "UP-Arrow" in orderItems f
 
 	}
 
-	console.log("P Row data ID, Order - "+rowIDItemP + ", " +orderItemsNumP + "\n M Row data ID, Order - "+rowIDItemM + "," +orderItemsNumM);
+	//console.log("P Row data ID, Order - "+rowIDItemP + ", " +orderItemsNumP + "\n M Row data ID, Order - "+rowIDItemM + "," +orderItemsNumM);
 
 /*	var rowPlus = $.Deferred();
 	var rowMinus = $.Deferred();
@@ -166,7 +166,7 @@ function tdRowArrowUp(element) {	//Come here when the "UP-Arrow" in orderItems f
 		.then(reorderRowsUpdate(rowIDItemM, orderItemsNumM, ""))
 		.then(reorderRowsUpdate(rowIDItemP, orderItemsNumP, ""))
 		.done(onclickDropdowns(idClickedItem, "", fixRowArrows));
-	deferred.resolve(0);
+	deferred.resolve();
 	
 //	reorderRowsUpdate(rowIDItemP, orderItemsNumP, fixRowArrows);
 //	reorderRowsUpdate(rowIDItemM, orderItemsNumM, fixRowArrows);
@@ -342,7 +342,7 @@ function checkSearchTermChange(searchTermText, callback) {	//pass searchTerm fie
         type:'POST',
         data: {postOBJ: dataString},
         success:function(returnData) {
-			console.log("returnData -- " + returnData);			
+			//console.log("returnData -- " + returnData);			
 			//alert("element myOBJ.id  -- " +  myOBJ.id + " elementID -- " + elementID);
 			$.each(returnData, function(i, resultitem){
 /*				alert("AJAX return. \n resultitem.SearchTerm -- " + resultitem.SearchTerm +
@@ -497,7 +497,7 @@ function onclickDropdowns(idClickedItem, textClickedItem, callback) {	//Writes t
 	    type:'POST',
 	    data: {postOBJ: dataString},
 		success:function(returnData) {
-			console.log("returnData onclickDropdowns -- " + returnData + " returnData length -- " + returnData.length);
+			//console.log("returnData onclickDropdowns -- " + returnData + " returnData length -- " + returnData.length);
 				switch(objName) {
 					case "searchtem":
 						tablebody.empty();
@@ -546,7 +546,7 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
         type:'POST',
         data: {postOBJ: dataString},
         success:function(returnData) {
-			console.log("returnData -- " + returnData);			
+			//console.log("returnData -- " + returnData);			
 			//alert("element myOBJ.id  -- " +  myOBJ.id + " elementID -- " + elementID);
 			var objIDname = "searchterm";
 			//alert("in pageObjectsList: idname -- " + objIDname);

@@ -11,7 +11,7 @@ function reorderRowsUpdate(rowID, orderItems, promise) {	//called to change the 
 		};
 	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
 	$.ajax({
-	    url:'pageObjectsCRUD.php',
+	    url:'pageObjects.php',
 	    type:'POST',
 	    data: {postOBJ: dataString},
 		done:function(returnData) {
@@ -192,7 +192,7 @@ function acknowledgeDeleteRow() {	//Open modal dialog Sure to "Delete" record
 		};
 	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
 	$.ajax({
-	    url:'pageObjectsCRUD.php',
+	    url:'pageObjects.php',
 	    type:'POST',
 	    data: {postOBJ: dataString},
 		success:function(returnData) {
@@ -261,7 +261,7 @@ function modalCloseAppend() {	//Come here when append modal "Save" button is cli
 		};
 	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
 	$.ajax({
-	    url:'pageObjectsCRUD.php',
+	    url:'pageObjects.php',
 	    type:'POST',
 	    data: {postOBJ: dataString},
 		success:function(returnData) {
@@ -338,7 +338,7 @@ function checkSearchTermChange(searchTermText, callback) {	//pass searchTerm fie
 	//alert("in pageObjectsList \n searchTerm -- " + searchTerm + "\n forObject -- " + forObject + "\n elementID -- " + elementID);
 	var dataString = JSON.stringify(postData);
     $.ajax({
-        url:'pageObjectsCRUD.php',
+        url:'pageObjects.php',
         type:'POST',
         data: {postOBJ: dataString},
         success:function(returnData) {
@@ -392,7 +392,7 @@ function modalCloseUpdate() {	//Come here when "Save" button on Update modal is 
 		};
 	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
 	$.ajax({
-	    url:'pageObjectsCRUD.php',
+	    url:'pageObjects.php',
 	    type:'POST',
 	    data: {postOBJ: dataString},
 		success:function(returnData) {
@@ -431,7 +431,7 @@ function modalOpenUpdate(element) {	//come here if any update buttons clicked in
 	//alert("in pageObjectsList \n searchTerm -- " + searchTerm + "\n forObject -- " + forObject + "\n elementID -- " + elementID);
 	var dataString = JSON.stringify(postData);
     $.ajax({
-        url:'pageObjectsCRUD.php',
+        url:'pageObjects.php',
         type:'POST',
         data: {postOBJ: dataString},
         success:function(returnData) {
@@ -493,7 +493,7 @@ function onclickDropdowns(idClickedItem, textClickedItem, callback) {	//Writes t
 		};
 	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
 	$.ajax({
-	    url:'pageObjectsCRUD.php',
+	    url:'pageObjects.php',
 	    type:'POST',
 	    data: {postOBJ: dataString},
 		success:function(returnData) {
@@ -542,7 +542,7 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 	//alert("in pageObjectsList \n searchTerm -- " + searchTerm + "\n forObject -- " + forObject + "\n elementID -- " + elementID);
 	var dataString = JSON.stringify(postData);
     $.ajax({
-        url:'pageObjectsCRUD.php',
+        url:'pageObjects.php',
         type:'POST',
         data: {postOBJ: dataString},
         success:function(returnData) {

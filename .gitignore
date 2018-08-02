@@ -7,3 +7,6 @@
 #Bluefish project file
 *.bfproject
 
+# modules or libraries.
+mustache.js
+

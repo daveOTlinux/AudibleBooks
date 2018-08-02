@@ -7,6 +7,14 @@
 #Bluefish project file
 *.bfproject
 
+<<<<<<< HEAD
 # modules or libraries.
 mustache.js
 
+=======
+# Used in Audible Books site
+CoverArt/
+
+# Javascript Librarys
+mustache.js
+>>>>>>> crud_pageObjs

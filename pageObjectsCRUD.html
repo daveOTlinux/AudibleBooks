@@ -23,10 +23,12 @@
 		crossorigin="anonymous"></script>
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
+	<script src="mustache.js"></script>
 
-<!--	<link href="style.css" rel="stylesheet">	-->
+	<link href="style.css" rel="stylesheet">
 		
-<!--	<script src="index.js"></script>	-->
+	<script src="pageObjectsCRUD.js"></script>
+
 
 	<style type="text/css">
 <!--	    .wrapper{
@@ -36,42 +38,214 @@
 	    .page-header h2{
 	        margin-top: 0;
 	    } -->
-<!--	    table tr td:last-child a{
-	        margin-right: 15px;
-	        white-space: pre;	-->
+	    table tr td {
+	    font-size:90%;
 	    }
-	</style>    
+	    table tr td:last-child a{
+	        margin-right: 15px;
+	        white-space: pre;
+	        font-size:initial;
+	    }
+	</style>
+  <style>	<!--For Modal -->
+  .modal-header, h4, .close {
+      background-color: #5cb85c;
+      color:white !important;
+      text-align: center;
+      font-size: 30px;
+  }
+  .modal-footer {
+      background-color: #f9f9f9;
+  }
+  </style>
 
 </head>
 <body>
     <div class="wrapper">
         <div class="container-fluid">
 			<div class="row" style="height: 75px;">
-				<div class="col-sm-12">
-
+				<div class="pt-2 col-sm-6">
+					<div class="page-header clearfix">
+						<h2 class="pull-left">Page Objects Edit</h2>
+					</div>
 				</div>
+				<div class="pt-2 col-sm-6">  		
+					<a href="#" id="pageObjectsAdd" onclick="modalOpenAppend()" class="btn btn-success pull-right">Add New pageObject</a>
+				</div>
+			</div>
 			<div class="row" style="height: 75px;">
 				<div class="col-sm-4">
+					<div id='searchtermdiv' class='dropdown'>
+				        <a id='searchterm' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Search Term<b class='caret'></b></a>
+						<ul id='searchTermDropdown' class='dropdown-menu'>
+	
+						</ul>
+					</div>
+					<div class="col-sm-8"></div>
+				</div>
+			</div>
+			<div class='row' id='maintable'>
 				<table class='table table-bordered table-hover'>
 					<thead>
 						<tr>
-							<th style='width: 8>ID</th>
-							<th style='width: 40>Title</th>
-							<th style='width: 20>Author</th>
-							<th style='width: 20>Series</th>
-							<th style='width: 22>Action</th>
+							<th style='width: 5'>ID</th>
+							<th style='width: 15'>SearchTerm</th>
+							<th style='width: 15'>orderItems</th>
+							<th style='width: 15'>itemDisplay</th>
+							<th style='width: 15'>itemSQL</th>
+							<th style='width: 15'>ModifiedDate</th>
+							<th style='width: 20'>Action</th>
 						</tr>
 					</thead>
 					<tbody id='maintablebody'>
 					
 					</tbody>
 				</table>				
-				</div>>			
 			</div>
 
-			</div>
-		</div>        
+		</div>
     </div>
+	<div id="update-modal">		<!--where html code for modals is written by mustache.js -->
+	</div>
+
+<!-- ************************************************************************************************ -->
+
+	<template id='dialogBox-template'>	<!-- dialog box popup to ask question. -->
+		<div class="container">
+		<!-- Modal -->
+			<div class="modal fade" id="dialogBoxStatus" role="dialog">
+				<div class="modal-dialog modal-sm">
+					<div class="modal-content">
+						<div class="modal-header">
+							<div class="col-sm-11">
+								<h4 class="modal-title">{{dialogTitle-modal}}</h4>
+							</div>
+							<div class="col-sm-1">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+							</div>
+						</div>
+						<div class="modal-body">
+							<div class="col-sm-12">
+								<input type="hidden" id="dialogID-modal" name="recordID" value="{{dialogID-modal}}">
+								<p>{{dialogBody-modal}}</p>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="col-sm-4">
+								<button type="button" onclick="{{acceptFunction-modal}}" class="btn ">{{acceptButton-modal}}</button>
+							</div>
+							<div class="col-sm-4">
+								<button type="button" class="btn btn-default" data-dismiss="modal">{{cancelButton-modal}}</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</template>
+
+	<template id='pageObjectRow-template'>	<!--template for display of pageObject rows	-->
+		<tr id="trPageObjRow{{trPageObjRow}}">
+			<td id="ID-tdPageObjRow{{trPageObjRow}}">{{ID-tdPageObjRow}}</td>
+			<td id="SearchTerm-tdPageObjRow{{ID-tdPageObjRow}}">{{SearchTerm-tdPageObjRow}}</td>
+			<td>
+				<div class="row">
+					<div class=" pr-0 col-sm-4">
+						<span id="orderItemstdPageObjRow{{trPageObjRow}}">{{orderItems-tdPageObjRow}}</span>
+					</div>
+					<div class="px-0 col-sm-4">
+						<a href="#" id="tdRowArrowUp{{trPageObjRow}}" onclick="tdRowArrowUp(this)" class="fa fa-arrow-up"></a>
+					</div>
+					<div class="px-0 col-sm-4">
+						<a href="#" id="tdRowArrowDown{{trPageObjRow}}" onclick="tdRowArrowDown(this)" class="fa fa-arrow-down"></a>
+					</div>				
+				</div>
+			</td>
+			<td id="itemDisplaytdPageObjRow{{ID-tdPageObjRow}}">{{itemDisplay-tdPageObjRow}}</td>
+			<td id="itemSQLtdPageObjRow{{ID-tdPageObjRow}}">{{itemSQL-tdPageObjRow}}</td>
+			<td id="ModifiedDatetdPageObjRow{{ID-tdPageObjRow}}">{{ModifiedDate-tdPageObjRow}}</td>
+			<td class="px-1">
+<!--				<a class='mr-1' href='#' title='View Record' data-toggle='tooltip'><span class='fa fa-eye'></span></a>	-->
+				<a class='mx-1' href="#" onclick='modalOpenUpdate(this)' id='rowitemUpdate{{ID-tdPageObjRow}}' title='Update Record' data-toggle='tooltip'><span class='fa fa-pencil'></span></a>
+				<a class='mx-1' href='#' onclick='deleteThisRow(this)' id='rowitemDelete{{ID-tdPageObjRow}}' title='Delete Record' data-toggle='tooltip'><span class='fa fa-trash'></span></a>
+			</td>
+		</tr>
+	</template>
+
+	<template id="itemUpdate-modal-template">	<!--template for modal display/edit of pageObject fields	-->
+		<div class="container">
+			<!-- Modal -->
+			<div class="modal fade" id="myModal" role="dialog">
+				<div class="modal-dialog">
+				
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header" style="padding:35px 50px;">
+							<div class="col-sm-9">
+								<h4 id="h4-modal"> Record ID - {{ID}}</h4>
+							</div>
+							<div class="col-sm-3">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+							</div>
+						</div>
+						<div class="modal-body" style="padding:40px 50px;">
+							<form id="modalUpdateForm" role="form">
+								<input type="hidden" id="ID-modal" name="recordID" value="{{ID}}">
+								<div class="form-group">
+									<div id='searchtermdiv-modal' class='dropdown'>
+										<label for="SearchTerm"> SearchTerm<b class='caret'></b></label>
+										<input type="text" id="inputSearchTerm-modal" placeholder="Enter SearchTerm" value="{{SearchTerm-modal}}"
+											 class="form-control" data-target'#' data-toggle='dropdown' class='dropdown-toggle'>
+										<!--<a id='searchtermDropdown-modal' data-target'#' data-toggle='dropdown' class='dropdown-toggle'><b class='caret'></b></a>-->
+										<ul id='listSearchtermDropdown-modal' class='dropdown-menu'>
+						
+										</ul>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="orderItems"> orderItems</label>
+									<input type="text" id="orderItems-modal" placeholder="Enter orderItems" value="{{orderItems-modal}}" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="itemDisplay"> itemDisplay</label>
+									<input type="text" id="itemDisplay-modal" placeholder="Enter itemDisplay" value="{{itemDisplay-modal}}" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="itemSQL"> itemSQL</label>
+									<input type="text" id="itemSQL-modal" placeholder="Enter itemSQL" value="{{itemSQL-modal}}" class="form-control">
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<div class="col-sm-6">
+								<button id="modalSaveButton" type="submit" onclick="{{onclick-modal}}" value=" Send" data-dismiss="modal" class="btn btn-success"> Save Entry</button>
+							</div>
+							<div class="col-sm-6">
+								<button type="submit" class="btn btn-danger btn-default" data-dismiss="modal"> Cancel</button>
+							</div>
+						</div>
+					</div>
+					  
+				</div>
+			</div> 
+		</div>
+
+<!-- **************************************************************************************** -->
+		<script type="text/javascript">
+			$(document).ready(function(){	//Code to run when page finishes loading
+				$("#listSearchtermDropdown-modal").on('click',function(){	//When dropdown data <li> is clicked
+					var element = event.target;
+					var idClickedItem = element.id;
+					var textClickedItem = document.getElementById(idClickedItem).innerHTML;					
+					sessionStorage.setItem("sessionCurrentSearchTermDropdown", idClickedItem)
+/*					alert("Script in modal. \n Object in listSsearchtermDropdown-modal has been clicked -- " +
+						 idClickedItem + " \n Objects html -- " + textClickedItem);	*/
+					//onclickDropdowns(idClickedItem)	//function changes element text and gets SQL for <li> choice
+					$("#inputSearchTerm-modal").val(textClickedItem);
+				});
+			});
+		</script>
+	</template>
 </body>
 </html>						
 

@@ -188,7 +188,7 @@ if(isset($_GET["ID"]) && !empty(trim($_GET["ID"]))){
             	</div>
             </div>
 			<div class="row">                    
-				<p><a href="index.php" class="btn btn-primary">Back</a></p>
+				<p><a href="index.html" class="btn btn-primary">Back</a></p>
             </div>        
         </div>
     </div>

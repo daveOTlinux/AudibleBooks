@@ -7,14 +7,9 @@
 #Bluefish project file
 *.bfproject
 
-<<<<<<< HEAD
-# modules or libraries.
-mustache.js
-
-=======
-# Used in Audible Books site
+#Used in Audible Books site
 CoverArt/
 
-# Javascript Librarys
+# Javascript Librarys or Modules
 mustache.js
->>>>>>> crud_pageObjs
+

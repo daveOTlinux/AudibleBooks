@@ -114,7 +114,7 @@ function fetchTableResults(searchkey) {		// Fills the main Table <div> #maintabl
 	};
 	var dataString = JSON.stringify(postData);
     $.ajax({
-        url:'getMainTableRows.php',
+        url:'AudibleBooks.php',
         type:'POST',
         data: {postOBJ: dataString},
         success:function(returnData) {
@@ -141,7 +141,7 @@ function fetchTableResults(searchkey) {		// Fills the main Table <div> #maintabl
 			});
         },
         error: function() {
-        	alert('Error with getting row data from getMainTableRows.php.');
+        	alert('Error with getting row data from AudibleBooks.php.');
         }
 	});
 }

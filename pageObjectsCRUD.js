@@ -480,7 +480,7 @@ function onclickDropdowns(idClickedItem, textClickedItem, callback) {	//Writes t
 			var searchTerm = liText;	//`SearchTerm` field search value for WHERE SQL
 			var objName = "searchtem";	//used in success: switch
 			var forObject = "searchTermRows";	//get pageObject rows having selected searchTerm
-			var sqlCommand = "";
+			var sqlCommand = "*";
 			//console.log("dropdown Item liID -- " + liID);
 			break;
 	}
@@ -552,7 +552,7 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 			//alert("in pageObjectsList: idname -- " + objIDname);
 			$('#' + myOBJ.id).empty();
 			$.each(returnData, function(i, resultitem){
-				$('#' + myOBJ.id).append("<li id='" + objIDname + resultitem.ID + "' class='showitem'>" + resultitem.SearchTerm + "</li>");
+				$('#' + myOBJ.id).append("<li id='" + objIDname + resultitem.id + "' class='showitem'>" + resultitem.SearchTerm + "</li>");
 			});				
         },
         error: function() {
@@ -576,19 +576,26 @@ $(document).ready(function (){	// html elements clicked.
 		var element = event.target;
 		var idClickedItem = element.id;
 		//var textClickedItem = document.getElementById(idClickedItem).innerHTML;
-		sessionStorage.setItem("sessionCurrentSearchTermDropdown", idClickedItem)
+		sessionStorage.setItem("sessionCurrentSearchTermDropdown", idClickedItem);
 /*		alert("Object in searchTermDropdown has been clicked \n " +
 			"idClickedItem -- " + idClickedItem + " \n textClickedItem -- " + textClickedItem);	*/
 		
-		onclickDropdowns(idClickedItem, "", fixRowArrows)	//function changes element text and gets SQL for <li> choice
+		onclickDropdowns(idClickedItem, "", fixRowArrows);	//function changes element text and gets SQL for <li> choice
 	});
 
-	$("#maintablebody").on('click',function(){	//When "update" icon in row is clicked
+/*	$("#maintablebody").on('click',function(){	//When "update" icon in row is clicked
 		var element = event.target;
 		//alert("Object in maintablebody has been clicked -- " + element.id);
+	});	*/
+
+	$("#buttonFinished").on('click',function(){	//When "update" icon in row is clicked
+		var element = event.target;
+		var idClickedItem = element.id;
+		//alert("Button 'Finished' has been clicked -- " + idClickedItem);
+		window.close();
 	});
 
-	
+
 });
 
 $(document).ready(function(){	//Code to run when page finishes loading

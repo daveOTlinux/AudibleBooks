@@ -28,9 +28,10 @@
 	    }
 	    else {
 	         // Get results of query
+	         $count = 0;
 	         while($row = $result->fetch_assoc()) {  //outputs the records
-				$returnStatus[0]["item"] = $count;
-	         	$returnStatus[0]["SearchTerm"] = $row['SearchTerm'];
+				$returnStatus[$count]["id"] = $count;
+	         	$returnStatus[$count]["SearchTerm"] = $row['SearchTerm'];
 	         	$count++;
 	         }
 		}
@@ -127,8 +128,8 @@
 			case "Dropdowns":
 				$select = "SELECT `ID`, `itemDisplay` ";
 				break;
-			case "":
-			
+			case "*":
+				$select = "SELECT * ";
 				break;
 			default:
 				$where = $sqlCommand;
@@ -155,7 +156,7 @@
 	         while($row = $result->fetch_assoc()) {  //outputs the records
 				$returnStatus[$count]["ID"] = $row['ID'];
 	         	$returnStatus[$count]["itemDisplay"] = $row['itemDisplay'];
-				if(!$sqlModes == "Dropdowns") {
+				if(!($sqlModes == "Dropdowns")) {
 					$returnStatus[$count]["SearchTerm"] = $row['SearchTerm'];
 					$returnStatus[$count]["orderItems"] = $row['orderItems'];
 					$returnStatus[$count]["itemSQL"] = $row['itemSQL'];
@@ -294,16 +295,12 @@
 
 			case "searchTermDropdown":
 				$returnStatus = getDISTINCTSearchTerms($pageObject);
-				//if($count > 1) {
-					header('Content-type: application/json');
-				//}
+				header('Content-type: application/json');
 				echo json_encode($returnStatus);
 				break;
 			case "searchTermRows":
-				$returnStatus = getObjectsBySearch($pageObject, $sqlCommand);
-				//if($count > 1) {
-					header('Content-type: application/json');
-				//}
+				$returnStatus = getpageObjectsBySearch($pageObject, $sqlCommand);
+				header('Content-type: application/json');
 				echo json_encode($returnStatus);
 				
 				break;

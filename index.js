@@ -6,7 +6,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 	var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
 
 
-	//alert("element click ID -- " + liID + " clicked element text -- " + liText);
+	alert("onclickDropdowns() element click ID -- " + liID + " clicked element text -- " + liText);
 	switch(element.id.slice(0,5)) {
 		case 'sortI':
 			sessionStorage.setItem("sortBysearchSelected", liText);	//Set storage variable to new value in sortBy
@@ -39,7 +39,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 		case 'utili':
 			var searchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
 			var objName = "utilities";	//used in success: switch
-			var forObject = "utilities";	//used pageObject.php to get itemSQL for and ID
+			var forObject = "getsqlItemByID";	//used pageObject.php to get itemSQL for and ID
 			var sqlCommand = "";
 			console.log("filterItem" + " li ID -- " + liID);
 			break;
@@ -57,32 +57,37 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 	    type:'POST',
 	    data: {postOBJ: dataString},
 		success:function(returnData) {
-			console.log("returnData onclickDropdowns -- " + returnData);
-			var obj = $.parseJSON(returnData);
-			var myObj = JSON.parse(returnData.substring(1, returnData .length-1));
+			//console.log("returnData onclickDropdowns -- " + returnData);
+			//var obj = $.parseJSON(returnData);
+			//var myObj = JSON.parse(returnData.substring(1, returnData .length-1));
+			$.each(returnData, function(i, resultitem){
+				alert("Success with Ajax onclickDropdowns()) -- " + resultitem.info);				
+				if (resultitem.status == 'Success') {				
+					//console.log("returnData -- " + returnData);				
+					switch(objName) {
+						case "sortby":
+							sessionStorage.setItem("mainTable_Order", "ORDER BY " + myObj.info + " ")
+							var searchkey = "";			
+							//fetchTableResults(searchkey) uses variables
+							fetchTableResults(searchkey);
+							break;
+						case "utilities":
+							alert("Utilities clicked. resultitem.info -- " + resultitem.info);
+							window.open("https://onthebay.info" + resultitem.info);
+							break;
+					}
+				} else {
+					alert("Failed Ajax sortfield -- " + returnData);
+				}
+				
+			});
 			/*alert("In onclickDropdowns returnData length -- " + obj.length +
 			 "\n obj.status -- " + obj.status +
 			 "\n myObj.lenght -- " + myObj.length + 
 			 "\n myObj.status -- " + myObj.status);*/
 			//var newStr = returnData.substring(1, returnData .length-1);
 			//console.log("returnData -- " + myObj.status); //this breaks code when myObj.length = 1 !!
-			if (myObj.status == 'Success') {				
-				//console.log("returnData -- " + returnData);				
-				//alert("Success with Ajax onclickDropdowns()) -- " + myObj.info);				
-				switch(objName) {
-					case "sortby":
-						sessionStorage.setItem("mainTable_Order", "ORDER BY " + myObj.info + " ")
-						var searchkey = "";			
-						//fetchTableResults(searchkey) uses variables
-						fetchTableResults(searchkey);
-						break;
-					case "utilities":
-						window.open(myObj.info);
-						break;
-				}
-			} else {
-				alert("Failed Ajax sortfield -- " + returnData);
-			}
+
 		},
         error: function() {
         	alert('Error on sortby or filterby item clicked.');
@@ -180,14 +185,14 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 			var myOBJ = document.getElementById(elementID);
 			//alert("element myOBJ.id  -- " +  myOBJ.id + " elementID -- " + elementID);
 			var objIDname = "noswitch";
-			switch(forObject) {
+			switch(elementID) {
 				case "sortDropdown":
 					var objIDname = "sortItem";
 					break;
 				case "filterDropdown":
 					var objIDname = "filteritem";
 					break;
-				case "utilityDropdown":
+				case "utilitiesDropdown":
 					var objIDname = "utilitiesitem";
 					break;
 			};
@@ -347,9 +352,9 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	var utilitySearchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
 
 	//pageObjectsList(searchTerm, forObject, $elementID)
-	pageObjectsList(sortBysearchTerm, 'sortDropdown', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
-	pageObjectsList(filterBysearchTerm, 'filterDropdown', 'filterDropdown');	//Fill in <li> values for sortBy dropdown
-	pageObjectsList(utilitySearchTerm, 'utilityDropdown', 'utilitiesDropdown');	//Fill in <li> values for utilities dropdown
+	pageObjectsList(sortBysearchTerm, 'Dropdowns', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
+	pageObjectsList(filterBysearchTerm, 'Dropdowns', 'filterDropdown');	//Fill in <li> values for sortBy dropdown
+	pageObjectsList(utilitySearchTerm, 'Dropdowns', 'utilitiesDropdown');	//Fill in <li> values for utilities dropdown
 
 	var searchkey = "";
 

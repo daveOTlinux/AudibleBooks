@@ -4,6 +4,9 @@
 *.html~
 *.js~
 
+# Kate editor files
+*.kate-swp
+
 #Bluefish project file
 *.bfproject
 

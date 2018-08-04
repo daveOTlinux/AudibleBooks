@@ -7,8 +7,6 @@
 	function getDISTINCTSearchTerms($fieldName) {
 		// Include config file
 	    require_once 'config.php';
-
-//SELECT DISTINCT `SearchTerm` FROM `pageObjects` ORDER BY `SearchTerm` LIMIT 0, 10
     
 		$select = "SELECT DISTINCT `" . $fieldName . "` ";
 		$from = "FROM `pageObjects` ";
@@ -17,42 +15,32 @@
 		$limit = "LIMIT 0, 10";
 
 		$strSQL = $select . $from . $where . $orderby . $limit;				
-		//echo $strSQL;
+
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 
 	    $result = $mysqli->query($strSQL);
 
-	    $fieldDATA = array(array());
+	    $returnStatus = array(array());
 
 	    if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
-	        //echo '<div id="item">Ah snap...! No results found :/</div>';
-	        //$itemSQL = "Ah snap...! No results found : in getPageObjectByID()";
-	        $fieldDATA[0]["status"] = "FAILED";
-			$fieldDATA[0]["info"] = "Ah snap...! No results found : in getObjectsBySearch()";
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error getDISTINCTSearchTerms() - " . $mysqli->error;
 	    }
 	    else {
 	         // Get results of query
-	         global $count;
-	         $count = 0;
 	         while($row = $result->fetch_assoc()) {  //outputs the records
-				//$itemSQL = $row['itemSQL'];
-				//$fieldDATA[$count]["status"] = "Success";
-				$fieldDATA[$count]["ID"] = $count;
-	         	$fieldDATA[$count]["SearchTerm"] = $row['SearchTerm'];
+				$returnStatus[0]["item"] = $count;
+	         	$returnStatus[0]["SearchTerm"] = $row['SearchTerm'];
 	         	$count++;
-				//echo "IN getObjectsBySearch  ID -- " . $row[$ID] . " itemDisplay -- " . $row[$itemDisplay];
-
-//		        $returnStatus[0]["status"] = "Success";
-//				$returnStatus[0]["info"] = $row['itemSQL'];				
-				//echo "<div > Success -- " . $itemSQL . " ID -- " . $pageObjectID . "</div>";	'"' . $itemSQL . '"'				
 	         }
 		}
         $result->close();
         $mysqli->close();
-		return $fieldDATA;
+		return $returnStatus;
 	}
 
 	//function pass ID of pageObjects "numeric part of clicked itemID"
-	// return fieldDATA info contains the field data of the record given by ID
+	// return fieldDATA contains data from all the fields of the record given by ID
 	function getPageObjectByID($pageObjectID) {
 		// Include config file
 	    require_once 'config.php';
@@ -63,64 +51,27 @@
 
 		$strSQL = $select . $from . $where;
 				
-		//echo $strSQL;
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 
-	    $result = $mysqli->query($strSQL);
-
-	    $fieldDATA = array(array());
-
-	    if($result->num_rows == 0) {	// so if we have 0 records acc. to keyword display no records found
-	        //echo '<div id="item">Ah snap...! No results found :/</div>';
-	        $returnStatus[0]["status"] = "FAILED";
-			$returnStatus[0]["info"] = "Ah snap...! No results found : in getPageObjectByID()";
-	    }
-	    else {
-	         // Get results of query
-	         $count = 0;
-	         while($row = $result->fetch_assoc()) {  //outputs the records
-				$fieldDATA[$count]["ID"] = $row['ID'];
-				$fieldDATA[$count]["SearchTerm"] = $row['SearchTerm'];
-				$fieldDATA[$count]["orderItems"] = $row['orderItems'];
-	         	$fieldDATA[$count]["itemDisplay"] = $row['itemDisplay'];
-				$fieldDATA[$count]["itemSQL"] = $row['itemSQL'];
-				$fieldDATA[$count]["ModifiedDate"] = $row['ModifiedDate'];
-	         	$count++;
-	         }
-		}
-        $result->close();
-        $mysqli->close();
-		return $fieldDATA;
-	}
-
-	//function pass ID of pageObjects "numeric part of clicked itemID"
-	// return returnStatus info contains the SQL command of the record given by ID
-	function getitemSQLPageObjectByID($pageObjectID) {
-		// Include config file
-	    require_once 'config.php';
-    
-		$select = "SELECT `ID`, `itemDisplay`, `itemSQL` ";
-		$from = "FROM `pageObjects` ";
-		$where = "WHERE `ID` = " . $pageObjectID;
-
-		$strSQL = $select . $from . $where;
-				
-		//echo $strSQL;
 	    $result = $mysqli->query($strSQL);
 
 	    $returnStatus = array(array());
 
 	    if($result->num_rows == 0) {	// so if we have 0 records acc. to keyword display no records found
-	        //echo '<div id="item">Ah snap...! No results found :/</div>';
-	        $returnStatus[0]["status"] = "FAILED";
-			$returnStatus[0]["info"] = "Ah snap...! No results found : in getPageObjectByID()";
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error getPageObjectByID() - " . $mysqli->error;
 	    }
 	    else {
 	         // Get results of query
+	         $count = 0;
 	         while($row = $result->fetch_assoc()) {  //outputs the records
-				//$itemSQL = $row['itemSQL'];
-		        $returnStatus[0]["status"] = "Success";
-				$returnStatus[0]["info"] = $row['itemSQL'];				
-				//echo "<div > Success -- " . $itemSQL . " ID -- " . $pageObjectID . "</div>";	'"' . $itemSQL . '"'				
+				$returnStatus[$count]["ID"] = $row['ID'];
+				$returnStatus[$count]["SearchTerm"] = $row['SearchTerm'];
+				$returnStatus[$count]["orderItems"] = $row['orderItems'];
+	         	$returnStatus[$count]["itemDisplay"] = $row['itemDisplay'];
+				$returnStatus[$count]["itemSQL"] = $row['itemSQL'];
+				$returnStatus[$count]["ModifiedDate"] = $row['ModifiedDate'];
+	         	$count++;
 	         }
 		}
         $result->close();
@@ -128,54 +79,94 @@
 		return $returnStatus;
 	}
 
+	//function pass ID of pageObjects "numeric part of clicked itemID"
+	// return returnStatus info contains the data from field itemSQL of the record given by ID
+	function getitemSQLPageObjectByID($pageObjectID) {
+		// Include config file
+	    require_once 'config.php';
+    
+		$select = "SELECT `ID`, `itemSQL` ";
+		$from = "FROM `pageObjects` ";
+		$where = "WHERE `ID` = " . $pageObjectID;
 
+		$strSQL = $select . $from . $where;
+				
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+		
+	    $result = $mysqli->query($strSQL);
 
-	//function pass SearchTerm of pageObjects in $objectSearch
+	    $returnStatus = array(array());
+
+	    if($result->num_rows == 0) {	// so if we have 0 records acc. to keyword display no records found
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error getitemSQLPageObjectByID() - " . $mysqli->error;
+	    }
+	    else {
+	         // Get results of query
+	         while($row = $result->fetch_assoc()) {  //outputs the records
+		        $returnStatus[0]["status"] = "Success";
+				$returnStatus[0]["info"] = $row['itemSQL'];				
+	         }
+		}
+        $result->close();
+        $mysqli->close();
+		return $returnStatus;
+	}
+
+	//function pass SearchTerm of pageObjects in $objectSearch and choice of fields returned in $sqlModes
 	// return returnStatus contains the rows of data from search
-	function getObjectsBySearch($objectSearch, $sqlCommand) {
+	function getpageObjectsBySearch($objectSearch, $sqlModes) {
 		// Include config file
 	    require_once 'config.php';
     
 		$select = "SELECT * ";
 		$from = "FROM `pageObjects` ";
-		if($sqlCommand == "") {
-			$where = "WHERE `SearchTerm` = '" . $objectSearch . "' ";
-		} else {
-			$where = $sqlCommand;
+		$where = "WHERE `SearchTerm` = '" . $objectSearch . "' ";
+
+		switch($sqlModes) {
+			case "Dropdowns":
+				$select = "SELECT `ID`, `itemDisplay` ";
+				break;
+			case "":
+			
+				break;
+			default:
+				$where = $sqlCommand;
+				break;
 		}
+
 		$orderby = "ORDER BY `orderItems` ASC";
 
 		$strSQL = $select . $from . $where . $orderby;
 				
-		//echo $strSQL;
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 		 
 	    $result = $mysqli->query($strSQL);
 
-	    $fieldDATA = array(array());
+	    $returnStatus = array(array());
 
 	    if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
-	        //echo '<div id="item">Ah snap...! No results found :/</div>';
-	        //$itemSQL = "Ah snap...! No results found : in getPageObjectByID()";
-	        $fieldDATA[0]["status"] = "FAILED";
-			$fieldDATA[0]["info"] = "Ah snap...! No results found : in getObjectsBySearch()";
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error getpageObjectsBySearch() - " . $mysqli->error;
 	    }
 	    else {
 	         // Get results of query
-	         global $count;
 	         $count = 0;
 	         while($row = $result->fetch_assoc()) {  //outputs the records
-				$fieldDATA[$count]["ID"] = $row['ID'];
-				$fieldDATA[$count]["SearchTerm"] = $row['SearchTerm'];
-				$fieldDATA[$count]["orderItems"] = $row['orderItems'];
-	         	$fieldDATA[$count]["itemDisplay"] = $row['itemDisplay'];
-				$fieldDATA[$count]["itemSQL"] = $row['itemSQL'];
-				$fieldDATA[$count]["ModifiedDate"] = $row['ModifiedDate'];
+				$returnStatus[$count]["ID"] = $row['ID'];
+	         	$returnStatus[$count]["itemDisplay"] = $row['itemDisplay'];
+				if(!$sqlModes == "Dropdowns") {
+					$returnStatus[$count]["SearchTerm"] = $row['SearchTerm'];
+					$returnStatus[$count]["orderItems"] = $row['orderItems'];
+					$returnStatus[$count]["itemSQL"] = $row['itemSQL'];
+					$returnStatus[$count]["ModifiedDate"] = $row['ModifiedDate'];
+				}
 	         	$count++;
 	         }
 		}
         $result->close();
         $mysqli->close();
-		return $fieldDATA;
+		return $returnStatus;
 	}
 
 	//function pass SQL SET part in $sqlSET, and the required row in $rowID
@@ -189,7 +180,7 @@
 
 		$strSQL = $update . $sqlSET . $where;
 				
-		//echo $strSQL;
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 
 	    $returnStatus = array(array());
 
@@ -214,7 +205,7 @@
 
 		$strSQL = $update . $sqlSET;
 				
-		//echo $strSQL;
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 
 	    $returnStatus = array(array());
 
@@ -239,7 +230,7 @@
 
 		$strSQL = $delete . $whereID;
 				
-		//echo $strSQL;
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 
 	    $returnStatus = array(array());
 
@@ -268,6 +259,17 @@
 		$pageObject = $postOBJ["pageObject"];
 
 		switch ($forObject) {
+			case "getsqlItemByID":
+				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
+				$returnStatus = getitemSQLPageObjectByID($itemID);
+				header('Content-type: application/json');				
+				echo json_encode($returnStatus);
+				break;
+			case "Dropdowns":
+				$returnStatus = getpageObjectsBySearch($pageObject, $forObject);
+				header('Content-type: application/json');				
+				echo json_encode($returnStatus);
+				break;
 			case "searchbox":
 				$strSQL = $sqlCommand . " `" . $fieldName . "` = '" . $clickedData ."' ";
 				$_SESSION["mainWHERE"] = $strSQL;
@@ -277,14 +279,6 @@
 				//$returnStatus = array(array());
 				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
 				$returnStatus = getitemSQLPageObjectByID($itemID);
-				
-				if($returnStatus[0]["status"] == "Success") {
-					//$_SESSION["mainORDERBY"] = "ORDER BY " . $returnStatus[0]["info"];					
-					//$returnStatus[0]["status"] = $itemSQL;
-					//$returnStatus[0]["info"] = "Failed getPageObjectByID() function";
-					//header('Content-type: application/json');					
-					//echo json_encode($returnStatus);
-				}
 				echo json_encode($returnStatus);
 				break;
 
@@ -298,11 +292,6 @@
 				echo json_encode($returnStatus);
 				break;
 
-			case "sortDropdown":
-				$returnStatus = getObjectsBySearch($pageObject, $sqlCommand);
-				header('Content-type: application/json');				
-				echo json_encode($returnStatus);
-				break;
 			case "searchTermDropdown":
 				$returnStatus = getDISTINCTSearchTerms($pageObject);
 				//if($count > 1) {

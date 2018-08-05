@@ -330,21 +330,21 @@ $(document).ready(function (){	// actions with html objects. dropdowns, text ent
 	$('[data-toggle="tooltip"]').tooltip();   
 	
 	$("#sortDropdown").on('click',function(){	//When SortBy dropdown data <li> is clicked
-		var element = event.target;
+		//var element = event.target;
 		//alert("Object in sortDropdown has been clicked -- " + element.id);		
-		onclickDropdowns(element)	//function changes element text and gets SQL for <li> choice
+		onclickDropdowns(event.target)	//function changes element text and gets SQL for <li> choice
 	});
 
 	$("#filterDropdown").on('click',function(){	//When FilterBy dropdown data <li> is clicked
-		var element = event.target;
+		//var element = event.target;
 		//alert("Object in filterDropdown has been clicked -- " + element.id);		
-		onclickDropdowns(element)	//function changes element text and gets SQL for <li> choice
+		onclickDropdowns(event.target)	//function changes element text and gets SQL for <li> choice
 	});
 	
 	$("#utilitiesDropdown").on('click',function(){	//When FilterBy dropdown data <li> is clicked
-		var element = event.target;
+		//var element = event.target;
 		//alert("Object in utilitiesDropdown has been clicked -- " + element.id);		
-		onclickDropdowns(element)	//function changes element text and gets SQL for <li> choice
+		onclickDropdowns(event.target)	//function changes element text and gets SQL for <li> choice
 	});
 
 	

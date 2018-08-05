@@ -6,7 +6,7 @@ function liveSearchKeyPress(key) {
 	var objID = $('#sortby').attr('id');
 	var objText = document.getElementById(objID).innerHTML;	//Current text in <sortBy> dropdown
 	var sortBytext = objText.slice(objText.lastIndexOf(" ") + 1,objText.length);	//Get the last word
-	//alert("text in sortby -- " + sortBytext);
+	//alert("text in sortby -- " + sortBytext + "\n searchKEY --" + searchKEY);
 	var postData = {
 		"functionCall":"getDISTINCTSearchTerms",
 		"fieldName":sortBytext,
@@ -199,7 +199,7 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 	fetchTableResults(searchkey);	//Get table rows based on new WHERE
 	$("#resultlist").slideUp('fast');	//hid results list
 	$('#searchbox').attr("placeholder", sessionStorage.getItem("searchboxPlaceholder"));	//placeholder give idea of what to type
-
+	$('#searchbox').val("");	//remove the typed chars.
 }	
 
 function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from pageObjects table where = searchTerm

@@ -1,17 +1,18 @@
 <?php
 
 	// Include config file
-	require 'config.php';
+	//require_once 'config.php';
 
 	global $count;
 	//Functions
 
 	//function 
 	function getDISTINCTSearchTerms($fieldName, $searchKey) {
-    
+ 		require_once 'config.php';
+   
 		$select = "SELECT DISTINCT `" . $fieldName . "` AS field1 ";
 		$from = "FROM `AudibleBooks` ";
-		$where = "WHERE `" . $fieldName . "` LIKE '" . $searchkey . "' ";
+		$where = "WHERE `" . $fieldName . "` LIKE '" . $searchKey . "' ";
 		$orderby = "ORDER BY `" . $fieldName . "` ASC ";
 		$limit = "LIMIT 0, 10";
 
@@ -41,14 +42,14 @@
 		return $returnStatus;
 	}
 	
-	function getTableRowData($fieldName){
-		require 'config.php';
+	function getTableRowData($sqlQuery){
+		require_once 'config.php';
 
-		$select = $fieldName['select'];
-		$from = $fieldName['from'];
-		$where = $fieldName['where'];
-		$order = $fieldName['order'];
-		$limits = $fieldName['limits'];
+		$select = $sqlQuery['select'];
+		$from = $sqlQuery['from'];
+		$where = $sqlQuery['where'];
+		$order = $sqlQuery['order'];
+		$limits = $sqlQuery['limits'];
 	
 		$strSQL = $select . $from . $where . $order . $limits;
 
@@ -95,9 +96,10 @@
 	    switch($functionCall) {
 			case "getDISTINCTSearchTerms":
 				$returnStatus = getDISTINCTSearchTerms($fieldName, $searchKey);
+				break;
 			case "getTableRowData":
 				$returnStatus = getTableRowData($fieldName);
-
+				break;
 	    }
 	    
 		header('Content-type: application/json');

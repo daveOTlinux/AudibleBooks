@@ -1,12 +1,8 @@
 
 function onclickDropdowns(element) {	//comes here for when an item in the dropdowns is clicked 
-	//var sortBysearchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
-	//var filterBysearchTerm = sessionStorage.getItem("filterBysearchTerm");	//current filterBy pageObj search term
 	var liID = element.id;
 	var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
-
-
-	alert("onclickDropdowns() element click ID -- " + liID + " clicked element text -- " + liText);
+	//alert("onclickDropdowns() element click ID -- " + liID + " clicked element text -- " + liText);
 	switch(element.id.slice(0,5)) {
 		case 'sortI':
 			sessionStorage.setItem("sortBysearchSelected", liText);	//Set storage variable to new value in sortBy
@@ -22,7 +18,6 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 				sessionStorage.setItem("searchboxPlaceholder", "Search by " + liText);
 			}
 			document.getElementById('sortby').innerHTML = 'Sort by ' + liText;
-			//sessionStorage.setItem("searchboxPlaceholder", "Search by " + liText);
 			sessionStorage.setItem("sortBysearchSelected", "Sort by " + liText);
 			var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 			var objName = "sortby";
@@ -57,16 +52,13 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 	    type:'POST',
 	    data: {postOBJ: dataString},
 		success:function(returnData) {
-			//console.log("returnData onclickDropdowns -- " + returnData);
-			//var obj = $.parseJSON(returnData);
-			//var myObj = JSON.parse(returnData.substring(1, returnData .length-1));
 			$.each(returnData, function(i, resultitem){
-				alert("Success with Ajax onclickDropdowns()) -- " + resultitem.info);				
+				//alert("Success with Ajax onclickDropdowns()) -- " + resultitem.info);				
 				if (resultitem.status == 'Success') {				
 					//console.log("returnData -- " + returnData);				
 					switch(objName) {
 						case "sortby":
-							sessionStorage.setItem("mainTable_Order", "ORDER BY " + myObj.info + " ")
+							sessionStorage.setItem("mainTable_Order", "ORDER BY " + resultitem.info + " ")
 							var searchkey = "";			
 							//fetchTableResults(searchkey) uses variables
 							fetchTableResults(searchkey);
@@ -81,13 +73,6 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 				}
 				
 			});
-			/*alert("In onclickDropdowns returnData length -- " + obj.length +
-			 "\n obj.status -- " + obj.status +
-			 "\n myObj.lenght -- " + myObj.length + 
-			 "\n myObj.status -- " + myObj.status);*/
-			//var newStr = returnData.substring(1, returnData .length-1);
-			//console.log("returnData -- " + myObj.status); //this breaks code when myObj.length = 1 !!
-
 		},
         error: function() {
         	alert('Error on sortby or filterby item clicked.');

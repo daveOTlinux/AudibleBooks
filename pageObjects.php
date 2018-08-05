@@ -280,6 +280,7 @@
 				//$returnStatus = array(array());
 				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
 				$returnStatus = getitemSQLPageObjectByID($itemID);
+				header('Content-type: application/json');
 				echo json_encode($returnStatus);
 				break;
 

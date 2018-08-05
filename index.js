@@ -8,19 +8,15 @@ function liveSearchKeyPress(key) {
 	var sortBytext = objText.slice(objText.lastIndexOf(" ") + 1,objText.length);	//Get the last word
 	//alert("text in sortby -- " + sortBytext);
 	var postData = {
-		"field1":sortBytext,
-		"select":"SELECT DISTINCT `" + sortBytext + "` AS field1 ",
-		"from":"FROM AudibleBooks " ,
-		"where":"WHERE `" + sortBytext + "` LIKE " ,
-		"order":"ORDER BY `" + sortBytext + "` ASC " ,
-		"limit":"LIMIT 10",
+		"functionCall":"getDISTINCTSearchTerms",
+		"fieldName":sortBytext,
 		"searchkey":searchKEY
 	};
 	var dataString = JSON.stringify(postData);
 
 	if (key.length > 0)	{	    	
 		$.ajax({
-			url:'fetchSearchData.php',
+			url:'AudibleBooks.php',
 			type:'POST',
 			data: {postOBJ: dataString},
 			beforeSend:function () {
@@ -140,16 +136,21 @@ function fetchTableResults(searchkey) {		// Fills the main Table <div> #maintabl
 	var order = sessionStorage.getItem("mainTable_Order");	//Get select session value
 	var limits = sessionStorage.getItem("mainTable_Limits");	//Get select session value
 
-
-//	alert("SQL string before call -- \n " + select + "\n" + from + "\n" +
-//		 where + "\n" + order + "\n" + limits + "\n" + searchkey)
-
-	var postData = {
-	 	"select":select,
+	var sqlObject = {
+		"select":select,
 		"from":from,
 		"where":where,
 		"order":order,
-		"limits":limits,
+		"limits":limits
+	}
+
+
+/*	alert("SQL string before call -- \n " + select + "\n" + from + "\n" +
+		 where + "\n" + order + "\n" + limits + "\n" + searchkey)	*/
+
+	var postData = {
+		"functionCall":"getTableRowData",
+		"fieldName":sqlObject,
 		"searchkey":searchkey
 	};
 	var dataString = JSON.stringify(postData);

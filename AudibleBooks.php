@@ -1,62 +1,112 @@
 <?php
-	// Start the session  NOTE Must be at top of file before any HTML
-	//session_start();
-	
-    //if($_POST['keyword'] && !empty($_POST['keyword'])){
-	if($_POST['postOBJ'] && !empty($_POST['postOBJ'])){
-		// Include config file
-	    require_once 'config.php';
 
-		$postOBJ = json_decode($_POST['postOBJ'], TRUE);
-		
-		$select = $postOBJ["select"];
-		$from = $postOBJ["from"];
-		$where = $postOBJ["where"];
-		$order = $postOBJ["order"];
-		$limits = $postOBJ["limits"];
-	    $searchkey = $postOBJ["searchkey"];
-		
+	// Include config file
+	require 'config.php';
+
+	global $count;
+	//Functions
+
+	//function 
+	function getDISTINCTSearchTerms($fieldName, $searchKey) {
+    
+		$select = "SELECT DISTINCT `" . $fieldName . "` AS field1 ";
+		$from = "FROM `AudibleBooks` ";
+		$where = "WHERE `" . $fieldName . "` LIKE '" . $searchkey . "' ";
+		$orderby = "ORDER BY `" . $fieldName . "` ASC ";
+		$limit = "LIMIT 0, 10";
+
+		$strSQL = $select . $from . $where . $orderby . $limit;				
+
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+
+	    $result = $mysqli->query($strSQL);
+
+	    $returnStatus = array(array());
+
+	    if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error getDISTINCTSearchTerms() - " . $mysqli->error;
+	    }
+	    else {
+	         // Get results of query
+	         $count = 0;
+	         while($row = $result->fetch_assoc()) {  //outputs the records
+				$returnStatus[$count]["id"] = strval($count);
+	         	$returnStatus[$count]["field1"] = $row['field1'];
+	         	$count++;
+	         }
+		}
+        $result->close();
+        $mysqli->close();
+		return $returnStatus;
+	}
+	
+	function getTableRowData($fieldName){
+		require 'config.php';
+
+		$select = $fieldName['select'];
+		$from = $fieldName['from'];
+		$where = $fieldName['where'];
+		$order = $fieldName['order'];
+		$limits = $fieldName['limits'];
+	
 		$strSQL = $select . $from . $where . $order . $limits;
-		
-		//global $javascript; 
-		//$javascript = $strSQL;
-		//echo "The current SQL string --" . $strSQL;
-		//echo json_encode($strSQL);
-//		/*		
+
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 		
 	    $result = $mysqli->query($strSQL);
+
+	    $returnStatus = array(array());
 	    
 	    if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
-	        echo '<div id="item">Ah snap...! No results found :/</div>';
-	        $result->close();
-	        $mysqli->close();
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error getDISTINCTSearchTerms() - " . $mysqli->error;
 	
 	    }
 	    else {
-			//echo "<ul class='shownames'>";            
 	         // Get results of query
 	         $count = 0;
-	         $fieldDATA = array(array());
 	         while($row = $result->fetch_assoc()) {  //outputs the records
-				$fieldDATA[$count]["ID"] = $row['ID'];;
-				$fieldDATA[$count]["Title"] = $row['Title'];
-				$fieldDATA[$count]["Author"] = $row['Author'];
-				$fieldDATA[$count]["Title"] = $row['Title'];
-				$fieldDATA[$count]["Series"] = $row['Series'];
+				$returnStatus[$count]["ID"] = $row['ID'];;
+				$returnStatus[$count]["Title"] = $row['Title'];
+				$returnStatus[$count]["Author"] = $row['Author'];
+				$returnStatus[$count]["Title"] = $row['Title'];
+				$returnStatus[$count]["Series"] = $row['Series'];
 				$count++;
-	         	
-				//echo "<div class='showitem' id='item" . $count . "' onclick='location.href=`read.php?ID=$ID`'> $Author </div>";					
 	         }
-			if($count > 1) {
-				header('Content-type: application/json');
-			}
-			echo json_encode($fieldDATA);	         
-	        //echo var_dump($fieldDATA,true); 
-	        //echo json_encode($fieldDATA);
-			//echo '</ul>';            
-	        $result->close();
-	        $mysqli->close();
-	    };
-//	*/
+	    };	
+		$result->close();
+		$mysqli->close();
+		return $returnStatus;
+	}
+
+	
+//======================================================================================
+
+    //if($_POST['keyword'] && !empty($_POST['keyword'])){
+	if($_POST['postOBJ'] && !empty($_POST['postOBJ'])){
+
+		$postOBJ = json_decode($_POST['postOBJ'], TRUE);
+		
+		$functionCall = $postOBJ["functionCall"];
+		$fieldName = $postOBJ["fieldName"];
+	    $searchKey = $postOBJ["searchkey"];
+
+	    switch($functionCall) {
+			case "getDISTINCTSearchTerms":
+				$returnStatus = getDISTINCTSearchTerms($fieldName, $searchKey);
+			case "getTableRowData":
+				$returnStatus = getTableRowData($fieldName);
+
+	    }
+	    
+		header('Content-type: application/json');
+		echo json_encode($returnStatus);	         
+	} else {
+		$returnStatus[0]["status"] = "FAILED";
+		$returnStatus[0]["info"] = "No POST data.";
+		header('Content-type: application/json');		
+		echo json_encode($returnStatus);		
 	};
+	
 ?>

@@ -1,4 +1,54 @@
 
+function liveSearchKeyPress(key) {
+	var $resultlist = $('#resultlist');
+	var searchKEY = key + '%';
+	//alert("sortby dropdown -- " + $('#sortby').attr('id'));
+	var objID = $('#sortby').attr('id');
+	var objText = document.getElementById(objID).innerHTML;	//Current text in <sortBy> dropdown
+	var sortBytext = objText.slice(objText.lastIndexOf(" ") + 1,objText.length);	//Get the last word
+	//alert("text in sortby -- " + sortBytext);
+	var postData = {
+		"field1":sortBytext,
+		"select":"SELECT DISTINCT `" + sortBytext + "` AS field1 ",
+		"from":"FROM AudibleBooks " ,
+		"where":"WHERE `" + sortBytext + "` LIKE " ,
+		"order":"ORDER BY `" + sortBytext + "` ASC " ,
+		"limit":"LIMIT 10",
+		"searchkey":searchKEY
+	};
+	var dataString = JSON.stringify(postData);
+
+	if (key.length > 0)	{	    	
+		$.ajax({
+			url:'fetchSearchData.php',
+			type:'POST',
+			data: {postOBJ: dataString},
+			beforeSend:function () {
+				$("#resultlist").slideUp('fast');
+			},
+			success:function(returnData) {
+				//console.log("returnData '#searchbox').on('keyup' -- " + returnData);
+				//alert("In '#searchbox').on('keyup' returnData length -- " + returnData.length)
+				$resultlist.empty();
+
+				$.each(returnData, function(i, resultitem){
+					//alert("id -- " + resultitem.id + " " + sortBytext +" -- " + resultitem.field1);
+					var searchItemTemplate = "<li onclick='searchResults(this)' " +
+							"id=searchitem" + resultitem.id +
+							" class='showitem'>" + resultitem.field1 + "</li>";
+					$resultlist.append(searchItemTemplate);
+				});
+				$('#resultlist').slideDown('fast');
+			},
+			error: function() {
+				alert('Error with Live Search. NO data from fetchSearchData.php');
+			}
+		});
+	} else {
+		$('#resultlist').slideUp('fast');	
+	}
+}
+
 function onclickDropdowns(element) {	//comes here for when an item in the dropdowns is clicked 
 	var liID = element.id;
 	var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
@@ -194,7 +244,7 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 	
 }
 
-$(document).ready(function (){	//searchbox keyup. Live Ajax
+/*	$(document).ready(function (){	//searchbox keyup. Live Ajax
 	var $resultlist = $('#resultlist');
 		
 	$('#searchbox').on('keyup',function () {	//Ajax Live Search. Comes here on ever keyup.
@@ -267,11 +317,16 @@ $(document).ready(function (){	//searchbox keyup. Live Ajax
 		//alert("Object in utilitiesDropdown has been clicked -- " + element.id);		
 		onclickDropdowns(element)	//function changes element text and gets SQL for <li> choice
 	});
-*/
 
-});
+});	*/
 
-$(document).ready(function (){	// dropdowns clicked.
+$(document).ready(function (){	// actions with html objects. dropdowns, text entry, mouse hover...
+	$('#searchbox').on('keyup',function () {	//Ajax Live Search. Comes here on ever keyup.
+		//var key = $(this).val();
+		liveSearchKeyPress($(this).val());
+	});
+
+	$('[data-toggle="tooltip"]').tooltip();   
 	
 	$("#sortDropdown").on('click',function(){	//When SortBy dropdown data <li> is clicked
 		var element = event.target;
@@ -349,6 +404,6 @@ $(document).ready(function(){	//Code to run when page finishes loading
 
 });
 
-$(document).ready(function(){	//tooltip
+/*	$(document).ready(function(){	//tooltip
 	$('[data-toggle="tooltip"]').tooltip();   
-});
+});	*/

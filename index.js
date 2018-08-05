@@ -193,7 +193,7 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 
 	//alert("Clicked element innerHTML -- " + itemClicked );	
 
-	sessionStorage.setItem("mainTable_Where", "WHERE `Author` = '" + itemClicked + "' ");	//update mainTable SQL with selected search value. 
+	//sessionStorage.setItem("mainTable_Where", "WHERE `Author` = '" + itemClicked + "' ");	//update mainTable SQL with selected search value. 
 	var searchkey = "";
 	//fetchTableResults(searchkey) uses variables
 	fetchTableResults(searchkey);	//Get table rows based on new WHERE

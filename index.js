@@ -1,4 +1,43 @@
 
+function makeFooterSpace() {
+	var dataMustache = {
+		"utilitiesText":"Utilities"
+	};
+	fillTemplateSpace("footerSpace", "audibleFooterTemplate", dataMustache)
+}
+
+function makeBodySpace() {
+	var dataMustache = {
+		"tableRowId":"maintable",
+		"tablebodyId":"maintablebody"
+	};
+	fillTemplateSpace("bodySpace", "tableRowsTemplate", dataMustache)
+}
+
+function makeHeaderSpace() {
+	var dataMustache = {
+		"sortbyText":"Sort by Last Edit ",
+		"filterbyText":"Filter by Nothing "
+	};
+	fillTemplateSpace("headerSpace", "audibleHeaderTemplate", dataMustache)
+}
+
+function makeTitleSpace() {
+	var dataMustache = {
+		"titleText":"Audible Books",
+		"titleNewButton":"Add New Audible Book"
+	};
+	fillTemplateSpace("titleSpace", "audibleTitleTemplate", dataMustache)
+}
+
+function fillTemplateSpace(templateDivName, templateName, mustacheData) {
+	var $templateDivSpace = $("#" + templateDivName);
+	var $templateHTML = $("#" + templateName).html();
+	//alert("In fillTemplateSpace() ")
+	$templateDivSpace.empty();
+	$templateDivSpace.append(Mustache.render($templateHTML, mustacheData));
+}
+
 function liveSearchKeyPress(key) {
 	var $resultlist = $('#resultlist');
 	var searchKEY = key + '%';
@@ -235,7 +274,8 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 			//alert("in pageObjectsList: idname -- " + objIDname);
 			$('#' + myOBJ.id).empty();
 			$.each(returnData, function(i, resultitem){
-				$('#' + myOBJ.id).append("<li id='" + objIDname + resultitem.ID + "' class='showitem'>" + resultitem.itemDisplay + "</li>");
+				$('#' + myOBJ.id).append("<li id='" + objIDname + resultitem.ID + "' onclick='onclickDropdowns(this)' " +
+					"class='showitem'>" + resultitem.itemDisplay + "</li>");
 			});				
         },
         error: function() {
@@ -321,17 +361,18 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 
 });	*/
 
+/*
 $(document).ready(function (){	// actions with html objects. dropdowns, text entry, mouse hover...
 	$('#searchbox').on('keyup',function () {	//Ajax Live Search. Comes here on ever keyup.
 		//var key = $(this).val();
 		liveSearchKeyPress($(this).val());
 	});
 
-	$('[data-toggle="tooltip"]').tooltip();   
+//	$('[data-toggle="tooltip"]').tooltip();   
 	
 	$("#sortDropdown").on('click',function(){	//When SortBy dropdown data <li> is clicked
 		//var element = event.target;
-		//alert("Object in sortDropdown has been clicked -- " + element.id);		
+		alert("Object in sortDropdown has been clicked -- " + element.id);		
 		onclickDropdowns(event.target)	//function changes element text and gets SQL for <li> choice
 	});
 
@@ -348,10 +389,16 @@ $(document).ready(function (){	// actions with html objects. dropdowns, text ent
 	});
 
 	
-});
+});	*/
 
 $(document).ready(function(){	//Code to run when page finishes loading
 
+	//build and fill template buffers with html
+	makeTitleSpace();
+	makeHeaderSpace();
+	makeBodySpace();
+	makeFooterSpace();
+	
 	//javascript session storage
 	var testSession = sessionStorage.getItem("sessionStorageInit");
 	//alert("Init Document load testSession -- " + typeof testSession);
@@ -402,7 +449,8 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	//fetchTableResults(searchkey) uses variables
 	fetchTableResults(searchkey);
 	
-
+	
+	
 });
 
 /*	$(document).ready(function(){	//tooltip

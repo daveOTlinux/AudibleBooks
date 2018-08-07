@@ -17,7 +17,7 @@ function makeBodySpace() {
 function makeHeaderSpace() {
 	var dataMustache = {
 		"sortbyText":"Sort by Last Edit ",
-		"filterbyText":"Filter by Nothing "
+		"filterbyText":"Filter "
 	};
 	fillTemplateSpace("headerSpace", "audibleHeaderTemplate", dataMustache)
 }
@@ -38,14 +38,18 @@ function fillTemplateSpace(templateDivName, templateName, mustacheData) {
 	$templateDivSpace.append(Mustache.render($templateHTML, mustacheData));
 }
 
-function liveSearchKeyPress(key) {
+function liveSearchKeyPress(element) {
+	var $searchBoxId = element.id;
+	var key = $("#" + $searchBoxId).val();
+	//console.log("element id -- "+element.id + " key -- "+ $("#" + $searchBoxId).val());
+	//alert("liveSearchKeyPress() element.id -- " + $searchBoxId + "\n key -- " + key);
 	var $resultlist = $('#resultlist');
 	var searchKEY = key + '%';
 	//alert("sortby dropdown -- " + $('#sortby').attr('id'));
 	var objID = $('#sortby').attr('id');
 	var objText = document.getElementById(objID).innerHTML;	//Current text in <sortBy> dropdown
 	var sortBytext = objText.slice(objText.lastIndexOf(" ") + 1,objText.length);	//Get the last word
-	//alert("text in sortby -- " + sortBytext + "\n searchKEY --" + searchKEY);
+	//alert("text in sortby -- " + sortBytext + "\n searchKEY -- " + searchKEY);
 	var postData = {
 		"functionCall":"getDISTINCTSearchTerms",
 		"fieldName":sortBytext,
@@ -90,10 +94,16 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 	//alert("onclickDropdowns() element click ID -- " + liID + " clicked element text -- " + liText);
 	switch(element.id.slice(0,5)) {
 		case 'sortI':
+			document.getElementById('sortby').innerHTML = liText;
 			sessionStorage.setItem("sortBysearchSelected", liText);	//Set storage variable to new value in sortBy
-			//alert("clicked dropdown item ID -- " + liID + " item text -- " + liText);
-			if (liText == "Latest Modified") {
-				//sessionStorage.setItem("sortBysearchSelected", "Latest Modified");
+			var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
+			var objName = "sortby";
+			var forObject = "getsqlItemByID";
+			var sqlCommand = "";
+			//console.log("sortItem text -- " + liText + " li ID -- " + liID);
+			break;
+		case 'filte':
+			if (liText == "Nothing") {
 				sessionStorage.setItem("searchboxPlaceholder", "");
 				$('#searchbox').attr("placeholder", "");	//removed for disabled element
 				$('#searchbox').prop('disabled', true);	//Disable searchbox when in "Last Edit" sortBy and filterBy Nothing mode.
@@ -102,26 +112,18 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 				$('#searchbox').attr("placeholder", "Search by " + liText);	//placeholder give idea of what to type
 				sessionStorage.setItem("searchboxPlaceholder", "Search by " + liText);
 			}
-			document.getElementById('sortby').innerHTML = 'Sort by ' + liText;
-			sessionStorage.setItem("sortBysearchSelected", "Sort by " + liText);
-			var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
-			var objName = "sortby";
-			var forObject = "sortfield";
-			var sqlCommand = "ORDER";
-			console.log("sortItem text -- " + liText + " li ID -- " + liID);
-			break;
-		case 'filte':
-			document.getElementById('filterby').innerHTML = 'Filter by ' + liText;
-			var searchTerm = sessionStorage.getItem("filterBysearchTerm");	//current filterBy pageObj search term
+			document.getElementById('filterby').innerHTML = liText;
+			sessionStorage.setItem("filterBysearchSelected", "Nothing");	//set filterby current selection session storage
+			var searchTerm = sessionStorage.getItem("filterBysearchTerm");	//get vcurrent filterBy pageObj search term
 			var objName = "filterby";
-			//console.log("filterItem" + " li ID -- " + liID);
+			//console.log("filterItem text -- " + liText + " li ID -- " + liID);
 			break;
 		case 'utili':
 			var searchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
 			var objName = "utilities";	//used in success: switch
 			var forObject = "getsqlItemByID";	//used pageObject.php to get itemSQL for and ID
 			var sqlCommand = "";
-			console.log("filterItem" + " li ID -- " + liID);
+			//console.log("filterItem" + " li ID -- " + liID);
 			break;
 	}
 	var postData = {
@@ -149,7 +151,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 							fetchTableResults(searchkey);
 							break;
 						case "utilities":
-							alert("Utilities clicked. resultitem.info -- " + resultitem.info);
+							//alert("Utilities clicked. resultitem.info -- " + resultitem.info);
 							window.open("https://onthebay.info" + resultitem.info);
 							break;
 					}
@@ -230,12 +232,12 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 	//var $searchbox = $('#searchbox');
 	var itemClicked = document.getElementById(thisID.id).innerHTML	 
 
-	//alert("Clicked element innerHTML -- " + itemClicked );	
+	alert("searchResults() Clicked element innerHTML -- " + itemClicked );	
 
 	//sessionStorage.setItem("mainTable_Where", "WHERE `Author` = '" + itemClicked + "' ");	//update mainTable SQL with selected search value. 
-	var searchkey = "";
+	//var searchkey = "";
 	//fetchTableResults(searchkey) uses variables
-	fetchTableResults(searchkey);	//Get table rows based on new WHERE
+	fetchTableResults(itemClicked);	//Get table rows based on new WHERE
 	$("#resultlist").slideUp('fast');	//hid results list
 	$('#searchbox').attr("placeholder", sessionStorage.getItem("searchboxPlaceholder"));	//placeholder give idea of what to type
 	$('#searchbox').val("");	//remove the typed chars.
@@ -361,37 +363,9 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 
 });	*/
 
-/*
-$(document).ready(function (){	// actions with html objects. dropdowns, text entry, mouse hover...
-	$('#searchbox').on('keyup',function () {	//Ajax Live Search. Comes here on ever keyup.
-		//var key = $(this).val();
-		liveSearchKeyPress($(this).val());
-	});
-
-//	$('[data-toggle="tooltip"]').tooltip();   
-	
-	$("#sortDropdown").on('click',function(){	//When SortBy dropdown data <li> is clicked
-		//var element = event.target;
-		alert("Object in sortDropdown has been clicked -- " + element.id);		
-		onclickDropdowns(event.target)	//function changes element text and gets SQL for <li> choice
-	});
-
-	$("#filterDropdown").on('click',function(){	//When FilterBy dropdown data <li> is clicked
-		//var element = event.target;
-		//alert("Object in filterDropdown has been clicked -- " + element.id);		
-		onclickDropdowns(event.target)	//function changes element text and gets SQL for <li> choice
-	});
-	
-	$("#utilitiesDropdown").on('click',function(){	//When FilterBy dropdown data <li> is clicked
-		//var element = event.target;
-		//alert("Object in utilitiesDropdown has been clicked -- " + element.id);		
-		onclickDropdowns(event.target)	//function changes element text and gets SQL for <li> choice
-	});
-
-	
-});	*/
-
 $(document).ready(function(){	//Code to run when page finishes loading
+
+	alert("In initial $(document).ready(function()");
 
 	//build and fill template buffers with html
 	makeTitleSpace();
@@ -399,9 +373,10 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	makeBodySpace();
 	makeFooterSpace();
 	
+
 	//javascript session storage
 	var testSession = sessionStorage.getItem("sessionStorageInit");
-	//alert("Init Document load testSession -- " + typeof testSession);
+	alert("Init Document load testSession -- " + typeof testSession);
 	
 	if ((typeof testSession == "undefined") || (testSession == null)) {	//Check if not true. Initilize session variables
 		alert("In if() statement. Initilize sessionStorage -- " + typeof testSession);
@@ -424,7 +399,8 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	
 	document.getElementById('sortby').innerHTML = sessionStorage.getItem("sortBysearchSelected");
 	document.getElementById('filterby').innerHTML = sessionStorage.getItem("filterBysearchSelected");
-	if (sessionStorage.getItem("sortBysearchSelected") == "Latest Modified") {
+
+	if (sessionStorage.getItem("filterBysearchSelected") == "Nothing") {
 		$('#searchbox').attr("placeholder", "");	//removed for disabled element
 		$('#searchbox').prop('disabled', true);	//Disable searchbox when in "Last Edit" sortBy and filterBy Nothing mode.
 	} else {
@@ -439,7 +415,7 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	var filterBysearchTerm = sessionStorage.getItem("filterBysearchTerm");	//current filterBy pageObj search term
 	var utilitySearchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
 
-	//pageObjectsList(searchTerm, forObject, $elementID)
+	//pageObjectsList(searchTerm, forObject, $elementID) function values to pass
 	pageObjectsList(sortBysearchTerm, 'Dropdowns', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
 	pageObjectsList(filterBysearchTerm, 'Dropdowns', 'filterDropdown');	//Fill in <li> values for sortBy dropdown
 	pageObjectsList(utilitySearchTerm, 'Dropdowns', 'utilitiesDropdown');	//Fill in <li> values for utilities dropdown

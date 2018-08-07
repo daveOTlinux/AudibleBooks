@@ -263,75 +263,43 @@
 			case "getsqlItemByID":
 				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
 				$returnStatus = getitemSQLPageObjectByID($itemID);
-				header('Content-type: application/json');				
-				echo json_encode($returnStatus);
 				break;
 			case "Dropdowns":
 				$returnStatus = getpageObjectsBySearch($pageObject, $forObject);
-				header('Content-type: application/json');				
-				echo json_encode($returnStatus);
 				break;
 			case "searchbox":
 				$strSQL = $sqlCommand . " `" . $fieldName . "` = '" . $clickedData ."' ";
 				$_SESSION["mainWHERE"] = $strSQL;
 				$_SESSION["searchWHEREset"] = TRUE;
 				break;
-			case "sortfield":
-				//$returnStatus = array(array());
-				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
-				$returnStatus = getitemSQLPageObjectByID($itemID);
-				header('Content-type: application/json');
-				echo json_encode($returnStatus);
-				break;
-
 			case "pageObjectRow":
-				//$returnStatus = array(array());
 				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
 				$returnStatus = getPageObjectByID($itemID);				
-				//if($count > 1) {
-					header('Content-type: application/json');
-				//}
-				echo json_encode($returnStatus);
 				break;
-
 			case "searchTermDropdown":
 				$returnStatus = getDISTINCTSearchTerms($pageObject);
-				header('Content-type: application/json');
-				echo json_encode($returnStatus);
 				break;
 			case "searchTermRows":
 				$returnStatus = getpageObjectsBySearch($pageObject, $sqlCommand);
-				header('Content-type: application/json');
-				echo json_encode($returnStatus);
-				
 				break;
 			case "updatePageObject":
 				$returnStatus = updatePageObjectRow($sqlCommand, $clickedData);
-
-				header('Content-type: application/json');
-				echo json_encode($returnStatus);
 				break;
 			case "appendPageObject":
 				$returnStatus = appendPageObjectRow($sqlCommand);
-
-				header('Content-type: application/json');
-				echo json_encode($returnStatus);
 				break;
 			case "deletePageObjectbyID":
 				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
 				$returnStatus = deletePageObjectbyID($itemID);
-
-				header('Content-type: application/json');
-				echo json_encode($returnStatus);
 				break;
 		}
-
-		//echo json_encode($clickedData);
+		header('Content-type: application/json');
+		echo json_encode($returnStatus);
 
 	} else {
 		$returnStatus[0]["status"] = "FAILED";
 		$returnStatus[0]["info"] = "No POST data.";
-		//header('Content-type: application/json');		
+		header('Content-type: application/json');		
 		echo json_encode($returnStatus);		
 	}
 

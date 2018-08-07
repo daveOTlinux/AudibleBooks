@@ -29,6 +29,7 @@
 		
 	<script src="index.js"></script>
 
+
 	<style type="text/css">
 <!--	    .wrapper{
 	        width: 700px;
@@ -61,21 +62,44 @@
 <!-- ========================================================================== -->
 
 
-		<template id="audibleFooterTemplate">
-			<div class="row" style="height: 75px;">
-				<div class="col-sm-8">
-						
-
+		<template id="audibleTitleTemplate">	<!-- Title Section -->
+			<div class="row" style="height: 60px;">
+				<div class="pt-2 col-sm-6">
+					<div class="page-header clearfix">
+						<h2 class="pull-left">{{titleText}}</h2>
+					</div>
 				</div>
-				<div class="col-sm-4">  		
-					<div id='utilitiesdiv' class='dropdown'>
-						<a id='utilities' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{utilitiesText}}<b class='caret'></b></a>
-						<ul id='utilitiesDropdown' class='dropdown-menu'></ul>
-					</div>					
+				<div class="pt-2 col-sm-6">  		
+					<a href="create.php" class="btn btn-success pull-right">{{titleNewButton}}</a>
 				</div>
-
 			</div>
+		</template>
 
+		<template id="audibleHeaderTemplate">
+			<div class="row" style="height: 60px;">    
+				<div class="col-sm-4">
+					<span >Sort by:</span>
+					<div id='sortbydiv' class='dropdown'>
+						<a id='sortby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{sortbyText}}<b class='caret'></b></a>
+						<ul id='sortDropdown' class='dropdown-menu'></ul>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<span >Filter by:</span>
+					<div id='filterbydiv' class='dropdown'>
+						<a id='filterby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{filterbyText}}<b class='caret'></b></a>
+						<ul id='filterDropdown' class='dropdown-menu'></ul>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<span >Search Box:</span>
+					<input type="search" name="keyword" placeholder="" id="searchbox" onkeyup="liveSearchKeyPress(this)">
+					<div id='searchresults'>
+						<!--<a href="post-location">Fetched Item</a>-->
+						<ul class='list-unstyled' id='resultlist'></ul>
+					</div>				
+				</div>
+			</div>
 		</template>
 
 		<template id="tableRowsTemplate">
@@ -99,41 +123,21 @@
 			</div>
 		</template>
 
-		<template id="audibleHeaderTemplate">
-			<div class="row" style="height: 50px;">    
-				<div class="col-sm-4">
-					<div id='sortbydiv' class='dropdown'>
-						<a id='sortby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{sortbyText}}<b class='caret'></b></a>
-						<ul id='sortDropdown' class='dropdown-menu'></ul>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<div id='filterbydiv' class='dropdown'>
-						<a id='filterby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{filterbyText}}<b class='caret'></b></a>
-						<ul id='filterDropdown' class='dropdown-menu'></ul>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<input type="search" name="keyword" placeholder="" id="searchbox">
-					<div id='searchresults'>
-						<!--<a href="post-location">Fetched Item</a>-->
-						<ul class='list-unstyled' id='resultlist'></ul>
-					</div>				
-				</div>
-			</div>
-		</template>
-
-		<template id="audibleTitleTemplate">	<!-- Title Section -->
+		<template id="audibleFooterTemplate">
 			<div class="row" style="height: 75px;">
-				<div class="pt-2 col-sm-6">
-					<div class="page-header clearfix">
-						<h2 class="pull-left">{{titleText}}</h2>
-					</div>
+				<div class="col-sm-8">
+						
+
 				</div>
-				<div class="pt-2 col-sm-6">  		
-					<a href="create.php" class="btn btn-success pull-right">{{titleNewButton}}</a>
+				<div class="col-sm-4">  		
+					<div id='utilitiesdiv' class='dropdown'>
+						<a id='utilities' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{utilitiesText}}<b class='caret'></b></a>
+						<ul id='utilitiesDropdown' class='dropdown-menu'></ul>
+					</div>					
 				</div>
+
 			</div>
+
 		</template>
     </body>
 </html>						

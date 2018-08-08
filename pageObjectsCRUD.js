@@ -199,7 +199,7 @@ function acknowledgeDeleteRow() {	//Open modal dialog Sure to "Delete" record
 			$.each(returnData, function(i, resultitem){
 				if (resultitem.status == 'Success') {
 					//alert("acknowledgeDeleteRow() deletePageObjectbyID call to PHP Success!");					
-					pageObjectsList("SearchTerm", 'searchTermDropdown', 'searchTermDropdown');	//Fill in <li> values for utilities dropdown
+					pageObjectsList("SearchTerm", 'getDISTINCTSearchTerms', 'searchTermDropdown');	//Fill in <li> values for utilities dropdown
 					onclickDropdowns(currentSearchTermDropDown, "", fixRowArrows)	//redraw current rows
 				} else {
 					alert("acknowledgeDeleteRow() AJAX failed \n resultitem.info -- " + resultitem.info);
@@ -305,7 +305,7 @@ function modalOpenAppend() {	//Come here when "Add New pageObject" is clicked
 		modalContent.append(Mustache.render(modalTemplate, modalData));
 
 	//pageObjectsList(dbFieldName, forObject, $elementID)		
-	pageObjectsList("SearchTerm", 'searchTermDropdown', 'listSearchtermDropdown-modal');	//Fill in <li> values for dropdown
+	pageObjectsList("SearchTerm", 'getDISTINCTSearchTerms', 'listSearchtermDropdown-modal');	//Fill in <li> values for dropdown
 
 	$("#myModal").modal();	//opens modal
 
@@ -322,14 +322,14 @@ function doListUpdateDisplayRefresh(idClickedItem, searchTermUpdateText) {	//Ref
 		var currentSearchTermDropDown = sessionStorage.getItem("sessionCurrentSearchTermDropdown");
 	}
 	//pageObjectsList(searchTerm, forObject, $elementID)
-	pageObjectsList("SearchTerm", 'searchTermDropdown', 'searchTermDropdown');	//Fill in <li> values for utilities dropdown
+	pageObjectsList("SearchTerm", 'getDISTINCTSearchTerms', 'searchTermDropdown');	//Fill in <li> values for utilities dropdown
 	onclickDropdowns(idClickedItem, searchTermUpdateText, fixRowArrows)	//redraw current rows
 }
 
 function checkSearchTermChange(searchTermText, callback) {	//pass searchTerm field text 
 	var idClickedItem = "";	
 	var postData = {
-		"forObject":"searchTermDropdown",	//forObject used in pageObjects.php by switch case for custom code
+		"forObject":"getDISTINCTSearchTerms",	//forObject used in pageObjects.php by switch case for custom code
 		"sqlCommand":"",
 		"pageObject":"SearchTerm",	//used to get row items
 		"fieldname":"",
@@ -452,7 +452,7 @@ function modalOpenUpdate(element) {	//come here if any update buttons clicked in
 	
 			});
 			//pageObjectsList(dbFieldName, forObject, $elementID)		
-			pageObjectsList("SearchTerm", 'searchTermDropdown', 'listSearchtermDropdown-modal');	//Fill in <li> values for dropdown
+			pageObjectsList("SearchTerm", 'getDISTINCTSearchTerms', 'listSearchtermDropdown-modal');	//Fill in <li> values for dropdown
 
 			$("#myModal").modal();	//opens modal
 		},
@@ -563,11 +563,11 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 
 $(document).ready(function (){	// html elements clicked.
 
-/*	$("#listSsearchtermDropdown-modal").on('click',function(){	//When dropdown data <li> is clicked
+/*	$("#listSearchtermDropdown-modal").on('click',function(){	//When dropdown data <li> is clicked
 		var element = event.target;
 		var idClickedItem = element.id;
 		//sessionStorage.setItem("sessionCurrentSearchTermDropdown", idClickedItem)
-		alert(".JS Object in listSsearchtermDropdown-modal has been clicked -- " + idClickedItem);		
+		alert(".JS Object in listSearchtermDropdown-modal has been clicked -- " + idClickedItem);		
 
 		//onclickDropdowns(idClickedItem)	//function changes element text and gets SQL for <li> choice
 	});	*/
@@ -611,7 +611,7 @@ $(document).ready(function(){	//Code to run when page finishes loading
 
 	}
 	//pageObjectsList(searchTerm, forObject, $elementID)
-	pageObjectsList("SearchTerm", 'searchTermDropdown', 'searchTermDropdown');	//Fill in <li> values for utilities dropdown
+	pageObjectsList("SearchTerm", 'getDISTINCTSearchTerms', 'searchTermDropdown');	//Fill in <li> values for utilities dropdown
 
 
 });

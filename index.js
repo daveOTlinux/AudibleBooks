@@ -93,6 +93,7 @@ function liveSearchKeyPress(element) {
 function onclickDropdowns(element) {	//comes here for when an item in the dropdowns is clicked 
 	var liID = element.id;
 	var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
+	var sqlCommand = "";
 	//alert("onclickDropdowns() element click ID -- " + liID + " clicked element text -- " + liText);
 	switch(element.id.slice(0,5)) {
 		case 'sortI':
@@ -101,7 +102,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 			var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 			var objName = "sortby";
 			var forObject = "getsqlItemByID";
-			var sqlCommand = "";
+			//var sqlCommand = "";
 			//console.log("sortItem text -- " + liText + " li ID -- " + liID);
 			break;
 		case 'filte':
@@ -117,6 +118,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 			document.getElementById('filterby').innerHTML = liText;
 			sessionStorage.setItem("filterBysearchSelected", "Nothing");	//set filterby current selection session storage
 			var searchTerm = sessionStorage.getItem("filterBysearchTerm");	//get vcurrent filterBy pageObj search term
+			var forObject = "getsqlItemByID";	//used pageObject.php to get itemSQL for and ID
 			var objName = "filterby";
 			//console.log("filterItem text -- " + liText + " li ID -- " + liID);
 			break;
@@ -124,13 +126,13 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 			var searchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
 			var objName = "utilities";	//used in success: switch
 			var forObject = "getsqlItemByID";	//used pageObject.php to get itemSQL for and ID
-			var sqlCommand = "";
+			//var sqlCommand = "";
 			//console.log("filterItem" + " li ID -- " + liID);
 			break;
 	}
 	var postData = {
 		"forObject":forObject,	//used in switch() to customize code and function called in pageObjects.php
-		"sqlCommand":sqlCommand,	//used in creating SQL for data search
+		"sqlCommand":"",	//used in creating SQL for data search
 		"pageObject":searchTerm,
 		"fieldname":liText,
 		"clickedData":liID,
@@ -251,6 +253,36 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 	$('#searchbox').val("");	//remove the typed chars.
 }	
 
+function fillSortbyDropdown(searchTerm, forObject, elementID) {
+
+	var postData = {
+		"forObject":forObject,	//forObject used in pageObjects.php by switch case for custom code
+		"sqlCommand":"",
+		"pageObject":searchTerm,	//used to get row items
+		"fieldname":"",
+		"clickedData":"",
+	};
+	//alert("in pageObjectsList \n searchTerm -- " + searchTerm + "\n forObject -- " + forObject + "\n elementID -- " + elementID);
+
+}
+
+function getListItems(postData) {
+	var dataString = JSON.stringify(postData);
+    $.ajax({
+        url:'pageObjects.php',
+        type:'POST',
+        data: {postOBJ: dataString},
+        success:function(returnData) {
+			console.log("returnData -- " + returnData);			
+			return returnData;
+        },
+        error: function() {
+        	alert('In pageObjectsList().  Error with getting data from pageObjects.php');
+        }
+	});
+
+}
+
 function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from pageObjects table where = searchTerm
 	var postData = {
 		"forObject":forObject,	//forObject used in pageObjects.php by switch case for custom code
@@ -268,24 +300,35 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
         success:function(returnData) {
 			console.log("returnData -- " + returnData);			
 			var myOBJ = document.getElementById(elementID);
+			var $myOBJContent = $('#' + myOBJ.id);
+			var myOBJTemplate = $('#liItemEntryTemplate').html();
 			//alert("element myOBJ.id  -- " +  myOBJ.id + " elementID -- " + elementID);
 			var objIDname = "noswitch";
 			switch(elementID) {
 				case "sortDropdown":
 					var objIDname = "sortItem";
+					var objOnclick = "onclickDropdowns(this)"
 					break;
 				case "filterDropdown":
 					var objIDname = "filteritem";
+					var objOnclick = "onclickDropdowns(this)"
 					break;
 				case "utilitiesDropdown":
 					var objIDname = "utilitiesitem";
+					var objOnclick = "onclickDropdowns(this)"
 					break;
 			};
 			//alert("in pageObjectsList: idname -- " + objIDname);
-			$('#' + myOBJ.id).empty();
+			$myOBJContent.empty();
 			$.each(returnData, function(i, resultitem){
-				$('#' + myOBJ.id).append("<li id='" + objIDname + resultitem.ID + "' onclick='onclickDropdowns(this)' " +
-					"class='showitem'>" + resultitem.itemDisplay + "</li>");
+				var myOBJdata = {
+					"liItemEntryId":objIDname + resultitem.ID,
+					"liItemEntryOnclick":objOnclick,
+					"liItemDisplay":resultitem.itemDisplay,
+				};
+				$myOBJContent.append(Mustache.render(myOBJTemplate, myOBJdata));
+				//$myOBJContent.append("<li id='" + objIDname + resultitem.ID + "' onclick='onclickDropdowns(this)' " +
+				//	"class='showitem'>" + resultitem.itemDisplay + "</li>");
 			});				
         },
         error: function() {

@@ -49,12 +49,76 @@
     <div class="wrapper">
         <div class="container-fluid">
 			<div id="titleSpace">
+				<div class="row" style="height: 60px;">
+					<div class="pt-2 col-sm-6">
+						<div class="page-header clearfix">
+							<h2 class="pull-left">Audible Books</h2>
+						</div>
+					</div>
+					<div class="pt-2 col-sm-6">  		
+						<a href="create.php" class="btn btn-success pull-right">Add New Audible Book</a>
+					</div>
+				</div>
 			</div>
 			<div id="headerSpace">
+				<div class="row" style="height: 60px;">    
+					<div class="col-sm-4">
+						<span >Sort by:</span>
+						<div id='sortbydiv' class='dropdown'>
+							<a id='sortby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Sort by Last Edit <b class='caret'></b></a>
+							<ul id='sortDropdown' class='dropdown-menu'></ul>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<span >Filter by:</span>
+						<div id='filterbydiv' class='dropdown'>
+							<a id='filterby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Filter <b class='caret'></b></a>
+							<ul id='filterDropdown' class='dropdown-menu'></ul>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<span >Search Box:</span>
+						<input type="search" name="keyword" placeholder="" id="searchbox" onkeyup="liveSearchKeyPress(this)">
+						<div id='searchresults'>
+							<!--<a href="post-location">Fetched Item</a>-->
+							<ul class='list-unstyled' id='resultlist'></ul>
+						</div>				
+					</div>
+				</div>
 			</div>
 			<div id="bodySpace">
+				<div class='row'id='maintable'>
+					<table class='table table-bordered table-hover'>
+						<thead>
+							<tr>
+								<th style='width: 8%'>ID</th>
+								<th style='width: 40%'>Title</th>
+								<th style='width: 20%'>Author</th>
+								<th style='width: 20%'>Series</th>
+								<th style='width: 22%'>Action</th>
+							</tr>
+						</thead>
+						<tbody id='maintablebody'>
+					
+						</tbody>
+					</table>
+
+
+				</div>
 			</div>
 			<div id="footerSpace">
+				<div class="row" style="height: 75px;">
+					<div class="col-sm-8">
+							
+
+					</div>
+					<div class="col-sm-4">  		
+						<div id='utilitiesdiv' class='dropdown'>
+							<a id='utilities' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Utilities <b class='caret'></b></a>
+							<ul id='utilitiesDropdown' class='dropdown-menu'></ul>
+						</div>					
+					</div>
+				</div>
 			</div>
 		</div>        
     </div>

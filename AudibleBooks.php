@@ -3,7 +3,7 @@
 	// Include config file
 	//require_once 'config.php';
 
-	global $count;
+	global $count, $returnStatus;
 	//Functions
 
 	//function 
@@ -61,7 +61,7 @@
 	    
 	    if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
 			$returnStatus[0]["status"] = "FAILED";
-			$returnStatus[0]["info"] = "Error getDISTINCTSearchTerms() - " . $mysqli->error;
+			$returnStatus[0]["info"] = "Error getTableRowData() - " . $mysqli->error;
 	
 	    }
 	    else {
@@ -102,13 +102,15 @@
 				break;
 	    }
 	    
-		header('Content-type: application/json');
-		echo json_encode($returnStatus);	         
+		//header('Content-type: application/json');
+		//echo json_encode($returnStatus);	         
 	} else {
 		$returnStatus[0]["status"] = "FAILED";
 		$returnStatus[0]["info"] = "No POST data.";
-		header('Content-type: application/json');		
-		echo json_encode($returnStatus);		
+		//header('Content-type: application/json');		
+		//echo json_encode($returnStatus);		
 	};
+	header('Content-type: application/json');		
+	echo json_encode($returnStatus);		
 	
 ?>

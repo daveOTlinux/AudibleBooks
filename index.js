@@ -1,17 +1,12 @@
 
-function makeFooterSpace() {
-	var dataMustache = {
-		"utilitiesText":"Utilities"
-	};
-	fillTemplateSpace("footerSpace", "audibleFooterTemplate", dataMustache)
-}
 
-function makeBodySpace() {
+
+function makeTitleSpace() {
 	var dataMustache = {
-		"tableRowId":"maintable",
-		"tablebodyId":"maintablebody"
+		"titleText":"Audible Books",
+		"titleNewButton":"Add New Audible Book"
 	};
-	fillTemplateSpace("bodySpace", "tableRowsTemplate", dataMustache)
+	fillTemplateSpace("titleSpace", "audibleTitleTemplate", dataMustache)
 }
 
 function makeHeaderSpace() {
@@ -22,12 +17,19 @@ function makeHeaderSpace() {
 	fillTemplateSpace("headerSpace", "audibleHeaderTemplate", dataMustache)
 }
 
-function makeTitleSpace() {
+function makeBodySpace() {
 	var dataMustache = {
-		"titleText":"Audible Books",
-		"titleNewButton":"Add New Audible Book"
+		"tableRowId":"maintable",
+		"tablebodyId":"maintablebody"
 	};
-	fillTemplateSpace("titleSpace", "audibleTitleTemplate", dataMustache)
+	fillTemplateSpace("bodySpace", "tableRowsTemplate", dataMustache)
+}
+
+function makeFooterSpace() {
+	var dataMustache = {
+		"utilitiesText":"Utilities "
+	};
+	fillTemplateSpace("footerSpace", "audibleFooterTemplate", dataMustache)
 }
 
 function fillTemplateSpace(templateDivName, templateName, mustacheData) {
@@ -46,13 +48,13 @@ function liveSearchKeyPress(element) {
 	var $resultlist = $('#resultlist');
 	var searchKEY = key + '%';
 	//alert("sortby dropdown -- " + $('#sortby').attr('id'));
-	var objID = $('#sortby').attr('id');
+	var objID = $('#filterby').attr('id');
 	var objText = document.getElementById(objID).innerHTML;	//Current text in <sortBy> dropdown
-	var sortBytext = objText.slice(objText.lastIndexOf(" ") + 1,objText.length);	//Get the last word
+	var searchBytext = objText.slice(objText.lastIndexOf(" ") + 1,objText.length);	//Get the last word
 	//alert("text in sortby -- " + sortBytext + "\n searchKEY -- " + searchKEY);
 	var postData = {
 		"functionCall":"getDISTINCTSearchTerms",
-		"fieldName":sortBytext,
+		"fieldName":searchBytext,
 		"searchkey":searchKEY
 	};
 	var dataString = JSON.stringify(postData);
@@ -168,7 +170,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
     });	
 }
 
-function fetchTableResults(searchkey) {		// Fills the main Table <div> #maintablebody
+function fetchTableResults(searchText) {		// Fills the main Table <div> #maintablebody
 	var $tablebody = $('#maintablebody');
 
 	var select = sessionStorage.getItem("mainTable_Select");	//Get select session value
@@ -176,7 +178,7 @@ function fetchTableResults(searchkey) {		// Fills the main Table <div> #maintabl
 	var where = sessionStorage.getItem("mainTable_Where");	//Get where session value
 	var order = sessionStorage.getItem("mainTable_Order");	//Get select session value
 	var limits = sessionStorage.getItem("mainTable_Limits");	//Get select session value
-
+	
 	var sqlObject = {
 		"select":select,
 		"from":from,
@@ -185,14 +187,13 @@ function fetchTableResults(searchkey) {		// Fills the main Table <div> #maintabl
 		"limits":limits
 	}
 
-
-/*	alert("SQL string before call -- \n " + select + "\n" + from + "\n" +
-		 where + "\n" + order + "\n" + limits + "\n" + searchkey)	*/
+	alert("SQL string before call -- \n " + select + "\n" + from + "\n" +
+		 where + "\n" + order + "\n" + limits + "\n searchText -- " + searchText);
 
 	var postData = {
 		"functionCall":"getTableRowData",
 		"fieldName":sqlObject,
-		"searchkey":searchkey
+		"searchkey":searchText
 	};
 	var dataString = JSON.stringify(postData);
     $.ajax({
@@ -210,11 +211,11 @@ function fetchTableResults(searchkey) {		// Fills the main Table <div> #maintabl
 						"<td>" + resultitem.Author + "</td>" +
 						"<td>" + resultitem.Series + "</td>" +
 						"<td>" +
-						"<a href='read.php?ID=" + resultitem.ID + "' title='View Record' data-toggle='tooltip'>" +
+						"<a href='#' title='View Record' data-toggle='tooltip'>" +
 							"<span class='fa fa-eye'></span></a>" +
-						"<a href='update.php?ID=" + resultitem.ID + "' title='Update Record' data-toggle='tooltip'>" +
+						"<a href='#' title='Update Record' data-toggle='tooltip'>" +
 							"<span class='fa fa-pencil'></span></a>" +
-						"<a href='delete.php?ID=" + resultitem.ID + "' title='Delete Record' data-toggle='tooltip'>" +
+						"<a href='#' title='Delete Record' data-toggle='tooltip'>" +
 							"<span class='fa fa-trash'></span></a>" +
 						"</td>" +
 						"</tr>";
@@ -230,14 +231,21 @@ function fetchTableResults(searchkey) {		// Fills the main Table <div> #maintabl
 
 function searchResults(thisID) {	//Called when item in Live Search box is clicked
 	//var $searchbox = $('#searchbox');
-	var itemClicked = document.getElementById(thisID.id).innerHTML	 
+	var itemClickedText = document.getElementById(thisID.id).innerHTML;
+	var filterbyText = $("#filterby").html();
+	var where = "WHERE `" + filterbyText + "` = '" + itemClickedText + "' " ;	//get rows matching item clicked in searchbox results
 
-	alert("searchResults() Clicked element innerHTML -- " + itemClicked );	
+	alert("searchResults() Clicked element innerHTML -- " + itemClickedText + "\n filterbyText -- " +
+		filterbyText + "\n WHERE -- " + where);	
+
+	
+	sessionStorage.setItem("mainTable_Where", where);	//Get where session value
+
 
 	//sessionStorage.setItem("mainTable_Where", "WHERE `Author` = '" + itemClicked + "' ");	//update mainTable SQL with selected search value. 
 	//var searchkey = "";
 	//fetchTableResults(searchkey) uses variables
-	fetchTableResults(itemClicked);	//Get table rows based on new WHERE
+	fetchTableResults("");	//Get table rows based on new WHERE
 	$("#resultlist").slideUp('fast');	//hid results list
 	$('#searchbox').attr("placeholder", sessionStorage.getItem("searchboxPlaceholder"));	//placeholder give idea of what to type
 	$('#searchbox').val("");	//remove the typed chars.
@@ -365,18 +373,18 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 
 $(document).ready(function(){	//Code to run when page finishes loading
 
-	alert("In initial $(document).ready(function()");
+	//alert("In initial $(document).ready(function()");
 
-	//build and fill template buffers with html
+/*	//build and fill template buffers with html
 	makeTitleSpace();
 	makeHeaderSpace();
 	makeBodySpace();
-	makeFooterSpace();
+	makeFooterSpace();	*/
 	
 
 	//javascript session storage
 	var testSession = sessionStorage.getItem("sessionStorageInit");
-	alert("Init Document load testSession -- " + typeof testSession);
+	//alert("Init Document load testSession -- " + typeof testSession);
 	
 	if ((typeof testSession == "undefined") || (testSession == null)) {	//Check if not true. Initilize session variables
 		alert("In if() statement. Initilize sessionStorage -- " + typeof testSession);
@@ -429,6 +437,3 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	
 });
 
-/*	$(document).ready(function(){	//tooltip
-	$('[data-toggle="tooltip"]').tooltip();   
-});	*/

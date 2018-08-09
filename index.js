@@ -90,6 +90,19 @@ function liveSearchKeyPress(element) {
 	}
 }
 
+function setStateSearchBox(state, liText) {
+	if (state == "disabled") {
+		sessionStorage.setItem("searchboxPlaceholder", "");
+		$('#searchbox').attr("placeholder", "");	//removed for disabled element
+		$('#searchbox').prop('disabled', true);	//Disable searchbox when in "Last Edit" sortBy and filterBy Nothing mode.
+		sessionStorage.setItem("mainTable_Where", "");	//Set SQL to show all rows
+	} else {
+		$('#searchbox').prop('disabled', false);	//Enable searchbox when not sortBy "Last Edit"  and filterBy Nothing mode.
+		$('#searchbox').attr("placeholder", "Search by " + liText);	//placeholder give idea of what to type
+		sessionStorage.setItem("searchboxPlaceholder", "Search by " + liText);
+	}
+}
+
 function onclickDropdowns(element) {	//comes here for when an item in the dropdowns is clicked 
 	var liID = element.id;
 	var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
@@ -106,29 +119,48 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 			//console.log("sortItem text -- " + liText + " li ID -- " + liID);
 			break;
 		case 'filte':
-			if (liText == "Nothing") {
-				sessionStorage.setItem("searchboxPlaceholder", "");
-				$('#searchbox').attr("placeholder", "");	//removed for disabled element
-				$('#searchbox').prop('disabled', true);	//Disable searchbox when in "Last Edit" sortBy and filterBy Nothing mode.
-				sessionStorage.setItem("mainTable_Where", "");	//Set SQL to show all rows
-			} else {
-				$('#searchbox').prop('disabled', false);	//Enable searchbox when not sortBy "Last Edit"  and filterBy Nothing mode.
-				$('#searchbox').attr("placeholder", "Search by " + liText);	//placeholder give idea of what to type
-				sessionStorage.setItem("searchboxPlaceholder", "Search by " + liText);
+			switch(liText) {
+				case 'Nothing':
+					sessionStorage.setItem("sortBysearchTerm", "sortOrder00");	//set sortBy pageObj session storage
+					sessionStorage.setItem("sortBysearchSelected", "Latest Modified");	//set sortBy current selection session storage
+					setStateSearchBox("disabled", liText);
+					pageObjectsList("sortOrder00", 'Dropdowns', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
+					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
+					var objName = "sortby";					
+					var liID = $("#sortDropdown li").last().attr('id');	//get id of first <li> in sortby dropdown
+					$("#sortby").text('Latest Modified');	//set sortby dropdown to correct display
+					break;
+				case 'Author':
+					sessionStorage.setItem("sortBysearchTerm", "sortOrder01");	//set sortBy pageObj session storage
+					sessionStorage.setItem("sortBysearchSelected", "Title");	//set sortBy current selection session storage
+					setStateSearchBox("enable", liText);
+					pageObjectsList("sortOrder01", 'Dropdowns', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
+					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
+					var objName = "sortby";					
+					var liID = $("#sortDropdown li").first().attr('id');	//get id of first <li> in sortby dropdown
+					$("#sortby").text('Title');	//set sortby dropdown to correct display
+					break;
+				case 'Series':
+					sessionStorage.setItem("sortBysearchTerm", "sortOrder02");	//set sortBy pageObj session storage
+					sessionStorage.setItem("sortBysearchSelected", "Read Order");	//set sortBy current selection session storage
+					setStateSearchBox("enable", liText);
+					pageObjectsList("sortOrder02", 'Dropdowns', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
+					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
+					var objName = "sortby";					
+					var liID = $("#sortDropdown li").first().attr('id');	//get id of first <li> in sortby dropdown
+					$("#sortby").text('Read Order');	//set sortby dropdown to correct display
+					
+					break;
 			}
 			document.getElementById('filterby').innerHTML = liText;
 			sessionStorage.setItem("filterBysearchSelected", liText);	//set filterby current selection session storage
-			var searchTerm = sessionStorage.getItem("filterBysearchTerm");	//get vcurrent filterBy pageObj search term
 			var forObject = "getsqlItemByID";	//used pageObject.php to get itemSQL for and ID
-			var objName = "filterby";
 			//console.log("filterItem text -- " + liText + " li ID -- " + liID);
 			break;
 		case 'utili':
 			var searchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
 			var objName = "utilities";	//used in success: switch
 			var forObject = "getsqlItemByID";	//used pageObject.php to get itemSQL for and ID
-			//var sqlCommand = "";
-			//console.log("filterItem" + " li ID -- " + liID);
 			break;
 	}
 	var postData = {
@@ -139,6 +171,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 		"clickedData":liID,
 		};
 	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
+	alert("In onclickDropdowns(). JSON dataString --\n" + dataString);
 	$.ajax({
 	    url:'pageObjects.php',
 	    type:'POST',
@@ -151,16 +184,14 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					switch(objName) {
 						case "sortby":
 							sessionStorage.setItem("mainTable_Order", "ORDER BY " + resultitem.info + " ")
-							//fetchTableResults() uses variables
 							fetchTableResults();
-							break;
-						case "filterby":
-							//fetchTableResults(searchkey) uses variables
-							fetchTableResults();							
 							break;
 						case "utilities":
 							//alert("Utilities clicked. resultitem.info -- " + resultitem.info);
 							window.open("https://onthebay.info" + resultitem.info);
+							break;
+						default:
+							fetchTableResults();							
 							break;
 					}
 				} else {
@@ -230,7 +261,7 @@ function fetchTableResults() {		// Fills the main Table <div> #maintablebody
 			});
         },
         error: function() {
-        	alert('Error with getting row data from AudibleBooks.php.');
+        	alert('In fetchTableResults(). Error with getting row data from AudibleBooks.php.');
         }
 	});
 }

@@ -110,13 +110,14 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 				sessionStorage.setItem("searchboxPlaceholder", "");
 				$('#searchbox').attr("placeholder", "");	//removed for disabled element
 				$('#searchbox').prop('disabled', true);	//Disable searchbox when in "Last Edit" sortBy and filterBy Nothing mode.
+				sessionStorage.setItem("mainTable_Where", "");	//Set SQL to show all rows
 			} else {
 				$('#searchbox').prop('disabled', false);	//Enable searchbox when not sortBy "Last Edit"  and filterBy Nothing mode.
 				$('#searchbox').attr("placeholder", "Search by " + liText);	//placeholder give idea of what to type
 				sessionStorage.setItem("searchboxPlaceholder", "Search by " + liText);
 			}
 			document.getElementById('filterby').innerHTML = liText;
-			sessionStorage.setItem("filterBysearchSelected", "Nothing");	//set filterby current selection session storage
+			sessionStorage.setItem("filterBysearchSelected", liText);	//set filterby current selection session storage
 			var searchTerm = sessionStorage.getItem("filterBysearchTerm");	//get vcurrent filterBy pageObj search term
 			var forObject = "getsqlItemByID";	//used pageObject.php to get itemSQL for and ID
 			var objName = "filterby";
@@ -150,9 +151,12 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					switch(objName) {
 						case "sortby":
 							sessionStorage.setItem("mainTable_Order", "ORDER BY " + resultitem.info + " ")
-							var searchkey = "";			
+							//fetchTableResults() uses variables
+							fetchTableResults();
+							break;
+						case "filterby":
 							//fetchTableResults(searchkey) uses variables
-							fetchTableResults(searchkey);
+							fetchTableResults();							
 							break;
 						case "utilities":
 							//alert("Utilities clicked. resultitem.info -- " + resultitem.info);
@@ -172,7 +176,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
     });	
 }
 
-function fetchTableResults(searchText) {		// Fills the main Table <div> #maintablebody
+function fetchTableResults() {		// Fills the main Table <div> #maintablebody
 	var $tablebody = $('#maintablebody');
 
 	var select = sessionStorage.getItem("mainTable_Select");	//Get select session value
@@ -190,12 +194,12 @@ function fetchTableResults(searchText) {		// Fills the main Table <div> #maintab
 	}
 
 	alert("SQL string before call -- \n " + select + "\n" + from + "\n" +
-		 where + "\n" + order + "\n" + limits + "\n searchText -- " + searchText);
+		 where + "\n" + order + "\n" + limits);
 
 	var postData = {
 		"functionCall":"getTableRowData",
 		"fieldName":sqlObject,
-		"searchkey":searchText
+		"searchkey":""
 	};
 	var dataString = JSON.stringify(postData);
     $.ajax({
@@ -245,9 +249,8 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 
 
 	//sessionStorage.setItem("mainTable_Where", "WHERE `Author` = '" + itemClicked + "' ");	//update mainTable SQL with selected search value. 
-	//var searchkey = "";
-	//fetchTableResults(searchkey) uses variables
-	fetchTableResults("");	//Get table rows based on new WHERE
+	//fetchTableResults() uses variables
+	fetchTableResults();	//Get table rows based on new WHERE
 	$("#resultlist").slideUp('fast');	//hid results list
 	$('#searchbox').attr("placeholder", sessionStorage.getItem("searchboxPlaceholder"));	//placeholder give idea of what to type
 	$('#searchbox').val("");	//remove the typed chars.
@@ -473,8 +476,8 @@ $(document).ready(function(){	//Code to run when page finishes loading
 
 	var searchkey = "";
 
-	//fetchTableResults(searchkey) uses variables
-	fetchTableResults(searchkey);
+	//fetchTableResults() uses variables
+	fetchTableResults();
 	
 	
 	

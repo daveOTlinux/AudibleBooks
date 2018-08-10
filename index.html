@@ -166,7 +166,7 @@
 			</div>
 		</template>
 
-		<template id="tableRowsTemplate">
+		<template id="tableHeaderTemplate">
 			<div class='row'id='{{tableRowId}}'>
 				<table class='table table-bordered table-hover'>
 					<thead>
@@ -182,8 +182,6 @@
 				
 					</tbody>
 				</table>
-
-
 			</div>
 		</template>
 
@@ -201,13 +199,26 @@
 				</div>
 
 			</div>
-
 		</template>
 
 		<template id="liItemEntryTemplate">
 			<li id='{{liItemEntryId}}' onclick='{{liItemEntryOnclick}}' class='showitem'>{{liItemDisplay}}</li>
 		</template>
 
+<template id="tableRowsTemplate">
+	<tr> 
+		<td>{{tableRow-ID}}</td> 
+		<td>{{tableRow-Title}}</td> 
+		<td>{{tableRow-Author}}</td> 
+		<td>{{tableRow-Series}}</td> 
+		<td> 
+			<a href='#' id='id='rowitemUpdate{{tableRow-ID}}' title='Update Record' data-toggle='tooltip'> 
+				<span class='fa fa-pencil'></span></a> 
+			<a href='#' id='id='rowitemDelete{{tableRow-ID}}' title='Delete Record' data-toggle='tooltip'> 
+				<span class='fa fa-trash'></span></a> 
+		</td> 
+	</tr>
+</template>
 
     </body>
 </html>						

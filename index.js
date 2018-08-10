@@ -208,7 +208,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 }
 
 function fetchTableResults() {		// Fills the main Table <div> #maintablebody
-	var $tablebody = $('#maintablebody');
+	//var $tablebody = $('#maintablebody');
 
 	var select = sessionStorage.getItem("mainTable_Select");	//Get select session value
 	var from = sessionStorage.getItem("mainTable_From");	//Get from session value
@@ -240,9 +240,19 @@ function fetchTableResults() {		// Fills the main Table <div> #maintablebody
         success:function(returnData) {
 			//console.log("returnData fetchTableResults -- " + returnData);
 			//alert("In fetchTableResults returnData length -- " + returnData.length);
-			$tablebody.empty();
+			//$tablebody.empty();
 			$.each(returnData, function(i, resultitem){
-		       	var tablerowtemplate = "<tr>" +
+			var dataMustache = {
+				"tableRow-ID":resultitem.ID,
+				"tableField-Title":resultitem.Title,
+				"tableField-Author":resultitem.Author,
+				"tableField-Series":resultitem.Series,
+				"onclickUpdate":""
+			};
+			fillTemplateSpace("maintablebody", "tableRowsTemplate", dataMustache)
+		       	
+		       	
+/*		       	"<tr>" +
 		       			"<td>" + resultitem.ID + "</td>" +
 						"<td>" + resultitem.Title + "</td>" +
 						"<td>" + resultitem.Author + "</td>" +
@@ -257,7 +267,8 @@ function fetchTableResults() {		// Fills the main Table <div> #maintablebody
 						"</td>" +
 						"</tr>";
 				//alert("table row --" + tablerowtemplate);
-				$tablebody.append(tablerowtemplate);
+				$tablebody.append(Mustache.render($templateHTML, mustacheData));
+				//$tablebody.append(tablerowtemplate);	*/
 			});
         },
         error: function() {
@@ -272,8 +283,8 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 	var filterbyText = $("#filterby").html();
 	var where = "WHERE `" + filterbyText + "` = '" + itemClickedText + "' " ;	//get rows matching item clicked in searchbox results
 
-	alert("searchResults() Clicked element innerHTML -- " + itemClickedText + "\n filterbyText -- " +
-		filterbyText + "\n WHERE -- " + where);	
+	//alert("searchResults() Clicked element innerHTML -- " + itemClickedText + "\n filterbyText -- " +
+	//	filterbyText + "\n WHERE -- " + where);	
 
 	
 	sessionStorage.setItem("mainTable_Where", where);	//Get where session value
@@ -287,6 +298,7 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 	$('#searchbox').val("");	//remove the typed chars.
 }	
 
+/*
 function fillSortbyDropdown(searchTerm, forObject, elementID) {
 
 	var postData = {
@@ -370,83 +382,7 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
         }
 	});
 	
-}
-
-/*	$(document).ready(function (){	//searchbox keyup. Live Ajax
-	var $resultlist = $('#resultlist');
-		
-	$('#searchbox').on('keyup',function () {	//Ajax Live Search. Comes here on ever keyup.
-		var key = $(this).val();
-		var searchKEY = key + '%';
-
-		//alert("sortby dropdown -- " + $('#sortby').attr('id'));
-		var objID = $('#sortby').attr('id');
-		var objText = document.getElementById(objID).innerHTML;	//Current text in <sortBy> dropdown
-		var sortBytext = objText.slice(objText.lastIndexOf(" ") + 1,objText.length);	//Get the last word
-		//alert("text in sortby -- " + sortBytext);
-
-
-		var postData = {
-			"field1":sortBytext,
-		 	"select":"SELECT DISTINCT `" + sortBytext + "` AS field1 ",
-			"from":"FROM AudibleBooks " ,
-			"where":"WHERE `" + sortBytext + "` LIKE " ,
-			"order":"ORDER BY `" + sortBytext + "` ASC " ,
-			"limit":"LIMIT 10",
-			"searchkey":searchKEY
-		};
-		var dataString = JSON.stringify(postData);
-
-		if (key.length > 0)	{	    	
-		    $.ajax({
-		        url:'fetchSearchData.php',
-		        type:'POST',
-		        data: {postOBJ: dataString},
-		        beforeSend:function () {
-		            $("#resultlist").slideUp('fast');
-		        },
-		        success:function(returnData) {
-					//console.log("returnData '#searchbox').on('keyup' -- " + returnData);
-					//alert("In '#searchbox').on('keyup' returnData length -- " + returnData.length)
-					$resultlist.empty();
-
-		            $.each(returnData, function(i, resultitem){
-		            	//alert("id -- " + resultitem.id + " " + sortBytext +" -- " + resultitem.field1);
-		            	var searchItemTemplate = "<li onclick='searchResults(this)' " +
-		            		 "id=searchitem" + resultitem.id +
-		            		 " class='showitem'>" + resultitem.field1 + "</li>";
-		    			$resultlist.append(searchItemTemplate);
-					});
-					$('#resultlist').slideDown('fast');
-		        },
-		        error: function() {
-		        	alert('Error with Live Search. NO data from fetchSearchData.php');
-		        }
-		    });
-		} else {
-			$('#resultlist').slideUp('fast');	
-		}
-	});
-/*
-	$("#sortDropdown").on('click',function(){	//When SortBy dropdown data <li> is clicked
-		var element = event.target;
-		//alert("Object in sortDropdown has been clicked -- " + element.id);		
-		onclickDropdowns(element)	//function changes element text and gets SQL for <li> choice
-	});
-
-	$("#filterDropdown").on('click',function(){	//When FilterBy dropdown data <li> is clicked
-		var element = event.target;
-		//alert("Object in filterDropdown has been clicked -- " + element.id);		
-		onclickDropdowns(element)	//function changes element text and gets SQL for <li> choice
-	});
-	
-	$("#utilitiesDropdown").on('click',function(){	//When FilterBy dropdown data <li> is clicked
-		var element = event.target;
-		//alert("Object in utilitiesDropdown has been clicked -- " + element.id);		
-		onclickDropdowns(element)	//function changes element text and gets SQL for <li> choice
-	});
-
-});	*/
+}	*/
 
 $(document).ready(function(){	//Code to run when page finishes loading
 

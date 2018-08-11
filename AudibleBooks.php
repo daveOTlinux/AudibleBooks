@@ -81,7 +81,54 @@
 		return $returnStatus;
 	}
 
+	function getAllFieldsByID($rowID) {
+		// Include config file
+		require_once 'config.php';
+		
+		// Prepare a select statement
+		$strSQL = "SELECT * FROM AudibleBooks WHERE ID = " . $rowID;
+
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+
+	    $result = $mysqli->query($strSQL);
+
+	    $returnStatus = array(array());
 	
+	
+	    if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error getDISTINCTSearchTerms() - " . $mysqli->error;
+	    }
+	    else {
+	         // Get results of query
+	         $count = 0;
+	         while($row = $result->fetch_assoc()) {  //outputs the records
+				$returnStatus[$count]["ID"] = $row["ID"];
+				$returnStatus[$count]["Title"] = $row["Title"];
+				$returnStatus[$count]["Author"] = $row["Author"];
+				$returnStatus[$count]["Series"] = $row["Series"];
+				$returnStatus[$count]["BookNumber"] = $row["BookNumber"];
+				$returnStatus[$count]["ReadOrderNumber"] = $row["ReadOrderNumber"];
+				$returnStatus[$count]["ReadOrder"] = $row["ReadOrder"];
+				$returnStatus[$count]["Categories"] = $row["Categories"];
+				$returnStatus[$count]["PurchaseRequired"] = $row["PurchaseRequired"];
+				$returnStatus[$count]["ListenedTo"] = $row["ListenedTo"];
+				$returnStatus[$count]["DateAdded"] = $row["DateAdded"];
+				$returnStatus[$count]["MyRating"] = $row["MyRating"];
+				$returnStatus[$count]["CoverArt"] = $row["CoverArt"];
+				$returnStatus[$count]["Notes"] = $row["Notes"];
+				$returnStatus[$count]["ModifiedDate"] = $row["ModifiedDate"];
+	         	$count++;
+	         }
+		}
+        $result->close();
+        $mysqli->close();
+		return $returnStatus;
+	}
+
+
+
+
 //======================================================================================
 
     //if($_POST['keyword'] && !empty($_POST['keyword'])){
@@ -100,6 +147,9 @@
 			case "getTableRowData":
 				$returnStatus = getTableRowData($fieldName);
 				break;
+			case "getAllFieldsByID":
+				$itemID = (int) filter_var($searchKey, FILTER_SANITIZE_NUMBER_INT);
+				$returnStatus = getAllFieldsByID($itemID);
 	    }
 	    
 		//header('Content-type: application/json');

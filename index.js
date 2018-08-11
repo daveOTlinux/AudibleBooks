@@ -40,6 +40,86 @@ function fillTemplateSpace(templateDivName, templateName, mustacheData) {
 	$templateDivSpace.append(Mustache.render($templateHTML, mustacheData));
 }
 
+function closeModifyAudible() {
+	makeTitleSpace();
+	makeHeaderSpace();
+	makeFooterSpace();
+}
+
+function tableRowUpdate(element) {
+	var $tablebody = $('#maintablebody');
+	var $templateHTML = $('#modifyAudibleBodyTemplate').html();
+	var $clickedIcon = element.id;
+	var $clickedID = element.id;
+	$clickedID = $clickedIcon.slice(13, $clickedIcon.length);
+	var mustacheData = {
+		"modifyAudibleID":$clickedID,
+	};
+	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
+	fillTemplateSpace("headerSpace", "modifyAudibleHeaderTemplate", "");
+	fillTemplateSpace("footerSpace", "modifyAudibleFooter", "");
+	
+	alert ("In tableRowUpdate(). \n$clickedIcon -- " +
+		$clickedIcon + "\n ID -- " + $clickedID);
+	
+	var postData = {
+		"functionCall":"getAllFieldsByID",
+		"fieldName":"",
+		"searchkey":$clickedID,		//ID of row to edit
+	};
+	var dataString = JSON.stringify(postData);
+    $.ajax({
+        url:'AudibleBooks.php',
+        type:'POST',
+        data: {postOBJ: dataString},
+        success:function(returnData) {
+			//console.log("returnData fetchTableResults -- " + returnData);
+			//alert("In fetchTableResults returnData length -- " + returnData.length);
+			$tablebody.empty();
+			$.each(returnData, function(i, resultitem){
+				if(resultitem.BookNumber==0) {
+					var modifyBook = resultitem.Series;
+				}else {
+					var modifyBook = resultitem.Series + " -- Book " + resultitem.BookNumber;
+				}
+				if(resultitem.ListenedTo==0) {
+					var modifyListenedTo = "NO";
+				}else {
+					var modifyListenedTo = "YES";
+				}	    					
+
+				var dataMustache = {
+					"modifyAudible-ID":resultitem.ID,
+					"modifyAudible-Title":resultitem.Title,
+					"modifyAudible-Author":resultitem.Author,
+					"modifyAudible-Series":resultitem.Series,
+					"modifyAudible-book":modifyBook,
+					"modifyAudible-BookNumber":resultitem.BookNumber,
+					"modifyAudible-ReadOrderNumber":resultitem.ReadOrderNumber,
+					"modifyAudible-ReadOrder":resultitem.ReadOrder,
+					"modifyAudible-Categories":resultitem.Categories,
+					"modifyAudible-PurchaseRequired":resultitem.PurchaseRequired,
+					"modifyAudible-ListenedTo":modifyListenedTo,
+					"modifyAudible-DateAdded":resultitem.DateAdded,
+					"modifyAudible-MyRating":resultitem.MyRating,
+					"modifyAudible-CoverArt":resultitem.CoverArt,
+					"modifyAudible-Notes":resultitem.Notes,
+					"modifyAudible-ModifiedDate":resultitem.ModifiedDate,					
+				};
+				$tablebody.append(Mustache.render($templateHTML, dataMustache));
+			});
+        },
+        error: function() {
+        	alert('In tableRowUpdate(). Error with getting row data from AudibleBooks.php.');
+        }
+	});
+	
+}
+
+function tableRowDelete(element) {
+	
+}
+
 function liveSearchKeyPress(element) {
 	var $searchBoxId = element.id;
 	var key = $("#" + $searchBoxId).val();
@@ -208,7 +288,9 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 }
 
 function fetchTableResults() {		// Fills the main Table <div> #maintablebody
-	//var $tablebody = $('#maintablebody');
+	var $tablebody = $('#maintablebody');
+	//var $templateDivSpace = $("#" + templateDivName);
+	var $templateHTML = $('#tableRowsTemplate').html();
 
 	var select = sessionStorage.getItem("mainTable_Select");	//Get select session value
 	var from = sessionStorage.getItem("mainTable_From");	//Get from session value
@@ -224,8 +306,8 @@ function fetchTableResults() {		// Fills the main Table <div> #maintablebody
 		"limits":limits
 	}
 
-	alert("SQL string before call -- \n " + select + "\n" + from + "\n" +
-		 where + "\n" + order + "\n" + limits);
+//	alert("SQL string before call -- \n " + select + "\n" + from + "\n" +
+//		 where + "\n" + order + "\n" + limits);
 
 	var postData = {
 		"functionCall":"getTableRowData",
@@ -240,35 +322,16 @@ function fetchTableResults() {		// Fills the main Table <div> #maintablebody
         success:function(returnData) {
 			//console.log("returnData fetchTableResults -- " + returnData);
 			//alert("In fetchTableResults returnData length -- " + returnData.length);
-			//$tablebody.empty();
+			$tablebody.empty();
 			$.each(returnData, function(i, resultitem){
-			var dataMustache = {
-				"tableRow-ID":resultitem.ID,
-				"tableField-Title":resultitem.Title,
-				"tableField-Author":resultitem.Author,
-				"tableField-Series":resultitem.Series,
-				"onclickUpdate":""
-			};
-			fillTemplateSpace("maintablebody", "tableRowsTemplate", dataMustache)
-		       	
-		       	
-/*		       	"<tr>" +
-		       			"<td>" + resultitem.ID + "</td>" +
-						"<td>" + resultitem.Title + "</td>" +
-						"<td>" + resultitem.Author + "</td>" +
-						"<td>" + resultitem.Series + "</td>" +
-						"<td>" +
-						"<a href='#' title='View Record' data-toggle='tooltip'>" +
-							"<span class='fa fa-eye'></span></a>" +
-						"<a href='#' title='Update Record' data-toggle='tooltip'>" +
-							"<span class='fa fa-pencil'></span></a>" +
-						"<a href='#' title='Delete Record' data-toggle='tooltip'>" +
-							"<span class='fa fa-trash'></span></a>" +
-						"</td>" +
-						"</tr>";
-				//alert("table row --" + tablerowtemplate);
-				$tablebody.append(Mustache.render($templateHTML, mustacheData));
-				//$tablebody.append(tablerowtemplate);	*/
+				var dataMustache = {
+					"tableRow-ID":resultitem.ID,
+					"tableRow-Title":resultitem.Title,
+					"tableRow-Author":resultitem.Author,
+					"tableRow-Series":resultitem.Series,
+					
+				};
+				$tablebody.append(Mustache.render($templateHTML, dataMustache));
 			});
         },
         error: function() {
@@ -310,7 +373,7 @@ function fillSortbyDropdown(searchTerm, forObject, elementID) {
 	};
 	//alert("in pageObjectsList \n searchTerm -- " + searchTerm + "\n forObject -- " + forObject + "\n elementID -- " + elementID);
 
-}
+}	*/
 
 function getListItems(postData) {
 	var dataString = JSON.stringify(postData);
@@ -382,7 +445,7 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
         }
 	});
 	
-}	*/
+}
 
 $(document).ready(function(){	//Code to run when page finishes loading
 

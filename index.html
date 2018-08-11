@@ -126,99 +126,183 @@
 <!-- ========================================================================== -->
 
 
-		<template id="audibleTitleTemplate">	<!-- Title Section -->
-			<div class="row" style="height: 60px;">
-				<div class="pt-2 col-sm-6">
-					<div class="page-header clearfix">
-						<h2 class="pull-left">{{titleText}}</h2>
-					</div>
-				</div>
-				<div class="pt-2 col-sm-6">  		
-					<a href="create.php" class="btn btn-success pull-right">{{titleNewButton}}</a>
+	<template id="audibleTitleTemplate">	<!-- Title Section -->
+		<div class="row" style="height: 60px;">
+			<div class="pt-2 col-sm-6">
+				<div class="page-header clearfix">
+					<h2 class="pull-left">{{titleText}}</h2>
 				</div>
 			</div>
-		</template>
+			<div class="pt-2 col-sm-6">  		
+				<a href="create.php" class="btn btn-success pull-right">{{titleNewButton}}</a>
+			</div>
+		</div>
+	</template>
 
-		<template id="audibleHeaderTemplate">
-			<div class="row" style="height: 60px;">    
-				<div class="col-sm-4">
-					<span >Sort by:</span>
-					<div id='sortbydiv' class='dropdown'>
-						<a id='sortby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{sortbyText}}<b class='caret'></b></a>
-						<ul id='sortDropdown' class='dropdown-menu'></ul>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<span >Filter by:</span>
-					<div id='filterbydiv' class='dropdown'>
-						<a id='filterby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{filterbyText}}<b class='caret'></b></a>
-						<ul id='filterDropdown' class='dropdown-menu'></ul>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<span >Search Box:</span>
-					<input type="search" name="keyword" placeholder="" id="searchbox" onkeyup="liveSearchKeyPress(this)">
-					<div id='searchresults'>
-						<!--<a href="post-location">Fetched Item</a>-->
-						<ul class='list-unstyled' id='resultlist'></ul>
-					</div>				
+	<template id="audibleHeaderTemplate">
+		<div class="row" style="height: 60px;">    
+			<div class="col-sm-4">
+				<span >Sort by:</span>
+				<div id='sortbydiv' class='dropdown'>
+					<a id='sortby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{sortbyText}}<b class='caret'></b></a>
+					<ul id='sortDropdown' class='dropdown-menu'></ul>
 				</div>
 			</div>
-		</template>
+			<div class="col-sm-4">
+				<span >Filter by:</span>
+				<div id='filterbydiv' class='dropdown'>
+					<a id='filterby' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{filterbyText}}<b class='caret'></b></a>
+					<ul id='filterDropdown' class='dropdown-menu'></ul>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<span >Search Box:</span>
+				<input type="search" name="keyword" placeholder="" id="searchbox" onkeyup="liveSearchKeyPress(this)">
+				<div id='searchresults'>
+					<!--<a href="post-location">Fetched Item</a>-->
+					<ul class='list-unstyled' id='resultlist'></ul>
+				</div>				
+			</div>
+		</div>
+	</template>
 
-		<template id="tableHeaderTemplate">
-			<div class='row'id='{{tableRowId}}'>
-				<table class='table table-bordered table-hover'>
-					<thead>
-						<tr>
-							<th style='width: 8%'>ID</th>
-							<th style='width: 40%'>Title</th>
-							<th style='width: 20%'>Author</th>
-							<th style='width: 20%'>Series</th>
-							<th style='width: 22%'>Action</th>
-						</tr>
-					</thead>
-					<tbody id='{{tablebodyId}}'>
+	<template id="tableHeaderTemplate">
+		<div class='row'id='{{tableRowId}}'>
+			<table class='table table-bordered table-hover'>
+				<thead>
+					<tr>
+						<th style='width: 8%'>ID</th>
+						<th style='width: 40%'>Title</th>
+						<th style='width: 20%'>Author</th>
+						<th style='width: 20%'>Series</th>
+						<th style='width: 22%'>Action</th>
+					</tr>
+				</thead>
+				<tbody id='{{tablebodyId}}'>
+			
+				</tbody>
+			</table>
+		</div>
+	</template>
+
+	<template id="audibleFooterTemplate">
+		<div class="row" style="height: 75px;">
+			<div class="col-sm-8">
+					
+
+			</div>
+			<div class="col-sm-4">  		
+				<div id='utilitiesdiv' class='dropdown'>
+					<a id='utilities' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{utilitiesText}}<b class='caret'></b></a>
+					<ul id='utilitiesDropdown' class='dropdown-menu'></ul>
+				</div>					
+			</div>
+
+		</div>
+	</template>
+
+	<template id="liItemEntryTemplate">
+		<li id='{{liItemEntryId}}' onclick='{{liItemEntryOnclick}}' class='showitem'>{{liItemDisplay}}</li>
+	</template>
+
+	<template id="tableRowsTemplate">
+		<tr> 
+			<td>{{tableRow-ID}}</td> 
+			<td>{{tableRow-Title}}</td> 
+			<td>{{tableRow-Author}}</td> 
+			<td>{{tableRow-Series}}</td> 
+			<td> 
+				<a href='#' id='rowitemUpdate{{tableRow-ID}}' onclick='tableRowUpdate(this)' class='mr-1 fa fa-pencil' title='Update Record' data-toggle='tooltip'></a>
+				<a href='#' id='rowitemDelete{{tableRow-ID}}' onclick='tableRowDelete(this)' class='mr-1 fa fa-trash' title='Delete Record' data-toggle='tooltip'></a>
+			</td> 
+		</tr>
+	</template>
+
+	<template id="modifyAudibleTitleTemplate">
+		<div class="row" style="height: 75px;">
+			<div class="pt-2 col-sm-8">
+				<div class="page-header">
+					<h2>View Record  ID- {{modifyAudibleID}}</h2>
+				</div>
+			</div>
+				<div class="pt-2 col-sm-4">
+					<a href='#' class='btn btn-success pull-right'>Edit Book</a>
+				</div>
+		</div>
+	</template>
+
+	<template id="modifyAudibleHeaderTemplate">
+		<p></p>
+	</template>
+
+	<template id="modifyAudibleBodyTemplate">
+		<div class="row">
+			<div class="col-sm-4">				
+				<img src='{{modifyAudible-CoverArt}}' alt='{{modifyAudible-Title}}' style='width:150px;height:210px;'>
+			</div>
+			<div class="col-sm-8">
 				
-					</tbody>
-				</table>
-			</div>
-		</template>
-
-		<template id="audibleFooterTemplate">
-			<div class="row" style="height: 75px;">
-				<div class="col-sm-8">
-						
+				<div class="row">            		
+					<div class='text-right pr-0 col-sm-3'>
+						<p>Title:</p>
+					</div>
+					<div class='text-left col-sm-9'>
+						<p>{{modifyAudible-Title}}</p>
+					</div>
 
 				</div>
-				<div class="col-sm-4">  		
-					<div id='utilitiesdiv' class='dropdown'>
-						<a id='utilities' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{utilitiesText}}<b class='caret'></b></a>
-						<ul id='utilitiesDropdown' class='dropdown-menu'></ul>
-					</div>					
+				<div class="row">            		
+					<div class='text-right pr-0 col-sm-3'>
+						<p>Author:</p>
+					</div>
+					<div class='text-left col-sm-9'>
+						<p>{{modifyAudible-Author}}</p>
+					</div>
+
 				</div>
+				<div class="row">            		
+					<div class='text-right pr-0 col-sm-3'>
+						<p>Series:</p>
+					</div>
+					<div class='text-left col-sm-9'>
+						<p>{{modifyAudible-book}}</p>
+					</div>
+				</div>			
+				<div class="row">            		
+					<div class='text-right pr-0 col-sm-3'>
+						<p>Read Order:</p>
+					</div>
+					<div class='text-left col-sm-9'>
+						<p>{{modifyAudible-ReadOrde}}</p>
+					</div>
+				</div>
+				<div class="row">            		
+					<div class='text-right pr-0 col-sm-3'>
+						<p>Categories:</p>
+					</div>
+					<div class='text-left col-sm-9'>
+						<p>{{modifyAudible-Categories}}</p>
+					</div>
 
+				</div>
+				<div class="row">            		
+					<div class='text-right pr-0 col-sm-3'>
+						<p>Listened To:</p>
+					</div>
+					<div class='text-left col-sm-9'>
+						<p>{{modifyAudible-ListenedTo}}</p>
+					</div>
+				</div>
 			</div>
-		</template>
-
-		<template id="liItemEntryTemplate">
-			<li id='{{liItemEntryId}}' onclick='{{liItemEntryOnclick}}' class='showitem'>{{liItemDisplay}}</li>
-		</template>
-
-<template id="tableRowsTemplate">
-	<tr> 
-		<td>{{tableRow-ID}}</td> 
-		<td>{{tableRow-Title}}</td> 
-		<td>{{tableRow-Author}}</td> 
-		<td>{{tableRow-Series}}</td> 
-		<td> 
-			<a href='#' id='id='rowitemUpdate{{tableRow-ID}}' title='Update Record' data-toggle='tooltip'> 
-				<span class='fa fa-pencil'></span></a> 
-			<a href='#' id='id='rowitemDelete{{tableRow-ID}}' title='Delete Record' data-toggle='tooltip'> 
-				<span class='fa fa-trash'></span></a> 
-		</td> 
-	</tr>
-</template>
-
-    </body>
+		</div>	
+	</template>
+	
+	<template id="modifyAudibleFooter">
+		<div class="row">                    
+			<p><a href="#" onclick="closeModifyAudible()" class="btn btn-primary">Back</a></p>
+		</div>        
+	</template>
+	
+	
+</body>
 </html>						

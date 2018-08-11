@@ -87,7 +87,7 @@
 				</div>
 			</div>
 			<div id="bodySpace">
-				<div class='row'id='maintable'>
+				<div class='row' id='maintable'>
 					<table class='table table-bordered table-hover'>
 						<thead>
 							<tr>
@@ -167,7 +167,7 @@
 	</template>
 
 	<template id="tableHeaderTemplate">
-		<div class='row'id='{{tableRowId}}'>
+		<div class='row' id='maintable'>
 			<table class='table table-bordered table-hover'>
 				<thead>
 					<tr>
@@ -178,7 +178,7 @@
 						<th style='width: 22%'>Action</th>
 					</tr>
 				</thead>
-				<tbody id='{{tablebodyId}}'>
+				<tbody id='maintablebody'>
 			
 				</tbody>
 			</table>
@@ -203,6 +203,25 @@
 
 	<template id="liItemEntryTemplate">
 		<li id='{{liItemEntryId}}' onclick='{{liItemEntryOnclick}}' class='showitem'>{{liItemDisplay}}</li>
+	</template>
+
+	<template id="audibleBodyTemplate">
+		<div class='row'id='maintable'>
+			<table class='table table-bordered table-hover'>
+				<thead>
+					<tr>
+						<th style='width: 8%'>ID</th>
+						<th style='width: 40%'>Title</th>
+						<th style='width: 20%'>Author</th>
+						<th style='width: 20%'>Series</th>
+						<th style='width: 22%'>Action</th>
+					</tr>
+				</thead>
+				<tbody id='maintablebody'>
+			
+				</tbody>
+			</table>
+		</div>
 	</template>
 
 	<template id="tableRowsTemplate">

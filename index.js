@@ -22,7 +22,7 @@ function makeBodySpace() {
 		"tableRowId":"maintable",
 		"tablebodyId":"maintablebody"
 	};
-	fillTemplateSpace("bodySpace", "tableRowsTemplate", dataMustache)
+	fillTemplateSpace("bodySpace", "tableHeaderTemplate", "")	
 }
 
 function makeFooterSpace() {
@@ -43,11 +43,13 @@ function fillTemplateSpace(templateDivName, templateName, mustacheData) {
 function closeModifyAudible() {
 	makeTitleSpace();
 	makeHeaderSpace();
+	makeBodySpace();
 	makeFooterSpace();
+	fetchTableResults()
 }
 
 function tableRowUpdate(element) {
-	var $tablebody = $('#maintablebody');
+	var $tablebody = $('#bodySpace');
 	var $templateHTML = $('#modifyAudibleBodyTemplate').html();
 	var $clickedIcon = element.id;
 	var $clickedID = element.id;

@@ -11,8 +11,8 @@ function makeTitleSpace() {
 
 function makeHeaderSpace() {
 	var dataMustache = {
-		"sortbyText":"Sort by Last Edit ",
-		"filterbyText":"Filter "
+		"sortbyText":sessionStorage.getItem("sortBysearchSelected"),
+		"filterbyText":sessionStorage.getItem("filterBysearchSelected"),
 	};
 	fillTemplateSpace("headerSpace", "audibleHeaderTemplate", dataMustache)
 }
@@ -45,12 +45,12 @@ function closeModifyAudible() {
 	var sortBysearchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 	var filterBysearchTerm = sessionStorage.getItem("filterBysearchTerm");	//current filterBy pageObj search term
 	var utilitySearchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
-
 	var liText = sessionStorage.getItem("filterBysearchSelected");
+	alert ("In closeModifyAudible(). \nliText -- " + liText);
 	if (liText == "Nothing") {
-		setStateSearchBox("disable", liText)
+		setStateSearchBox("disabled", liText)
 	} else {
-		setStateSearchBox("enable", liText)		
+		setStateSearchBox("enabled", liText)		
 	}
 	
 	//pageObjectsList(searchTerm, forObject, $elementID) function values to pass

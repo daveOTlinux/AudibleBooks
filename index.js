@@ -18,10 +18,6 @@ function makeHeaderSpace() {
 }
 
 function makeBodySpace() {
-	var dataMustache = {
-		"tableRowId":"maintable",
-		"tablebodyId":"maintablebody"
-	};
 	fillTemplateSpace("bodySpace", "tableHeaderTemplate", "")	
 }
 
@@ -45,6 +41,23 @@ function closeModifyAudible() {
 	makeHeaderSpace();
 	makeBodySpace();
 	makeFooterSpace();
+
+	var sortBysearchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
+	var filterBysearchTerm = sessionStorage.getItem("filterBysearchTerm");	//current filterBy pageObj search term
+	var utilitySearchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
+
+	var liText = sessionStorage.getItem("filterBysearchSelected");
+	if (liText == "Nothing") {
+		setStateSearchBox("disable", liText)
+	} else {
+		setStateSearchBox("enable", liText)		
+	}
+	
+	//pageObjectsList(searchTerm, forObject, $elementID) function values to pass
+	pageObjectsList(sortBysearchTerm, 'Dropdowns', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
+	pageObjectsList(filterBysearchTerm, 'Dropdowns', 'filterDropdown');	//Fill in <li> values for sortBy dropdown
+	pageObjectsList(utilitySearchTerm, 'Dropdowns', 'utilitiesDropdown');	//Fill in <li> values for utilities dropdown
+
 	fetchTableResults()
 }
 
@@ -506,7 +519,7 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	pageObjectsList(filterBysearchTerm, 'Dropdowns', 'filterDropdown');	//Fill in <li> values for sortBy dropdown
 	pageObjectsList(utilitySearchTerm, 'Dropdowns', 'utilitiesDropdown');	//Fill in <li> values for utilities dropdown
 
-	var searchkey = "";
+	//var searchkey = "";
 
 	//fetchTableResults() uses variables
 	fetchTableResults();

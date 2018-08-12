@@ -46,7 +46,7 @@ function closeModifyAudible() {
 	var filterBysearchTerm = sessionStorage.getItem("filterBysearchTerm");	//current filterBy pageObj search term
 	var utilitySearchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
 	var liText = sessionStorage.getItem("filterBysearchSelected");
-	alert ("In closeModifyAudible(). \nliText -- " + liText);
+	//alert ("In closeModifyAudible(). \nliText -- " + liText);
 	if (liText == "Nothing") {
 		setStateSearchBox("disabled", liText)
 	} else {
@@ -74,8 +74,8 @@ function tableRowUpdate(element) {
 	fillTemplateSpace("headerSpace", "modifyAudibleHeaderTemplate", "");
 	fillTemplateSpace("footerSpace", "modifyAudibleFooter", "");
 	
-	alert ("In tableRowUpdate(). \n$clickedIcon -- " +
-		$clickedIcon + "\n ID -- " + $clickedID);
+//	alert ("In tableRowUpdate(). \n$clickedIcon -- " +
+//		$clickedIcon + "\n ID -- " + $clickedID);
 	
 	var postData = {
 		"functionCall":"getAllFieldsByID",

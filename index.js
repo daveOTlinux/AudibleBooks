@@ -61,7 +61,7 @@ function closeModifyAudible() {
 	fetchTableResults()
 }
 
-function tableRowUpdate(element) {
+function updateTableRow(element) {
 	var $tablebody = $('#bodySpace');
 	var $templateHTML = $('#modifyAudibleBodyTemplate').html();
 	var $clickedIcon = element.id;
@@ -112,8 +112,9 @@ function tableRowUpdate(element) {
 					"modifyAudible-BookNumber":resultitem.BookNumber,
 					"modifyAudible-ReadOrderNumber":resultitem.ReadOrderNumber,
 					"modifyAudible-ReadOrder":resultitem.ReadOrder,
+					"modifyAudible-Length":resultitem.Length,
 					"modifyAudible-Categories":resultitem.Categories,
-					"modifyAudible-PurchaseRequired":resultitem.PurchaseRequired,
+					"modifyAudible-Status":resultitem.Status,
 					"modifyAudible-ListenedTo":modifyListenedTo,
 					"modifyAudible-DateAdded":resultitem.DateAdded,
 					"modifyAudible-MyRating":resultitem.MyRating,
@@ -131,7 +132,7 @@ function tableRowUpdate(element) {
 	
 }
 
-function tableRowDelete(element) {
+function deleteTableRow(element) {
 	
 }
 

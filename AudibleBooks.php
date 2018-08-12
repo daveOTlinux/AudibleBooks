@@ -110,8 +110,9 @@
 				$returnStatus[$count]["BookNumber"] = $row["BookNumber"];
 				$returnStatus[$count]["ReadOrderNumber"] = $row["ReadOrderNumber"];
 				$returnStatus[$count]["ReadOrder"] = $row["ReadOrder"];
+				$returnStatus[$count]["Length"] = $row["Length"];
 				$returnStatus[$count]["Categories"] = $row["Categories"];
-				$returnStatus[$count]["PurchaseRequired"] = $row["PurchaseRequired"];
+				$returnStatus[$count]["Status"] = $row["Status"];
 				$returnStatus[$count]["ListenedTo"] = $row["ListenedTo"];
 				$returnStatus[$count]["DateAdded"] = $row["DateAdded"];
 				$returnStatus[$count]["MyRating"] = $row["MyRating"];

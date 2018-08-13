@@ -62,7 +62,14 @@ function closeModifyAudible() {
 }
 
 function modifyCurrentBook(element) {
-	alert("In modifyCurrentBook().");
+	var currentID = $("#buttonAudibleTitle").attr('data-id');
+	alert("In modifyCurrentBook(). currentID -- " + currentID);
+	var mustacheData = {
+		"modifyAudible-h2":"Edit Book  ID- ",
+		"modifyAudible-ID":currentID,
+	};
+	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
+	$("#buttonAudibleTitle").prop('hidden', true);
 	$("#span-Title").prop('hidden', true);
 	$("#input-Title").prop('type', 'text')
 	$("#span-Author").prop('hidden', true);
@@ -94,7 +101,8 @@ function updateTableRow(element) {
 	var $clickedID = element.id;
 	$clickedID = $clickedIcon.slice(13, $clickedIcon.length);
 	var mustacheData = {
-		"modifyAudibleID":$clickedID,
+		"modifyAudible-h2":"View Book  ID- ",
+		"modifyAudible-ID":$clickedID,
 	};
 	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
 	fillTemplateSpace("headerSpace", "modifyAudibleHeaderTemplate", "");

@@ -102,7 +102,7 @@ function updateTableRow(element) {
 				}else {
 					var modifyListenedTo = "YES";
 				}	    					
-
+				var SeriesReadOrder = resultitem.ReadOrder + " Book - " + resultitem.ReadOrderNumber;
 				var dataMustache = {
 					"modifyAudible-ID":resultitem.ID,
 					"modifyAudible-Title":resultitem.Title,
@@ -110,8 +110,8 @@ function updateTableRow(element) {
 					"modifyAudible-Series":resultitem.Series,
 					"modifyAudible-book":modifyBook,
 					"modifyAudible-BookNumber":resultitem.BookNumber,
-					"modifyAudible-ReadOrderNumber":resultitem.ReadOrderNumber,
-					"modifyAudible-ReadOrder":resultitem.ReadOrder,
+					//"modifyAudible-ReadOrderNumber":,
+					"modifyAudible-ReadOrder":SeriesReadOrder,
 					"modifyAudible-Length":resultitem.Length,
 					"modifyAudible-Categories":resultitem.Categories,
 					"modifyAudible-Status":resultitem.Status,
@@ -267,7 +267,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 		"clickedData":liID,
 		};
 	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
-	alert("In onclickDropdowns(). JSON dataString --\n" + dataString);
+	//alert("In onclickDropdowns(). JSON dataString --\n" + dataString);
 	$.ajax({
 	    url:'pageObjects.php',
 	    type:'POST',

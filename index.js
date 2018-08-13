@@ -30,10 +30,10 @@ function makeFooterSpace() {
 
 function fillTemplateSpace(templateDivName, templateName, mustacheData) {
 	var $templateDivSpace = $("#" + templateDivName);
-	var $templateHTML = $("#" + templateName).html();
+	var templateHTML = $("#" + templateName).html();
 	//alert("In fillTemplateSpace() ")
 	$templateDivSpace.empty();
-	$templateDivSpace.append(Mustache.render($templateHTML, mustacheData));
+	$templateDivSpace.append(Mustache.render(templateHTML, mustacheData));
 }
 
 function closeModifyAudible() {
@@ -60,6 +60,32 @@ function closeModifyAudible() {
 
 	fetchTableResults()
 }
+
+function modifyCurrentBook(element) {
+	alert("In modifyCurrentBook().");
+	$("#span-Title").prop('hidden', true);
+	$("#input-Title").prop('type', 'text')
+	$("#span-Author").prop('hidden', true);
+	$("#input-Author").prop('type', 'text')
+	$("#span-Series").prop('hidden', true);
+	$("#input-Series").prop('type', 'text')
+	$("#span-Categories").prop('hidden', true);
+	$("#input-Categories").prop('type', 'text')
+	$("#span-ListenedTo").prop('hidden', true);
+	$("#input-ListenedTo").prop('type', 'text')
+	$("#span-Status").prop('hidden', true);
+	$("#input-Status").prop('type', 'text')
+	$("#span-Length").prop('hidden', true);
+	$("#input-Length").prop('type', 'text')
+	$("#span-MyRating").prop('hidden', true);
+	$("#input-MyRating").prop('type', 'text')
+	$("#span-DateAdded").prop('hidden', true);
+	$("#input-DateAdded").prop('type', 'text')
+	$("#span-Timestamp").prop('hidden', true);
+	$("#strongSpan-Timestamp").prop('hidden', true);
+	$("#span-Notes").prop('hidden', true);
+	$("#input-Notes").prop('type', 'text');
+};
 
 function updateTableRow(element) {
 	var $tablebody = $('#bodySpace');

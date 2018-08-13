@@ -29,15 +29,24 @@
 		
 	<script src="index.js"></script>
 
+		<style type="text/css">
+			span.showMe {
+				display: initial;
+			};
+			
+			span.noShowMe {
+				display: none;			
+			};
+		</style>
 
 	<style type="text/css">
-<!--	    .wrapper{
+	    .wrapper{
 	        width: 700px;
 	        margin: 0 auto;
 	    }
 	    .page-header h2{
 	        margin-top: 0;
-	    } -->
+	    }
 	    table tr td:last-child a{
 	        margin-right: 15px;
 	        white-space: pre;
@@ -245,7 +254,7 @@
 				</div>
 			</div>
 				<div class="pt-2 col-sm-4">
-					<a href='#' class='btn btn-success pull-right'>Edit Book</a>
+					<a href='#' onclick="modifyCurrentBook(this)" class='btn btn-success pull-right'>Edit Book</a>
 				</div>
 		</div>
 	</template>
@@ -263,102 +272,110 @@
 				
 				<div class="row">            		
 					<div class='text-right pr-0 col-sm-3'>
-						<span>Title:</span>
+						<strong><span>Title:</span></strong>
 					</div>
 					<div class='text-left col-sm-9'>
-						<span>{{modifyAudible-Title}}</span>
+						<span id="span-Title">{{modifyAudible-Title}}</span>
+						<input id="input-Title" class='edit' value="{{modifyAudible-Title}}" type="hidden" name="Title"/>
 					</div>
-
 				</div>
 				<div class="row">            		
 					<div class='text-right pr-0 col-sm-3'>
-						<span>Author:</span>
+						<strong><span>Author:</span></strong>
 					</div>
 					<div class='text-left col-sm-9'>
-						<span>{{modifyAudible-Author}}</span>
+						<span id="span-Author">{{modifyAudible-Author}}</span>
+						<input id="input-Author" class='edit' value="{{modifyAudible-Author}}" type="hidden" name="Author"/>
 					</div>
-
 				</div>
 				<div class="row">            		
 					<div class='text-right pr-0 col-sm-3'>
-						<span>Series:</span>
+						<strong><span>Series:</span></strong>
 					</div>
 					<div class='text-left col-sm-9'>
-						<span>{{modifyAudible-book}}</span>
+						<span id="span-Series">{{modifyAudible-book}}</span>
+						<input id="input-Series" class='edit' value="{{modifyAudible-Series}}" type="hidden" name="Series"/>
 					</div>
 				</div>			
 				<div class="row">            		
 					<div class='text-right pr-0 col-sm-3'>
-						<span>Read Order:</span>
+						<strong><span>Read Order:</span></strong>
 					</div>
 					<div class='text-left col-sm-9'>
-						<span>{{modifyAudible-ReadOrder}}</span>
+						<span id="span-ReadOrder">{{modifyAudible-ReadOrder}}</span>
 					</div>
 				</div>
 				<div class="row">            		
 					<div class='text-right pr-0 col-sm-3'>
-						<span>Categories:</span>
+						<strong><span>Categories:</span></strong>
 					</div>
 					<div class='text-left col-sm-9'>
-						<span>{{modifyAudible-Categories}}</span>
+						<span id="span-Categories">{{modifyAudible-Categories}}</span>
+						<input id="input-" class='edit' value="{{modifyAudible-Title}}" type="hidden" name="Categories"/>
 					</div>
 				</div>
 				<div class="row">            		
 					<div class='text-right pr-0 col-sm-3'>
-						<span>Listened To:</span>
+						<strong><span>Listened To:</span></strong>
 					</div>
 					<div class='text-left col-sm-9'>
-						<span>{{modifyAudible-ListenedTo}}</span>
+						<span id="span-ListenedTo">{{modifyAudible-ListenedTo}}</span>
+						<input id="input-ListenedTo" class='edit' value="{{modifyAudible-ListenedTo}}" type="hidden" name="ListenedTo"/>
 					</div>
 				</div>
 				<div class="row">
 					<div class="text-right pr-0 col-sm-3">  		
-						<span>Status:</span>
+						<strong><span>Status:</span></strong>
 					</div>
 					<div class="col-sm-9">  		
-						<span>{{modifyAudible-Status}}</span>
+						<span id="span-Status">{{modifyAudible-Status}}</span>
+						<input id="input-Status" class='edit' value="{{modifyAudible-Status}}" type="hidden" name="Status"/>
 					</div>
 				</div>
 				<div class="row">
 					<div class="text-right pr-0 col-sm-3">  		
-						<span>Length:</span>
+						<strong><span>Length:</span></strong>
 					</div>
 					<div class="col-sm-9">  		
-						<span>{{modifyAudible-Length}}</span>
+						<span id="span-Length">{{modifyAudible-Length}}</span>
+						<input id="input-Length" class='edit' value="{{modifyAudible-Length}}" type="hidden" name="Length"/>
 					</div>
 				</div>
 				<div class="row">
 					<div class="text-right pr-0 col-sm-3">  		
-						<span>My Rating:</span>
+						<strong><span>My Rating:</span></strong>
 					</div>
 					<div class="col-sm-9">  		
-						<span>{{modifyAudible-MyRating}}</span>
+						<span id="span-MyRating">{{modifyAudible-MyRating}}</span>
+						<input id="input-MyRating" class='edit' value="{{modifyAudible-MyRating}}" type="hidden" name="MyRating"/>
 					</div>	
 				</div>
 				<div class="row">
 					<div class="text-right pr-0 col-sm-3">  		
-						<span>Date Added:</span>
+						<strong><span>Date Added:</span></strong>
 					</div>
 					<div class="col-sm-9">  		
-						<span>{{modifyAudible-DateAdded}}</span>
+						<span id="span-DateAdded">{{modifyAudible-DateAdded}}</span>
+						<input id="input-DateAdded" class='edit' value="{{modifyAudible-DateAdded}}" type="hidden" name="DateAdded"/>
 					</div>
 				</div>				
 				<div class="row">
 					<div class="text-right pr-0 col-sm-3">  		
-						<span>Timestamp:</span>
+						<strong><span id="strongSpan-Timestamp">Timestamp:</span></strong>
 					</div>
 					<div class="col-sm-9">  		
-						<span>{{modifyAudible-ModifiedDate}}</span>
+						<span id="span-Timestamp">{{modifyAudible-ModifiedDate}}</span>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="pt-3 row" style="height: 80px;">
 			<div class="col-sm-1">  		
-				<span>Notes:</span>
+				<strong><span>Notes:</span></strong>
 			</div>
 			<div class="col-sm-11">  		
-				<span>{{modifyAudible-Notes}}</span>
+				<span id="span-Notes">{{modifyAudible-Notes}}</span>
+				<input id="input-Notes" class='edit' value="{{modifyAudible-Notes}}" type="hidden" name="title"/>
 			</div>	
 		</div>
 	</template>

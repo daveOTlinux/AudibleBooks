@@ -63,7 +63,7 @@ function closeModifyAudible() {
 
 function modifyCurrentBook(element) {
 	var currentID = $("#buttonAudibleTitle").attr('data-id');
-	alert("In modifyCurrentBook(). currentID -- " + currentID);
+	//alert("In modifyCurrentBook(). currentID -- " + currentID);
 	var mustacheData = {
 		"modifyAudible-h2":"Edit Book  ID- ",
 		"modifyAudible-ID":currentID,
@@ -71,27 +71,42 @@ function modifyCurrentBook(element) {
 	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
 	$("#buttonAudibleTitle").prop('hidden', true);
 	$("#span-Title").prop('hidden', true);
-	$("#input-Title").prop('type', 'text')
+	$("#input-Title").prop('type', 'text');
 	$("#span-Author").prop('hidden', true);
-	$("#input-Author").prop('type', 'text')
+	$("#input-Author").prop('type', 'text');
 	$("#span-Series").prop('hidden', true);
-	$("#input-Series").prop('type', 'text')
+	$("#input-Series").prop('type', 'text');
+	$("#span-SeriesBook").prop('hidden', false);
+	$("#input-SeriesBook").prop('type', 'text');
+	$("#span-ReadOrder").prop('hidden', true);
+	$("#input-ReadOrder").prop('type', 'text');
+	$("#span-ReadOrderNumber").prop('hidden', false);
+	$("#input-ReadOrderNumber").prop('type', 'text');
 	$("#span-Categories").prop('hidden', true);
-	$("#input-Categories").prop('type', 'text')
+	$("#input-Categories").prop('type', 'text');
 	$("#span-ListenedTo").prop('hidden', true);
-	$("#input-ListenedTo").prop('type', 'text')
+	$("#input-ListenedTo").prop('type', 'text');
 	$("#span-Status").prop('hidden', true);
-	$("#input-Status").prop('type', 'text')
+	$("#input-Status").prop('type', 'text');
 	$("#span-Length").prop('hidden', true);
-	$("#input-Length").prop('type', 'text')
+	$("#input-Length").prop('type', 'text');
 	$("#span-MyRating").prop('hidden', true);
-	$("#input-MyRating").prop('type', 'text')
+	$("#input-MyRating").prop('type', 'text');
 	$("#span-DateAdded").prop('hidden', true);
-	$("#input-DateAdded").prop('type', 'text')
+	$("#input-DateAdded").prop('type', 'text');
 	$("#span-Timestamp").prop('hidden', true);
 	$("#strongSpan-Timestamp").prop('hidden', true);
+//	$("#img-CoverArt").prop('hidden', true);
+	$("#div-CoverArt").prop('hidden', false);
+	//$("#strongSpan-CoverArt").prop('hidden', false);
+	//$("#input-CoverArt").prop('type', 'text')
 	$("#span-Notes").prop('hidden', true);
-	$("#input-Notes").prop('type', 'text');
+	$("#input-Notes").prop('hidden', false);
+	$("#div-Notes").prop('style').height = '170px';
+	$("#button-modifyAudibleFooter").prop('text', 'Cancel');
+	//$("#input-Notes").text()	//return string being displayed
+	//$("#input-CoverArt").val()	//selected file??
+	
 };
 
 function updateTableRow(element) {
@@ -127,25 +142,31 @@ function updateTableRow(element) {
 			$tablebody.empty();
 			$.each(returnData, function(i, resultitem){
 				if(resultitem.BookNumber==0) {
-					var modifyBook = resultitem.Series;
+					var modifySeries = resultitem.Series;
 				}else {
-					var modifyBook = resultitem.Series + " -- Book " + resultitem.BookNumber;
+					var modifySeries = resultitem.Series + " -- Book " + resultitem.BookNumber;
+				}
+				if(resultitem.BookOrderNumber==0) {
+					var modifyBook = resultitem.ReadOrder;
+				}else {
+					var modifyBook = resultitem.ReadOrder + " -- Book " + resultitem.ReadOrderNumber;
 				}
 				if(resultitem.ListenedTo==0) {
 					var modifyListenedTo = "NO";
 				}else {
 					var modifyListenedTo = "YES";
 				}	    					
-				var SeriesReadOrder = resultitem.ReadOrder + " Book - " + resultitem.ReadOrderNumber;
+				//var SeriesReadOrder = resultitem.ReadOrder + " Book - " + resultitem.ReadOrderNumber;
 				var dataMustache = {
 					"modifyAudible-ID":resultitem.ID,
 					"modifyAudible-Title":resultitem.Title,
 					"modifyAudible-Author":resultitem.Author,
 					"modifyAudible-Series":resultitem.Series,
-					"modifyAudible-book":modifyBook,
+					"modifyAudible-modSeries":modifySeries,
+					"modifyAudible-modBook":modifyBook,
 					"modifyAudible-BookNumber":resultitem.BookNumber,
-					//"modifyAudible-ReadOrderNumber":,
-					"modifyAudible-ReadOrder":SeriesReadOrder,
+					"modifyAudible-ReadOrderNumber":resultitem.ReadOrderNumber,
+					"modifyAudible-ReadOrder":resultitem.ReadOrder,
 					"modifyAudible-Length":resultitem.Length,
 					"modifyAudible-Categories":resultitem.Categories,
 					"modifyAudible-Status":resultitem.Status,

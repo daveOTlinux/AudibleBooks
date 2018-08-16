@@ -127,6 +127,31 @@
 		return $returnStatus;
 	}
 
+	//function pass SQL SET part in $sqlSET, and the required row in $rowID
+	// return success or fail
+	function updateTableByID($sqlSET, $rowID) {
+		// Include config file
+	    require_once 'config.php';
+    
+		$update = "UPDATE `AudibleBooks` ";
+		$where = "WHERE `ID` = " . $rowID;
+
+		$strSQL = $update . $sqlSET . $where;
+				
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+
+	    $returnStatus = array(array());
+
+		if($mysqli->query($strSQL) === TRUE) {
+			$returnStatus[0]["status"] = "Success";
+			$returnStatus[0]["info"] = "Record updated successfully";				
+		} else {
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error updating record: " . $mysqli->error;
+		}
+
+		return $returnStatus;
+}	
 
 
 
@@ -151,6 +176,11 @@
 			case "getAllFieldsByID":
 				$itemID = (int) filter_var($searchKey, FILTER_SANITIZE_NUMBER_INT);
 				$returnStatus = getAllFieldsByID($itemID);
+				break;
+			case "updateTableByID":
+				$itemID = (int) filter_var($searchKey, FILTER_SANITIZE_NUMBER_INT);
+				$returnStatus = updateTableByID($fieldName, $itemID);
+				break;
 	    }
 	    
 		//header('Content-type: application/json');

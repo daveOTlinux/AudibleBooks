@@ -472,7 +472,7 @@ function liveSearchKeyPress(element) {
 
 	if (key.length > 0)	{	    	
 		$.ajax({
-			url:'AudibleBooks.php',
+			url:'.php',
 			type:'POST',
 			data: {postOBJ: dataString},
 			beforeSend:function () {
@@ -489,11 +489,11 @@ function liveSearchKeyPress(element) {
 							"id=searchitem" + resultitem.id +
 							" class='showitem'>" + resultitem.field1 + "</li>";
 					$resultlist.append(searchItemTemplate);
-				});
+				});AudibleBooks
 				$('#resultlist').slideDown('fast');
 			},
 			error: function() {
-				alert('Error with Live Search. NO data from fetchSearchData.php');
+				alert('Error with Live Search. NO data from AudibleBooks.php');
 			}
 		});
 	} else {

@@ -112,6 +112,7 @@ function saveModifyAudible(mode) {
 			if(!(pathCoverArt == "CoverArt/")) {
 				sqlCommand + "`CoverArt` = '" + pathCoverArt + "' "
 			}			
+			var functionCall = "updateTableByID";
 			break;
 		case "insert":
 			if(!(pathCoverArt == "CoverArt/")) {
@@ -137,11 +138,12 @@ function saveModifyAudible(mode) {
 				"'" + inputMyRating + "', " +
 				"'" + inputPathCoverArt + "', " +
 				"'" + inputNotes + "', NOW())";
+			var functionCall = "insertNewRowTable";
 			break;
 	} 
 	
 	var postData = {
-		"functionCall":"insertNewRowTable",
+		"functionCall":functionCall,
 		"fieldName":sqlCommand,
 		"searchkey":"",		//ID of row to edit
 	};

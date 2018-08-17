@@ -151,9 +151,56 @@
 		}
 
 		return $returnStatus;
+}
+
+	//function pass SQL INSERT part in $sqlInsert
+	// return success or fail
+	function insertNewRowTable($sqlInsert) {
+		// Include config file
+	    require_once 'config.php';
+    
+		$insert = "INSERT INTO `AudibleBooks`";
+
+		$strSQL = $insert . $sqlInsert;
+				
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+
+	    $returnStatus = array(array());
+
+		if($mysqli->query($strSQL) === TRUE) {
+			$returnStatus[0]["status"] = "Success";
+			$returnStatus[0]["info"] = "Inserted Record successfully";				
+		} else {
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error Inserting record: " . $mysqli->error;
+		}
+
+		return $returnStatus;
 }	
 
+	function deleteTableRowByID($rowID) {
+		// Include config file
+	    require_once 'config.php';
+    
+		$delete = "DELETE FROM `AudibleBooks` ";
+		$where = "WHERE `ID` = " . $rowID;
 
+		$strSQL = $delete . $where;
+				
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+
+	    $returnStatus = array(array());
+
+		if($mysqli->query($strSQL) === TRUE) {
+			$returnStatus[0]["status"] = "Success";
+			$returnStatus[0]["info"] = "Record deleted successfully";				
+		} else {
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error deleting record: " . $mysqli->error;
+		}
+
+		return $returnStatus;
+}
 
 //======================================================================================
 
@@ -180,6 +227,13 @@
 			case "updateTableByID":
 				$itemID = (int) filter_var($searchKey, FILTER_SANITIZE_NUMBER_INT);
 				$returnStatus = updateTableByID($fieldName, $itemID);
+				break;
+			case "insertNewRowTable":
+				$returnStatus = insertNewRowTable($fieldName);
+				break;
+			case "deleteTableRowByID":
+				$itemID = (int) filter_var($searchKey, FILTER_SANITIZE_NUMBER_INT);
+				$returnStatus = deleteTableRowByID($itemID);
 				break;
 	    }
 	    

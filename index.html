@@ -65,7 +65,7 @@
 						</div>
 					</div>
 					<div class="pt-2 col-sm-6">  		
-						<a href="create.php" class="btn btn-success pull-right">Add New Audible Book</a>
+						<a href="#" onclick="addNewAudibleBook()" class="btn btn-success pull-right">Add New Audible Book</a>
 					</div>
 				</div>
 			</div>
@@ -131,7 +131,10 @@
 			</div>
 		</div>        
     </div>
-    
+	<div id="update-modal">		<!--where html code for modals is written by mustache.js -->
+	</div>
+
+
 <!-- ========================================================================== -->
 
 
@@ -143,7 +146,7 @@
 				</div>
 			</div>
 			<div class="pt-2 col-sm-6">  		
-				<a href="create.php" class="btn btn-success pull-right">{{titleNewButton}}</a>
+				<a href="#" onclick="addNewAudibleBook()" class="btn btn-success pull-right">{{titleNewButton}}</a>
 			</div>
 		</div>
 	</template>
@@ -241,7 +244,7 @@
 			<td>{{tableRow-Series}}</td> 
 			<td> 
 				<a href='#' id='rowitemUpdate{{tableRow-ID}}' onclick='updateTableRow(this)' class='mr-1 fa fa-pencil' title='Update Record' data-toggle='tooltip'></a>
-				<a href='#' id='rowitemDelete{{tableRow-ID}}' onclick='deleteTableRow(this)' class='mr-1 fa fa-trash' title='Delete Record' data-toggle='tooltip'></a>
+				<a href='#' id='rowitemDelete{{tableRow-ID}}' onclick='deleteThisRow(this)' class='mr-1 fa fa-trash' title='Delete Record' data-toggle='tooltip'></a>
 			</td> 
 		</tr>
 	</template>
@@ -405,11 +408,45 @@
 				
 			</div>
 			<div class="col-sm-4">  		
-				<a id='buttonRight-modifyAudibleFooter' href="#" hidden onclick="saveModifyAudible()" class="btn btn-primary">Save</a>
+				<a id='buttonRight-modifyAudibleFooter' href="#" hidden onclick="{{saveModifyFunction}}" class="btn btn-primary">Save</a>
 			</div>
 		</div>			
 	</template>
-	
+
+	<template id='dialogBox-template'>	<!-- dialog box popup to ask question. -->
+		<div class="container">
+		<!-- Modal -->
+			<div class="modal fade" id="dialogBoxStatus" role="dialog">
+				<div class="modal-dialog modal-sm">
+					<div class="modal-content">
+						<div class="modal-header">
+							<div class="col-sm-11">
+								<h4 class="modal-title">{{dialogTitle-modal}}</h4>
+							</div>
+							<div class="col-sm-1">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+							</div>
+						</div>
+						<div class="modal-body">
+							<div class="col-sm-12">
+								<input type="hidden" id="dialogID-modal" name="recordID" value="{{dialogID-modal}}">
+								<p>{{dialogBody-modal}}</p>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="col-sm-4">
+								<button type="button" onclick="{{acceptFunction-modal}}" class="btn ">{{acceptButton-modal}}</button>
+							</div>
+							<div class="col-sm-4">
+								<button type="button" class="btn btn-default" data-dismiss="modal">{{cancelButton-modal}}</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</template>
+
 	
 </body>
 </html>						

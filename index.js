@@ -61,7 +61,7 @@ function closeModifyAudible() {
 	fetchTableResults()
 }
 
-function saveModifyAudible() {
+function saveModifyAudible(mode) {
 	var currentID = $("#buttonAudibleTitle").attr('data-id');
 	//alert("In saveModifyAudible(). currentID -- " + currentID);
 	var inputTitle = $('#input-Title').val();
@@ -85,36 +85,65 @@ function saveModifyAudible() {
 	var pathCoverArt = "CoverArt/" + inputCoverArt.slice(12,inputCoverArt.length)
 	var inputNotes = $('#input-Notes').val();
 
-	alert("In saveModifyAudible().\n current ID -- " + currentID +
-		 "\n Title -- " + inputTitle +
-		 "\n Author -- " + inputAuthor +
-		 "\n Series -- " + inputSeries +
-		 "\n CoverArt -- " + pathCoverArt +
-		 "\n inputListenedTo -- " + inputListenedToValue +
-		 "\n Status -- " + inputStatus +
-		 "\n Categories -- " + inputCategories);
+	alert("In saveModifyAudible(). mode -- " + mode +
+		"\n Title -- " + inputTitle +
+		"\n Author -- " + inputAuthor +
+		"\n Series -- " + inputSeries +
+		"\n CoverArt -- " + pathCoverArt +
+		"\n inputListenedTo -- " + inputListenedToValue +
+		"\n Status -- " + inputStatus +
+		"\n Categories -- " + inputCategories);
+	switch(mode) {
+		case "update":
+			var sqlCommand = "SET `Title` = '" + inputTitle +
+				"', `Author` = '" + inputAuthor +
+				"', `Series` = '" + inputSeries +
+				"', `BookNumber` = '" + inputBookNumber +
+				"', `ReadOrderNumber` = '" + inputReadOrderNumber +
+				"', `ReadOrder` = '" + inputReadOrder +
+				"', `Length` = '" + inputLength +
+				"', `Categories` = '" + inputCategories +
+				"', `Status` = '" + inputStatus +
+				"', `ListenedTo` = '" + inputListenedToValue +
+				"', `DateAdded` = '" + inputDateAdded +
+				"', `MyRating` = '" + inputMyRating +
+				"', `Notes` = '" + inputNotes +
+				"', `ModifiedDate` = NOW() ";
+			if(!(pathCoverArt == "CoverArt/")) {
+				sqlCommand + "`CoverArt` = '" + pathCoverArt + "' "
+			}			
+			break;
+		case "insert":
+			if(!(pathCoverArt == "CoverArt/")) {
+				inputPathCoverArt = pathCoverArt;
+			} else {
+				inputPathCoverArt = "";
+			}
+			var sqlCommand = "(`ID`, `Title`, `Author`, `Series`, `BookNumber`, `ReadOrderNumber`, " +
+				"`ReadOrder`, `Length`, `Categories`, `Status`, `ListenedTo`, `DateAdded`, " +
+				"`MyRating`, `CoverArt`, `Notes`, `ModifiedDate`) " +
+				"VALUES (NULL, " +
+				"'" + inputTitle + "', " +
+				"'" + inputAuthor + "', " +
+				"'" + inputSeries + "', " +
+				"'" + inputBookNumber + "', " +
+				"'" + inputReadOrderNumber + "', " +
+				"'" + inputReadOrder + "', " +
+				"'" + inputLength + "', " +
+				"'" + inputCategories + "', " +
+				"'" + inputStatus + "', " +
+				"'" + inputListenedToValue + "', " +
+				"'" + inputDateAdded + "', " +
+				"'" + inputMyRating + "', " +
+				"'" + inputPathCoverArt + "', " +
+				"'" + inputNotes + "', NOW())";
+			break;
+	} 
 	
-	var sqlCommand = "SET `Title` = '" + inputTitle +
-		"', `Author` = '" + inputAuthor +
-		"', `Series` = '" + inputSeries +
-		"', `BookNumber` = '" + inputBookNumber +
-		"', `ReadOrderNumber` = '" + inputReadOrderNumber +
-		"', `ReadOrder` = '" + inputReadOrder +
-		"', `Length` = '" + inputLength +
-		"', `Categories` = '" + inputCategories +
-		"', `Status` = '" + inputStatus +
-		"', `ListenedTo` = '" + inputListenedToValue +
-		"', `DateAdded` = '" + inputDateAdded +
-		"', `MyRating` = '" + inputMyRating +
-		"', `Notes` = '" + inputNotes +
-		"', `ModifiedDate` = NOW() ";
-	if(!(pathCoverArt == "CoverArt/")) {
-		sqlCommand + "`CoverArt` = '" + pathCoverArt + "' "
-	}
 	var postData = {
-		"functionCall":"updateTableByID",
+		"functionCall":"insertNewRowTable",
 		"fieldName":sqlCommand,
-		"searchkey":currentID,		//ID of row to edit
+		"searchkey":"",		//ID of row to edit
 	};
 
 	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
@@ -137,6 +166,84 @@ function saveModifyAudible() {
         	alert('Error in modalCloseUpdate() no return from PHP call.');
         }
     });	
+}
+
+function addNewAudibleBook() {
+	var $tablebody = $('#bodySpace');
+	var $templateHTML = $('#modifyAudibleBodyTemplate').html();
+	$tablebody.empty();
+	var dataMustache = {
+		"modifyAudible-Title":"",
+		"modifyAudible-Author":"",
+		"modifyAudible-Series":"",
+		"modifyAudible-modSeries":"",
+		"modifyAudible-modBook":0,
+		"modifyAudible-BookNumber":0,
+		"modifyAudible-ReadOrderNumber":0,
+		"modifyAudible-ReadOrder":"",
+		"modifyAudible-Length":"",
+		"modifyAudible-Categories":"",
+		"modifyAudible-Status":"",
+		"modifyAudible-ListenedTo":"NO",
+		"modifyAudible-DateAdded":"",
+		"modifyAudible-MyRating":0,
+		"modifyAudible-CoverArt":"",
+		"modifyAudible-Notes":"",
+		"modifyAudible-ModifiedDate":"",					
+	};
+	$tablebody.append(Mustache.render($templateHTML, dataMustache));
+	var mustacheData = {
+		"modifyAudible-h2":"Add New Book",
+		"modifyAudible-ID":"",
+	};
+	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
+	fillTemplateSpace("headerSpace", "modifyAudibleHeaderTemplate", "");
+	var mustacheData = {
+		"saveModifyFunction":"saveModifyAudible('insert')",
+	};
+	fillTemplateSpace("footerSpace", "modifyAudibleFooter", mustacheData);
+	pageObjectsList("Status", "Dropdowns", "listStatusDropdown");
+	pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown");
+	pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown");
+	$("#buttonAudibleTitle").prop('hidden', true);
+	$("#span-Title").prop('hidden', true);
+	$("#input-Title").prop('type', 'text');
+	$("#span-Author").prop('hidden', true);
+	$("#input-Author").prop('type', 'text');
+	$("#span-Series").prop('hidden', true);
+	$("#input-Series").prop('type', 'text');
+	$("#span-SeriesBook").prop('hidden', false);
+	$("#input-SeriesBook").prop('type', 'text');
+	$("#span-ReadOrder").prop('hidden', true);
+	$("#input-ReadOrder").prop('type', 'text');
+	$("#span-ReadOrderNumber").prop('hidden', false);
+	$("#input-ReadOrderNumber").prop('type', 'text');
+	$("#span-Categories").prop('hidden', true);
+	$("#input-Categories").prop('type', 'text');
+	$("#span-ListenedTo").prop('hidden', true);
+	$("#input-ListenedTo").prop('type', 'text');
+	$("#span-Status").prop('hidden', true);
+	$("#input-Status").prop('type', 'text');
+	$("#span-Length").prop('hidden', true);
+	$("#input-Length").prop('type', 'text');
+	$("#span-MyRating").prop('hidden', true);
+	$("#input-MyRating").prop('type', 'text');
+	$("#span-DateAdded").prop('hidden', true);
+	$("#input-DateAdded").prop('type', 'text');
+	$("#span-Timestamp").prop('hidden', true);
+	$("#strongSpan-Timestamp").prop('hidden', true);
+//	$("#img-CoverArt").prop('hidden', true);
+	$("#div-CoverArt").prop('hidden', false);
+	//$("#strongSpan-CoverArt").prop('hidden', false);
+	//$("#input-CoverArt").prop('type', 'text')
+	$("#span-Notes").prop('hidden', true);
+	$("#input-Notes").prop('hidden', false);
+	$("#div-Notes").prop('style').height = '170px';
+	$("#buttonLeft-modifyAudibleFooter").prop('text', 'Cancel');
+	$("#buttonRight-modifyAudibleFooter").prop('hidden', false);
+	//$("#input-Notes").text()	//return string being displayed
+	//$("#input-CoverArt").val()	//selected file??
+
 }
 
 function modifyCurrentBook(element) {
@@ -213,15 +320,17 @@ function updateTableRow(element) {
 	var $tablebody = $('#bodySpace');
 	var $templateHTML = $('#modifyAudibleBodyTemplate').html();
 	var $clickedIcon = element.id;
-	var $clickedID = element.id;
-	$clickedID = $clickedIcon.slice(13, $clickedIcon.length);
+	var $clickedID = $clickedIcon.slice(13, $clickedIcon.length);
 	var mustacheData = {
 		"modifyAudible-h2":"View Book  ID- ",
 		"modifyAudible-ID":$clickedID,
 	};
 	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
 	fillTemplateSpace("headerSpace", "modifyAudibleHeaderTemplate", "");
-	fillTemplateSpace("footerSpace", "modifyAudibleFooter", "");
+	var mustacheData = {
+		"saveModifyFunction":"saveModifyAudible('update')",
+	};
+	fillTemplateSpace("footerSpace", "modifyAudibleFooter", mustacheData);
 	
 //	alert ("In tableRowUpdate(). \n$clickedIcon -- " +
 //		$clickedIcon + "\n ID -- " + $clickedID);
@@ -287,8 +396,59 @@ function updateTableRow(element) {
 	
 }
 
-function deleteTableRow(element) {
+function deleteThisRow(element) {	//Come here when the "Delete" icon in row is clicked
+	var rowItemID = element.id;
+	var rowRecordID = rowItemID.slice(13, rowItemID.length);
+	var modalContent = $("#update-modal");
+	var modalTemplate = $('#dialogBox-template').html();
+/*	alert("In deleteThisRow() \n rowItemID to delete -- " + rowItemID +
+		"\n database row ID - " + rowRecordID);	*/
+
+	modalContent.empty();				
+	var modalData = {
+		"dialogID-modal":rowRecordID,
+		"dialogTitle-modal":"Delete Record",
+		"dialogBody-modal":"Delete Record ID - " + rowRecordID + " ?",
+		"acceptButton-modal":"Yes",
+		"cancelButton-modal":"No",
+		"acceptFunction-modal":"acknowledgeDeleteRow()",
+	};
+	modalContent.append(Mustache.render(modalTemplate, modalData));
+	$("#dialogBoxStatus").modal();	//opens modal
+}
+
+function acknowledgeDeleteRow() {
+	var rowID = $('#dialogID-modal').val();
+	$('#dialogBoxStatus').modal('hide');
 	
+	//	alert("In acknowledgeDeleteRow() rowID -- " + rowID);
+	var postData = {
+		"functionCall":"deleteTableRowByID",
+		"fieldName":"",
+		"searchkey":rowID,		//ID of row to delete
+	};
+	var dataString = JSON.stringify(postData);
+    $.ajax({
+        url:'AudibleBooks.php',
+        type:'POST',
+        data: {postOBJ: dataString},
+        success:function(returnData) {
+			$.each(returnData, function(i, resultitem){
+				//alert("Success with Ajax onclickDropdowns()) -- " + resultitem.info);				
+				if (resultitem.status == 'Success') {				
+					//console.log("returnData -- " + returnData);				
+					fetchTableResults()
+				} else {
+					alert("Failed Ajax PHP call deleteTableRowByID -- " + returnData);
+				}
+							
+			});
+		},
+		error: function() {
+			alert('AJAX Error deleteTableRow(element).');
+		}
+	//console.log("Out of switch");
+	});	
 }
 
 function liveSearchKeyPress(element) {
@@ -530,21 +690,7 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 	$("#resultlist").slideUp('fast');	//hid results list
 	$('#searchbox').attr("placeholder", sessionStorage.getItem("searchboxPlaceholder"));	//placeholder give idea of what to type
 	$('#searchbox').val("");	//remove the typed chars.
-}	
-
-/*
-function fillSortbyDropdown(searchTerm, forObject, elementID) {
-
-	var postData = {
-		"forObject":forObject,	//forObject used in pageObjects.php by switch case for custom code
-		"sqlCommand":"",
-		"pageObject":searchTerm,	//used to get row items
-		"fieldname":"",
-		"clickedData":"",
-	};
-	//alert("in pageObjectsList \n searchTerm -- " + searchTerm + "\n forObject -- " + forObject + "\n elementID -- " + elementID);
-
-}	*/
+}
 
 function getListItems(postData) {
 	var dataString = JSON.stringify(postData);

@@ -33,19 +33,13 @@
         <div class="container-fluid">
 			<div id="titleSpace">
 				<div class="row" style="height: 80px;">
-					<div class="pt-2 col-sm-7">
+					<div class="pt-2 col-sm-9">
 						<div class="page-header clearfix">
 							<h2 id="importHeaderID" data-id='0' class="pull-left">Import Table Row ID:</h2>
 						</div>
 					</div>
-					<div class="pt-2 px-0  col-sm-1">  		
-						<a href="#" onclick="gotoPreviousRow(this)" class="btn btn-success pull-right">Prev</a>
-					</div>
-					<div class="pt-2 col-sm-2">  		
-						<a href="#" onclick="gotoNextRow(this)" class="btn btn-success">Next</a>
-					</div>
-					<div class="pt-2 col-sm-2">  		
-						<a href="#" onclick="gotoRowID()" class="btn btn-success pull-right">Goto Row ID</a>
+					<div class="pt-2 col-sm-3">  		
+						<button id="button-Finished" type="button" class="btn btn-success">Close Import Page</button>
 					</div>
 				</div>
 
@@ -68,6 +62,24 @@
 
 <!-- ========================================================================== -->
 
+<template id="footerImportCSVtemplate">
+	<div class="row" style="height: 40px;">
+		<div class="col-sm-4"></div>
+		<div class="pt-2 px-0  col-sm-2">  		
+			<button id="button-Previous" type="button" class="btn btn-success">Previous</button>
+			<a hidden href="#" onclick="gotoPreviousRow()" class="btn btn-success pull-right">Previous</a>
+		</div>
+		<div class="pt-2 col-sm-2">  		
+			<button id="button-Next" type="button" class="btn btn-success">Next</button>
+			<a hidden href="#" onclick="gotoNextRow()" class="btn btn-success">Next</a>
+		</div>
+		<div class="pt-2 col-sm-2">  		
+			<button id="button-gotoRowID" type="button" class="btn btn-success">Goto Row ID</button>
+			<a hidden href="#" onclick="gotoRowID()" class="btn btn-success pull-right">Goto Row ID</a>
+		</div>
+		<div class="col-sm-2"></div>
+	</div>	
+</template>
 
 <template id="bodyImportCSVtemplate">	<!-- Title Section -->
 		<div id="import-hiddenElements" hidden>
@@ -98,23 +110,22 @@
 				<input id="inputTitleSearch" class='edit' size='50' placeholder="Enter Audible Title search text" value="" type="text"/>
 			</div>
 			<div class="col-sm-2">  		
-				<a href="#" onclick="fetchAudibleResults()" class="btn btn-success pull-right">Search</a>
+				<button href="#" onclick="fetchAudibleResults()" class="btn btn-success pull-right">Search</button>
 			</div>
 		</div>
 	</template>
 
 	<template id="headerImportCSVtemplate">
-		<div class="row" style="height: 60px;">
-			<div class="pt-2 col-sm-6">
+		<div class="row" style="height: 80px;">
+			<div class="pt-2 col-sm-9">
 				<div class="page-header clearfix">
-					<h2 id="importHeaderID" class="pull-left">{{headerH2}}</h2>
+					<h2 id="importHeaderID" data-id='0' class="pull-left">Import Table Row ID:</h2>
 				</div>
 			</div>
-			<div class="pt-2 col-sm-6">  		
-				<a href="#" onclick="gotoRowID()" class="btn btn-success pull-right">Goto Row ID</a>
+			<div class="pt-2 col-sm-3">  		
+				<button id="buttonFinished" type="button" class="btn btn-success">Close Import Page</button>
 			</div>
 		</div>
-
 	</template>
 
 	<template id="bodyAudibletemplate">
@@ -148,7 +159,7 @@
 				<input id="input-SeriesBook{{modifyAudible-ID}}" class='edit' size='3' placeholder="#" value="{{modifyAudible-BookNumber}}" type="text"/>
 			</div>
 			<div class="col-sm-2">  		
-				<a id="inputModifyButton{{modifyAudible-ID}}" href="#" onclick="{{modifyAudible-Button}}" class="btn btn-success pull-right">{{modifyAudible-ButtonMode}}</a>
+				<button id="inputModifyButton{{modifyAudible-ID}}" href="#" onclick="{{modifyAudible-Button}}" class="btn bg-warning pull-right">{{modifyAudible-ButtonMode}}</button>
 			</div>
 		</div>			
 		<div class="row" style="height: 70px;">
@@ -165,6 +176,7 @@
 				<input id="input-ReadOrderNumber{{modifyAudible-ID}}" class='edit' size='3' placeholder="#" value="{{modifyAudible-ReadOrderNumber}}" type="text"/>
 			</div>
 			<div class="col-sm-2">  		
+				<strong><span>ID: {{modifyAudible-ID}}</span></strong>
 			</div>
 		</div>	
 	</template>
@@ -194,7 +206,7 @@
 								<button type="button" onclick="{{acceptFunction-modal}}" class="btn" >{{acceptButton-modal}}</button>
 							</div>
 							<div class="col-sm-4">
-								<button type="button" class="btn btn-default" {{cancelButton-modalHidden}}>{{cancelButton-modal}}</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal" {{cancelButton-modalHidden}}>{{cancelButton-modal}}</button>
 							</div>
 						</div>
 					</div>

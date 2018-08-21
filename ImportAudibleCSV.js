@@ -1,3 +1,5 @@
+
+
 function fillTemplateSpace(templateDivName, templateName, mustacheData) {
 	var $templateDivSpace = $("#" + templateDivName);
 	var templateHTML = $("#" + templateName).html();
@@ -14,11 +16,17 @@ function getImportRowbyID() {
 	
 }
 
-function gotoNextRow(element) {
+function gotoNextRow() {
+	var currentID = Number($("#importHeaderID").attr('data-id'));
+	//alert("In gotoNextRow(). currentID -- " + currentID);
+	fetchImportResults(currentID + 1);
 	
 }
 
-function gotoPreviousRow(element) {
+function gotoPreviousRow() {
+	var currentID = Number($("#importHeaderID").attr('data-id'));
+	//alert("In gotoPreviousRow(). currentID -- " + currentID);
+	fetchImportResults(currentID - 1);
 	
 }
 
@@ -179,7 +187,7 @@ function fetchImportResults(rowID) {		// Fills the main Table <div> #maintablebo
 			$pageSection.empty();
 			$.each(returnData, function(i, resultitem){
 				$("#importHeaderID").text('Import Table Row ID: ' + resultitem.ID);
-				$("#importHeaderID").attr('data-id', resultitem.ID)
+				$("#importHeaderID").attr('data-id', resultitem.ID);
 				var dataMustache = {
 					"tableRow-ID":resultitem.ID,
 					"tableRow-Title":resultitem.Title,
@@ -199,5 +207,36 @@ function fetchImportResults(rowID) {		// Fills the main Table <div> #maintablebo
 } 
 
 $(document).ready(function(){	//Code to run when page finishes loading
+	fillTemplateSpace("titleSpace", "headerImportCSVtemplate", "");
 	fetchImportResults(2);
+	fillTemplateSpace("footerSpace", "footerImportCSVtemplate", "");
+	
+	$("#button-Finished").on('click',function(){	//When "update" icon in row is clicked
+		//var element = event.target;
+		//var idClickedItem = element.id;
+		//alert("Button 'Finished' has been clicked -- " + idClickedItem);
+		window.close();
+	});
+
+	$("#button-Previous").on('click',function(){	//When "update" icon in row is clicked
+		//var element = event.target;
+		//var idClickedItem = element.id;
+		//alert("Button 'Finished' has been clicked -- " + idClickedItem);
+		gotoPreviousRow();
+	});
+
+	$("#button-Next").on('click',function(){	//When "update" icon in row is clicked
+		//var element = event.target;
+		//var idClickedItem = element.id;
+		//alert("Button 'Finished' has been clicked -- " + idClickedItem);
+		gotoNextRow();
+	});
+
+	$("#button-gotoRowID").on('click',function(){	//When "update" icon in row is clicked
+		//var element = event.target;
+		//var idClickedItem = element.id;
+		//alert("Button 'Finished' has been clicked -- " + idClickedItem);
+		gotoRowID();
+	});
+	
 });

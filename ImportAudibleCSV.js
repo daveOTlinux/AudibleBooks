@@ -1,9 +1,24 @@
+function fillTemplateSpace(templateDivName, templateName, mustacheData) {
+	var $templateDivSpace = $("#" + templateDivName);
+	var templateHTML = $("#" + templateName).html();
+	//alert("In fillTemplateSpace() ")
+	$templateDivSpace.empty();
+	$templateDivSpace.append(Mustache.render(templateHTML, mustacheData));
+}
 
 function getImportRowbyID() {
 	$('#dialogBoxStatus').modal('hide');
 	var dialogRowID = parseInt($('#dialogInput-modal').val());
 	alert("In getImportRowbyID() \n dialogRowID value and type -- " + dialogRowID + " and -- " + typeof(dialogRowID));
 	fetchImportResults(dialogRowID);
+	
+}
+
+function gotoNextRow(element) {
+	
+}
+
+function gotoPreviousRow(element) {
 	
 }
 
@@ -32,10 +47,10 @@ function displayNoRowsFound() {
 	
 }
 
-function searchNoRowsFound() {
+function popupDialogModal() {
 	var modalContent = $("#update-modal");
 	var modalTemplate = $('#dialogBox-template').html();
-
+	
 	modalContent.empty();				
 	var modalData = {
 		"dialogInput-modal":"",
@@ -52,21 +67,33 @@ function searchNoRowsFound() {
 	
 }
 
+function insertAudibleTable(element) {
+	var buttonId = $("#" + element.id).attr('id');
+	var clickedButtonId = buttonId.slice(17, buttonId.lenght);
+	alert("In insertAudibleTable(). \n buttonId -- " + buttonId + " Id -- " + clickedButtonId);
+	
+}
+
+function updateAudibleTable(element) {
+	var buttonId = $("#" + element.id).attr('id');
+	var clickedButtonId = buttonId.slice(17, buttonId.lenght);
+	alert("In updateAudibleTable(). \n buttonId -- " + buttonId + " Id -- " + clickedButtonId);
+
+	
+}
+
 function fetchAudibleResults() {		// Fills the main Table <div> #maintablebody
-	var inputAuthorSearch = $("#inputAuthorSearch").val();
+	var inputTitleSearch = $("#inputTitleSearch").val();
 	var $pageSection = $('#audibleSpace');
 	var $templateHTML = $('#bodyAudibletemplate').html();
 	
 	var sqlObject = {
 		"select":"SELECT `ID`, `Title`, `Author`, `Series`, `BookNumber`, `ReadOrderNumber`, `ReadOrder`, `Notes` ",
 		"from":"FROM `AudibleBooks` ",
-		"where":"WHERE `Title` LIKE '%" + inputAuthorSearch + "%'",
+		"where":"WHERE `Title` LIKE '%" + inputTitleSearch + "%'",
 		"order":"",
 		"limits":""
 	};
-	
-	//	alert("SQL string before call -- \n " + select + "\n" + from + "\n" +
-	//		 where + "\n" + order + "\n" + limits);
 	
 	var postData = {
 		"functionCall":"getAudibleRowData",
@@ -90,6 +117,8 @@ function fetchAudibleResults() {		// Fills the main Table <div> #maintablebody
 							"modifyAudible-Author":resultitem.Author,
 							"modifyAudible-Series":resultitem.Series,
 							"modifyAudible-BookNumber":resultitem.BookNumber,
+							"modifyAudible-Button":"updateAudibleTable(this)",
+							"modifyAudible-ButtonMode":"Update",
 							"modifyAudible-ReadOrderNumber":resultitem.ReadOrderNumber,
 							"modifyAudible-ReadOrder":resultitem.ReadOrder,
 							"modifyAudible-Notes":resultitem.Notes,
@@ -97,7 +126,19 @@ function fetchAudibleResults() {		// Fills the main Table <div> #maintablebody
 						$pageSection.append(Mustache.render($templateHTML, dataMustache));
 					}else {
 						//alert("Return from AJAX getAudibleRowData php call. Failed! \n resultitem.info -- " + resultitem.info);
-						searchNoRowsFound();
+						var dataMustache = {
+							"modifyAudible-ID":"0",
+							"modifyAudible-Title":$("#import-Title").val(),
+							"modifyAudible-Author":$("#import-Author").val(),
+							"modifyAudible-Series":"",
+							"modifyAudible-BookNumber":"",
+							"modifyAudible-Button":"insertAudibleTable(this)",
+							"modifyAudible-ButtonMode":"Insert",
+							"modifyAudible-ReadOrderNumber":"",
+							"modifyAudible-ReadOrder":"",
+							"modifyAudible-Notes":"",
+						};
+						$pageSection.append(Mustache.render($templateHTML, dataMustache));
 					}
 				});
 		},
@@ -138,6 +179,7 @@ function fetchImportResults(rowID) {		// Fills the main Table <div> #maintablebo
 			$pageSection.empty();
 			$.each(returnData, function(i, resultitem){
 				$("#importHeaderID").text('Import Table Row ID: ' + resultitem.ID);
+				$("#importHeaderID").attr('data-id', resultitem.ID)
 				var dataMustache = {
 					"tableRow-ID":resultitem.ID,
 					"tableRow-Title":resultitem.Title,

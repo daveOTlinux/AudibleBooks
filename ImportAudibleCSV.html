@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Import Audible Web CSV Table</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script
+		src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous"></script>
+	<link
+		rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+		integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+		crossorigin="anonymous">
+  	<script
+  		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+  		integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+  		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+		integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+		crossorigin="anonymous"></script>
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+	<script src="mustache.js"></script>
+	
+	<link href="style.css" rel="stylesheet">
+		
+	<script src="ImportAudibleCSV.js"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container-fluid">
+			<div id="titleSpace">
+				<div class="row" style="height: 80px;">
+					<div class="pt-2 col-sm-9">
+						<div class="page-header clearfix">
+							<h2 id="importHeaderID" data-id='0' class="pull-left">Import Table Row ID:</h2>
+						</div>
+					</div>
+					<div class="pt-2 col-sm-3">  		
+						<button id="button-Finished" type="button" class="btn btn-success">Close Import Page</button>
+					</div>
+				</div>
+
+			</div>
+			<div id="inputSpace">
+
+			</div>
+			<div id="audibleSpace">
+
+			</div>
+			<div id="footerSpace">
+
+			</div>
+		</div>        
+    </div>
+	<div id="update-modal">		<!--where html code for modals is written by mustache.js -->
+
+	</div>
+
+
+<!-- ========================================================================== -->
+
+<template id="footerImportCSVtemplate">
+	<div class="row" style="height: 40px;">
+		<div class="col-sm-4"></div>
+		<div class="pt-2 px-0  col-sm-2">  		
+			<button id="button-Previous" type="button" class="btn btn-success">Previous</button>
+			<a hidden href="#" onclick="gotoPreviousRow()" class="btn btn-success pull-right">Previous</a>
+		</div>
+		<div class="pt-2 col-sm-2">  		
+			<button id="button-Next" type="button" class="btn btn-success">Next</button>
+			<a hidden href="#" onclick="gotoNextRow()" class="btn btn-success">Next</a>
+		</div>
+		<div class="pt-2 col-sm-2">  		
+			<button id="button-gotoRowID" type="button" class="btn btn-success">Goto Row ID</button>
+			<a hidden href="#" onclick="gotoRowID()" class="btn btn-success pull-right">Goto Row ID</a>
+		</div>
+		<div class="col-sm-2"></div>
+	</div>	
+</template>
+
+<template id="bodyImportCSVtemplate">	<!-- Title Section -->
+		<div id="import-hiddenElements" hidden>
+			<input id="import-Length" class='edit' size='20' placeholder="#" value="{{tableRow-Length}}" type="hidden"/>
+			<input id="import-DateAdded" class='edit' size='20' placeholder="#" value="{{tableRow-DateAdded}}" type="hidden"/>
+		</div>
+		<div class="row" style="height: 40px;">
+			<div class='text-right pr-0 col-sm-2'>
+				<strong><span>Title:</span></strong>
+			</div>
+			<div class='text-left col-sm-10'>
+				<input id="import-Title" class='edit' size='60' placeholder="Enter Book Title" value="{{tableRow-Title}}" type="text"/>
+			</div>
+		</div>
+		<div class="row" style="height: 60px;">
+			<div class='text-right pr-0 col-sm-2'>
+				<strong><span>Author:</span></strong>
+			</div>
+			<div class='text-left col-sm-10'>
+				<input id="import-Author" class='edit' size='60' placeholder="Enter Author" value="{{tableRow-Author}}" type="text"/>
+			</div>
+		</div>
+		<div class="row" style="height: 70px;">
+			<div class='text-right pr-0 col-sm-2'>
+				<strong><p>Search text:</p></strong>
+			</div>
+			<div class='text-left col-sm-8'>
+				<input id="inputTitleSearch" class='edit' size='50' placeholder="Enter Audible Title search text" value="" type="text"/>
+			</div>
+			<div class="col-sm-2">  		
+				<button href="#" onclick="fetchAudibleResults()" class="btn btn-success pull-right">Search</button>
+			</div>
+		</div>
+	</template>
+
+	<template id="headerImportCSVtemplate">
+		<div class="row" style="height: 80px;">
+			<div class="pt-2 col-sm-9">
+				<div class="page-header clearfix">
+					<h2 id="importHeaderID" data-id='0' class="pull-left">Import Table Row ID:</h2>
+				</div>
+			</div>
+			<div class="pt-2 col-sm-3">  		
+				<button id="buttonFinished" type="button" class="btn btn-success">Close Import Page</button>
+			</div>
+		</div>
+	</template>
+
+	<template id="bodyAudibletemplate">
+		<div class="row" style="height: 40px;">
+			<div class='text-right pr-0 col-sm-2'>
+				<strong><span>Title:</span></strong>
+			</div>
+			<div class='text-left col-sm-10'>
+				<input id="input-Title{{modifyAudible-ID}}" class='edit' size='60' placeholder="Enter Book Title" value="{{modifyAudible-Title}}" type="text"/>
+			</div>
+		</div>
+		<div class="row" style="height: 40px;">
+			<div class='text-right pr-0 col-sm-2'>
+				<strong><span>Author:</span></strong>
+			</div>
+			<div class='text-left col-sm-10'>
+				<input id="input-Author{{modifyAudible-ID}}" class='edit' size='60' placeholder="Enter Author" value="{{modifyAudible-Author}}" type="text"/>
+			</div>
+		</div>
+		<div class="row" style="height: 50px;">
+			<div class='text-right pr-0 col-sm-2'>
+				<strong><span>Series:</span></strong>
+			</div>
+			<div class='text-left col-sm-5'>
+				<input id="input-Series{{modifyAudible-ID}}" class='edit' size='28' placeholder="Enter Book Series" value="{{modifyAudible-Series}}" type="text"/>
+			</div>
+			<div class='text-right pr-0 col-sm-2'>
+				<strong><span>Book #:</span></strong>
+			</div>
+			<div class='text-left col-sm-1'>
+				<input id="input-SeriesBook{{modifyAudible-ID}}" class='edit' size='3' placeholder="#" value="{{modifyAudible-BookNumber}}" type="text"/>
+			</div>
+			<div class="col-sm-2">  		
+				<button id="inputModifyButton{{modifyAudible-ID}}" href="#" onclick="{{modifyAudible-Button}}" class="btn bg-warning pull-right">{{modifyAudible-ButtonMode}}</button>
+			</div>
+		</div>			
+		<div class="row" style="height: 70px;">
+			<div class='text-right pr-0 col-sm-2'>
+				<strong><span>Read Order:</span></strong>
+			</div>
+			<div class='text-left col-sm-5'>
+				<input id="input-ReadOrder{{modifyAudible-ID}}" class='edit' size='28' placeholder="Enter Read Order" value="{{modifyAudible-ReadOrder}}" type="text"/>
+			</div>
+			<div class='text-right px-0 col-sm-2'>
+				<strong><span>Read Order #:</span></strong>
+			</div>
+			<div class='text-left col-sm-1'>
+				<input id="input-ReadOrderNumber{{modifyAudible-ID}}" class='edit' size='3' placeholder="#" value="{{modifyAudible-ReadOrderNumber}}" type="text"/>
+			</div>
+			<div class="col-sm-2">  		
+				<strong><span>ID: {{modifyAudible-ID}}</span></strong>
+			</div>
+		</div>	
+	</template>
+	
+	<template id='dialogBox-template'>	<!-- dialog box popup to ask question. -->
+		<div class="container">
+		<!-- Modal -->
+			<div class="modal fade" id="dialogBoxStatus" role="dialog">
+				<div class="modal-dialog modal-sm">
+					<div class="modal-content">
+						<div class="modal-header">
+							<div class="col-sm-11">
+								<h4 class="modal-title">{{dialogTitle-modal}}</h4>
+							</div>
+							<div class="col-sm-1">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+							</div>
+						</div>
+						<div class="modal-body">
+							<div class="col-sm-12">
+								<input type="{{dialogInputType-modal}}" id="dialogInput-modal" name="recordID" value="{{dialogID-modal}}">
+								<p>{{dialogBody-modal}}</p>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="col-sm-4">
+								<button type="button" onclick="{{acceptFunction-modal}}" class="btn" >{{acceptButton-modal}}</button>
+							</div>
+							<div class="col-sm-4">
+								<button type="button" class="btn btn-default" data-dismiss="modal" {{cancelButton-modalHidden}}>{{cancelButton-modal}}</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</template>
+
+	
+	
+</body>
+</html>						

@@ -17,16 +17,16 @@ function getImportRowbyID() {
 }
 
 function gotoNextRow() {
-	var currentID = Number($("#importHeaderID").attr('data-id'));
-	//alert("In gotoNextRow(). currentID -- " + currentID);
-	fetchImportResults(currentID + 1);
+	var currentImportID = Number($("#importHeaderID").attr('data-id'));
+	//alert("In gotoNextRow(). currentImportID -- " + currentImportID);
+	fetchImportResults(currentImportID + 1);
 	
 }
 
 function gotoPreviousRow() {
-	var currentID = Number($("#importHeaderID").attr('data-id'));
-	//alert("In gotoPreviousRow(). currentID -- " + currentID);
-	fetchImportResults(currentID - 1);
+	var currentImportID = Number($("#importHeaderID").attr('data-id'));
+	//alert("In gotoNextRow(). currentImportID -- " + currentImportID);
+	fetchImportResults(currentImportID - 1);
 	
 }
 
@@ -77,17 +77,79 @@ function popupDialogModal() {
 
 function insertAudibleTable(element) {
 	var buttonId = $("#" + element.id).attr('id');
-	var clickedButtonId = buttonId.slice(17, buttonId.lenght);
-	alert("In insertAudibleTable(). \n buttonId -- " + buttonId + " Id -- " + clickedButtonId);
+	var currentImportID = Number($("#importHeaderID").attr('data-id'));
+	var selectedBookID = Number($("#" + buttonId).attr('data-id'));
+	//alert("In insertAudibleTable(). currentImportID -- " + currentImportID + "\n selectedBookID -- " + selectedBookID);
+	var inputTitle = $('#input-Title' + selectedBookID).val();
+	var inputAuthor = $('#input-Author' + selectedBookID).val();
+	var inputSeries = $('#input-Series' + selectedBookID).val();
+	var inputBookNumber = $('#input-SeriesBook' + selectedBookID).val();
+	var inputReadOrder = $('#input-ReadOrder' + selectedBookID).val();
+	var inputReadOrderNumber = $('#input-ReadOrderNumber' + selectedBookID).val();
+	var inputLength = $('#import-Length').val();
+	var inputDateAdded = $('#import-DateAdded').val();
 	
 }
 
 function updateAudibleTable(element) {
 	var buttonId = $("#" + element.id).attr('id');
-	var clickedButtonId = buttonId.slice(17, buttonId.lenght);
-	alert("In updateAudibleTable(). \n buttonId -- " + buttonId + " Id -- " + clickedButtonId);
+	var currentImportID = Number($("#importHeaderID").attr('data-id'));
+	var selectedBookID = Number($("#" + buttonId).attr('data-id'));
+	//alert("In updateAudibleTable(). currentImportID -- " + currentImportID + "\n selectedBookID -- " + selectedBookID);
+	var inputTitle = $('#input-Title' + selectedBookID).val();
+	var inputAuthor = $('#input-Author' + selectedBookID).val();
+	var inputSeries = $('#input-Series' + selectedBookID).val();
+	var inputBookNumber = $('#input-SeriesBook' + selectedBookID).val();
+	var inputReadOrder = $('#input-ReadOrder' + selectedBookID).val();
+	var inputReadOrderNumber = $('#input-ReadOrderNumber' + selectedBookID).val();
+	var inputLength = $('#import-Length').val();
+	var inputDateAdded = $('#import-DateAdded').val();
+	alert("In updateAudibleTable(). " +
+		"\n inputTitle -- " + inputTitle +
+		"\n inputAuthor -- " + inputAuthor +
+		"\n inputSeries -- " + inputSeries +
+		"\n inputBookNumber -- " + inputBookNumber +
+		"\n inputReadOrder -- " + inputReadOrder +
+		"\n inputReadOrderNumber -- " + inputReadOrderNumber +
+		"\n inputLength -- " + inputLength +
+		"\n inputDateAdded -- " + inputDateAdded);
 
+	var sqlCommand = "SET `Title` = '" + inputTitle +
+	"', `Author` = '" + inputAuthor +
+	"', `Series` = '" + inputSeries +
+	"', `BookNumber` = '" + inputBookNumber +
+	"', `ReadOrderNumber` = '" + inputReadOrderNumber +
+	"', `ReadOrder` = '" + inputReadOrder +
+	"', `Length` = '" + inputLength +
+	"', `DateAdded` = '" + inputDateAdded +
+	"', `ModifiedDate` = NOW() ";
 	
+	var postData = {
+		"functionCall":"updateTableByID",
+		"fieldName":sqlCommand,
+		"searchkey":selectedBookID,		//ID of row to edit
+	};
+	
+	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
+	$.ajax({
+		url:'AudibleBooks.php',
+		type:'POST',
+		data: {postOBJ: dataString},
+		success:function(returnData) {
+			$.each(returnData, function(i, resultitem){
+				if (resultitem.status == 'Success') {
+					alert("Return from AJAX updateAudibleTable() php call. Success!");
+					//closeModifyAudible();
+					//checkSearchTermChange(searchTermUpdate, doListUpdateDisplayRefresh);
+				} else {
+					alert("Return from AJAX updateTableByID() php call. Failed! \n resultitem.info -- " + resultitem.info);
+				}
+			});
+		},
+		error: function() {
+			alert('Error in updateAudibleTable() no return from PHP call.');
+		}
+	});		
 }
 
 function fetchAudibleResults() {		// Fills the main Table <div> #maintablebody

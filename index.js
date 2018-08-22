@@ -763,6 +763,9 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 			//alert("in pageObjectsList: idname -- " + objIDname);
 			$myOBJContent.empty();
 			$.each(returnData, function(i, resultitem){
+				if(resultitem.itemDisplay == "REFRESH") {
+					var objOnclick = "fetchTableResults()";
+				}
 				var myOBJdata = {
 					"liItemEntryId":objIDname + resultitem.ID,
 					"liItemEntryOnclick":objOnclick,

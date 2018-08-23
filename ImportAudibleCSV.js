@@ -191,6 +191,10 @@ function insertAudibleTable(element) {
 	//var selectedBookID = Number($("#" + buttonId).attr('data-id'));
 	//alert("In insertAudibleTable(). currentImportID -- " + currentImportID + "\n selectedBookID -- " + selectedBookID);
 	var inputTitle = $('#input-Title0').val();
+	if (inputTitle.indexOf("'") > -1) {
+		var cleanTitle = inputTitle.slice(0, inputTitle.indexOf("'")) + "''" + inputTitle.slice(inputTitle.indexOf("'") + 1, inputTitle.length);
+		//alert("inputTitle has a " + "' at -" + inputTitle.indexOf("'") + "cleanTitle - " + cleanTitle);
+	}
 	var inputAuthor = $('#input-Author0').val();
 	var inputSeries = $('#input-Series0').val();
 	var inputBookNumber = $('#input-SeriesBook0').val();
@@ -211,7 +215,7 @@ function insertAudibleTable(element) {
 	var sqlCommand = "(`ID`, `Title`, `Author`, `Series`, `BookNumber`, `ReadOrderNumber`, " +
 	"`ReadOrder`, `Length`, `DateAdded`, `ModifiedDate`) " +
 	"VALUES (NULL, " +
-	"'" + inputTitle + "', " +
+	"'" + cleanTitle + "', " +
 	"'" + inputAuthor + "', " +
 	"'" + inputSeries + "', " +
 	"'" + inputBookNumber + "', " +

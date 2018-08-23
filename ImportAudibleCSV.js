@@ -160,6 +160,45 @@ function gotoNextRow() {
 	fetchImportResults(currentImportID + 1);
 }
 
+function gotoNotDoneRow() {
+	var sqlObject = {
+		"select":"SELECT `ID` ",
+		"from":"FROM `AudibleWeb` ",
+		"where":"WHERE `RowDone` = 0 ",
+		"order":"",
+		"limits":"LIMIT 1",
+	}
+	
+	//	alert("SQL string before call -- \n " + select + "\n" + from + "\n" +
+	//		 where + "\n" + order + "\n" + limits);
+	
+	var postData = {
+		"functionCall":"getFirstNotDoneRow",
+		"fieldName":sqlObject,
+		"searchkey":""
+	};
+	var dataString = JSON.stringify(postData);
+	$.ajax({
+		url:'ImportAudibleCSV.php',
+		type:'POST',
+		data: {postOBJ: dataString},
+		success:function(returnData) {
+			//console.log("returnData fetchTableResults -- " + returnData);
+			//alert("In fetchTableResults returnData length -- " + returnData.length);
+			$.each(returnData, function(i, resultitem){
+				if (resultitem.status == 'Success') {
+					fetchImportResults(resultitem.ID);
+				} else {
+					alert("Return from AJAX gotoNotDoneRow() php call. Failed! \n resultitem.info -- " + resultitem.info);
+				}
+			});
+		},
+		error: function() {
+			alert('In gotoNotDoneRow(). Error with getting row data from ImportAudibleCSV.php.');
+		}
+	});
+}
+
 function gotoPreviousRow() {
 	var currentImportID = Number($("#importHeaderID").attr('data-id'));
 	//alert("In gotoNextRow(). currentImportID -- " + currentImportID);

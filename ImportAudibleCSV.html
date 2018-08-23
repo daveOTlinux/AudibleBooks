@@ -67,20 +67,20 @@
 
 <template id="footerImportCSVtemplate">
 	<div class="row" style="height: 40px;">
-		<div class="col-sm-4"></div>
+		<div class="col-sm-1"></div>
 		<div class="pt-2 px-0  col-sm-2">  		
-			<button id="button-Previous" type="button" class="btn btn-success">Previous</button>
-			<a hidden href="#" onclick="gotoPreviousRow()" class="btn btn-success pull-right">Previous</a>
+			<button id="button-Previous" onclick="gotoPreviousRow()" type="button" class="btn btn-success">Previous</button>
 		</div>
 		<div class="pt-2 col-sm-2">  		
-			<button id="button-Next" type="button" class="btn btn-success">Next</button>
-			<a hidden href="#" onclick="gotoNextRow()" class="btn btn-success">Next</a>
+			<button id="button-Next" onclick="gotoNextRow()" type="button" class="btn btn-success">Next</button>
 		</div>
-		<div class="pt-2 col-sm-2">  		
-			<button id="button-gotoRowID" type="button" class="btn btn-success">Goto Row ID</button>
-			<a hidden href="#" onclick="gotoRowID()" class="btn btn-success pull-right">Goto Row ID</a>
+		<div class="pt-2 col-sm-3">  		
+			<button id="button-gotoRowID" onclick="gotoRowID()" type="button" class="btn btn-success">Goto Row ID</button>
 		</div>
-		<div class="col-sm-2"></div>
+		<div class="pt-2 col-sm-3">  		
+			<button id="button-notDone" onclick="gotoNotDoneRow()" type="button" class="btn btn-success">First Undone Row</button>
+		</div>
+		<div class="col-sm-1"></div>
 	</div>	
 </template>
 

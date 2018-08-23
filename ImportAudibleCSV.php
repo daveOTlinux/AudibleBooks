@@ -30,9 +30,8 @@
 		}
 
 		return $returnStatus;
-}
+	}
 
-	
 	function getImportRowData($sqlQuery){
 		require_once 'config.php';
 
@@ -120,8 +119,44 @@
 		return $returnStatus;
 	}
 
+	function getFirstNotDoneRow($sqlQuery){
+		require_once 'config.php';
+
+		$select = $sqlQuery['select'];
+		$from = $sqlQuery['from'];
+		$where = $sqlQuery['where'];
+		$order = $sqlQuery['order'];
+		$limits = $sqlQuery['limits'];
 	
+		$strSQL = $select . $from . $where . $order . $limits;
+
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+		
+	    $result = $mysqli->query($strSQL);
+
+	    $returnStatus = array(array());
+	    
+	    if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error getImportRowData() - " . $mysqli->error;
 	
+	    }
+	    else {
+	         // Get results of query
+	         $count = 0;
+	         while($row = $result->fetch_assoc()) {  //outputs the records
+				$returnStatus[$count]["status"] = "Success";
+				$returnStatus[$count]["ID"] = $row['ID'];;
+				$count++;
+	         }
+	    };	
+		$result->close();
+		$mysqli->close();
+		return $returnStatus;
+	}
+
+
+
 //======================================================================================
 
     //if($_POST['keyword'] && !empty($_POST['keyword'])){
@@ -143,6 +178,9 @@
 			case "updateImportRowDoneByID":
 				$itemID = (int) filter_var($searchKey, FILTER_SANITIZE_NUMBER_INT);
 				$returnStatus = updateImportRowDoneByID($fieldName, $itemID);
+				break;
+			case "getFirstNotDoneRow":
+				$returnStatus = getFirstNotDoneRow($fieldName);
 				break;
 	    }
 	    

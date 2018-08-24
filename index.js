@@ -598,7 +598,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					//console.log("returnData -- " + returnData);				
 					switch(objName) {
 						case "sortby":
-							sessionStorage.setItem("mainTable_Order", "ORDER BY " + resultitem.info + " ")
+							sessionStorage.setItem("mainTable_Order", "ORDER BY " + resultitem.info + " ");
 							fetchTableResults();
 							break;
 						case "utilities":

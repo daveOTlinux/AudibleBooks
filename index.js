@@ -739,7 +739,7 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 					break;
 				case "filterDropdown":
 					var objIDname = "filteritem";
-					var objOnclick = "onclickDropdowns(this)"
+					var objOnclick = "onclickDropdowns(this)";
 					break;
 				case "utilitiesDropdown":
 					var objIDname = "utilitiesitem";

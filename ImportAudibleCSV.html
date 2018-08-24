@@ -33,10 +33,13 @@
         <div class="container-fluid">
 			<div id="titleSpace">
 				<div class="row" style="height: 80px;">
-					<div class="pt-2 col-sm-9">
+					<div class="pt-2 col-sm-7">
 						<div class="page-header clearfix">
 							<h2 id="importHeaderID" data-id='0' class="pull-left">Import Table Row ID:</h2>
 						</div>
+					</div>
+					<div class="col-sm-2">  		
+						<div id="importHeaderDone" class="mt-2 pl-3 bg-warning" style="width:50px" hidden >DONE</div>
 					</div>
 					<div class="pt-2 col-sm-3">  		
 						<button id="button-Finished" type="button" class="btn btn-success">Close Import Page</button>
@@ -64,20 +67,20 @@
 
 <template id="footerImportCSVtemplate">
 	<div class="row" style="height: 40px;">
-		<div class="col-sm-4"></div>
+		<div class="col-sm-1"></div>
 		<div class="pt-2 px-0  col-sm-2">  		
-			<button id="button-Previous" type="button" class="btn btn-success">Previous</button>
-			<a hidden href="#" onclick="gotoPreviousRow()" class="btn btn-success pull-right">Previous</a>
+			<button id="button-Previous" onclick="gotoPreviousRow()" type="button" class="btn btn-success">Previous</button>
 		</div>
 		<div class="pt-2 col-sm-2">  		
-			<button id="button-Next" type="button" class="btn btn-success">Next</button>
-			<a hidden href="#" onclick="gotoNextRow()" class="btn btn-success">Next</a>
+			<button id="button-Next" onclick="gotoNextRow()" type="button" class="btn btn-success">Next</button>
 		</div>
-		<div class="pt-2 col-sm-2">  		
-			<button id="button-gotoRowID" type="button" class="btn btn-success">Goto Row ID</button>
-			<a hidden href="#" onclick="gotoRowID()" class="btn btn-success pull-right">Goto Row ID</a>
+		<div class="pt-2 col-sm-3">  		
+			<button id="button-gotoRowID" onclick="gotoRowID()" type="button" class="btn btn-success">Goto Row ID</button>
 		</div>
-		<div class="col-sm-2"></div>
+		<div class="pt-2 col-sm-3">  		
+			<button id="button-notDone" onclick="gotoNotDoneRow()" type="button" class="btn btn-success">First Undone Row</button>
+		</div>
+		<div class="col-sm-1"></div>
 	</div>	
 </template>
 
@@ -117,10 +120,13 @@
 
 	<template id="headerImportCSVtemplate">
 		<div class="row" style="height: 80px;">
-			<div class="pt-2 col-sm-9">
+			<div class="pt-2 col-sm-7">
 				<div class="page-header clearfix">
 					<h2 id="importHeaderID" data-id='0' class="pull-left">Import Table Row ID:</h2>
 				</div>
+			</div>
+			<div class="col-sm-2">  		
+				<div id="importHeaderDone" class="mt-2 pl-3 bg-warning" hidden >DONE</div>
 			</div>
 			<div class="pt-2 col-sm-3">  		
 				<button id="buttonFinished" type="button" class="btn btn-success">Close Import Page</button>
@@ -159,7 +165,7 @@
 				<input id="input-SeriesBook{{modifyAudible-ID}}" class='edit' size='3' placeholder="#" value="{{modifyAudible-BookNumber}}" type="text"/>
 			</div>
 			<div class="col-sm-2">  		
-				<button id="inputModifyButton{{modifyAudible-ID}}" href="#" onclick="{{modifyAudible-Button}}" class="btn bg-warning pull-right">{{modifyAudible-ButtonMode}}</button>
+				<button id="inputModifyButton{{modifyAudible-ID}}" data-ID="{{modifyAudible-ID}}" href="#" onclick="{{modifyAudible-Button}}" class="btn bg-warning pull-right">{{modifyAudible-ButtonMode}}</button>
 			</div>
 		</div>			
 		<div class="row" style="height: 70px;">

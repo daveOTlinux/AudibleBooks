@@ -112,6 +112,11 @@ function saveModifyAudible(mode) {
 			if(!(pathCoverArt == "CoverArt/")) {
 				sqlCommand + "`CoverArt` = '" + pathCoverArt + "' "
 			}			
+			var postData = {
+				"functionCall":"updateTableByID",
+				"fieldName":sqlCommand,
+				"searchkey":currentID,		//ID of row to edit
+			};
 			break;
 		case "insert":
 			if(!(pathCoverArt == "CoverArt/")) {
@@ -137,15 +142,14 @@ function saveModifyAudible(mode) {
 				"'" + inputMyRating + "', " +
 				"'" + inputPathCoverArt + "', " +
 				"'" + inputNotes + "', NOW())";
-			break;
+				var postData = {
+					"functionCall":"insertNewRowTable",
+					"fieldName":sqlCommand,
+					"searchkey":"",		//ID of row to edit
+				};
+				break;
 	} 
 	
-	var postData = {
-		"functionCall":"insertNewRowTable",
-		"fieldName":sqlCommand,
-		"searchkey":"",		//ID of row to edit
-	};
-
 	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
 	$.ajax({
         url:'AudibleBooks.php',
@@ -759,6 +763,9 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 			//alert("in pageObjectsList: idname -- " + objIDname);
 			$myOBJContent.empty();
 			$.each(returnData, function(i, resultitem){
+				if(resultitem.itemDisplay == "REFRESH") {
+					var objOnclick = "fetchTableResults()";
+				}
 				var myOBJdata = {
 					"liItemEntryId":objIDname + resultitem.ID,
 					"liItemEntryOnclick":objOnclick,

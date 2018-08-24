@@ -112,11 +112,15 @@ function saveModifyAudible(mode) {
 			if(!(pathCoverArt == "CoverArt/")) {
 				sqlCommand + "`CoverArt` = '" + pathCoverArt + "' "
 			}			
+<<<<<<< HEAD
 			var postData = {
 				"functionCall":"updateTableByID",
 				"fieldName":sqlCommand,
 				"searchkey":currentID,		//ID of row to edit
 			};
+=======
+			var functionCall = "updateTableByID";
+>>>>>>> importWebCSV
 			break;
 		case "insert":
 			if(!(pathCoverArt == "CoverArt/")) {
@@ -142,6 +146,7 @@ function saveModifyAudible(mode) {
 				"'" + inputMyRating + "', " +
 				"'" + inputPathCoverArt + "', " +
 				"'" + inputNotes + "', NOW())";
+<<<<<<< HEAD
 				var postData = {
 					"functionCall":"insertNewRowTable",
 					"fieldName":sqlCommand,
@@ -150,6 +155,18 @@ function saveModifyAudible(mode) {
 				break;
 	} 
 	
+=======
+			var functionCall = "insertNewRowTable";
+			break;
+	} 
+	
+	var postData = {
+		"functionCall":functionCall,
+		"fieldName":sqlCommand,
+		"searchkey":"",		//ID of row to edit
+	};
+
+>>>>>>> importWebCSV
 	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
 	$.ajax({
         url:'AudibleBooks.php',
@@ -476,7 +493,7 @@ function liveSearchKeyPress(element) {
 
 	if (key.length > 0)	{	    	
 		$.ajax({
-			url:'AudibleBooks.php',
+			url:'.php',
 			type:'POST',
 			data: {postOBJ: dataString},
 			beforeSend:function () {
@@ -493,11 +510,11 @@ function liveSearchKeyPress(element) {
 							"id=searchitem" + resultitem.id +
 							" class='showitem'>" + resultitem.field1 + "</li>";
 					$resultlist.append(searchItemTemplate);
-				});
+				});AudibleBooks
 				$('#resultlist').slideDown('fast');
 			},
 			error: function() {
-				alert('Error with Live Search. NO data from fetchSearchData.php');
+				alert('Error with Live Search. NO data from AudibleBooks.php');
 			}
 		});
 	} else {
@@ -741,7 +758,7 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 					break;
 				case "filterDropdown":
 					var objIDname = "filteritem";
-					var objOnclick = "onclickDropdowns(this)"
+					var objOnclick = "onclickDropdowns(this)";
 					break;
 				case "utilitiesDropdown":
 					var objIDname = "utilitiesitem";

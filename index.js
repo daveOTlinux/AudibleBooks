@@ -112,15 +112,11 @@ function saveModifyAudible(mode) {
 			if(!(pathCoverArt == "CoverArt/")) {
 				sqlCommand + "`CoverArt` = '" + pathCoverArt + "' "
 			}			
-<<<<<<< HEAD
 			var postData = {
 				"functionCall":"updateTableByID",
 				"fieldName":sqlCommand,
 				"searchkey":currentID,		//ID of row to edit
 			};
-=======
-			var functionCall = "updateTableByID";
->>>>>>> importWebCSV
 			break;
 		case "insert":
 			if(!(pathCoverArt == "CoverArt/")) {
@@ -146,7 +142,6 @@ function saveModifyAudible(mode) {
 				"'" + inputMyRating + "', " +
 				"'" + inputPathCoverArt + "', " +
 				"'" + inputNotes + "', NOW())";
-<<<<<<< HEAD
 				var postData = {
 					"functionCall":"insertNewRowTable",
 					"fieldName":sqlCommand,
@@ -154,19 +149,7 @@ function saveModifyAudible(mode) {
 				};
 				break;
 	} 
-	
-=======
-			var functionCall = "insertNewRowTable";
-			break;
-	} 
-	
-	var postData = {
-		"functionCall":functionCall,
-		"fieldName":sqlCommand,
-		"searchkey":"",		//ID of row to edit
-	};
 
->>>>>>> importWebCSV
 	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
 	$.ajax({
         url:'AudibleBooks.php',

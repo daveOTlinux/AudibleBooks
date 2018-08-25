@@ -331,7 +331,7 @@ function updateTableRow(element) {
 	};
 	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
 	fillTemplateSpace("headerSpace", "modifyAudibleHeaderTemplate", "");
-	var mustacheData = {
+	mustacheData = {
 		"saveModifyFunction":"saveModifyAudible('update')",
 	};
 	fillTemplateSpace("footerSpace", "modifyAudibleFooter", mustacheData);
@@ -370,7 +370,7 @@ function updateTableRow(element) {
 					var modifyListenedTo = "YES";
 				}	    					
 				//var SeriesReadOrder = resultitem.ReadOrder + " Book - " + resultitem.ReadOrderNumber;
-				var dataMustache = {
+				var mustacheData = {
 					"modifyAudible-ID":resultitem.ID,
 					"modifyAudible-Title":resultitem.Title,
 					"modifyAudible-Author":resultitem.Author,
@@ -390,7 +390,7 @@ function updateTableRow(element) {
 					"modifyAudible-Notes":resultitem.Notes,
 					"modifyAudible-ModifiedDate":resultitem.ModifiedDate,					
 				};
-				$tablebody.append(Mustache.render($templateHTML, dataMustache));
+				$tablebody.append(Mustache.render($templateHTML, mustacheData));
 			});
         },
         error: function() {
@@ -409,7 +409,7 @@ function deleteThisRow(element) {	//Come here when the "Delete" icon in row is c
 		"\n database row ID - " + rowRecordID);	*/
 
 	modalContent.empty();				
-	var modalData = {
+	var mustacheData = {
 		"dialogID-modal":rowRecordID,
 		"dialogTitle-modal":"Delete Record",
 		"dialogBody-modal":"Delete Record ID - " + rowRecordID + " ?",
@@ -417,7 +417,7 @@ function deleteThisRow(element) {	//Come here when the "Delete" icon in row is c
 		"cancelButton-modal":"No",
 		"acceptFunction-modal":"acknowledgeDeleteRow()",
 	};
-	modalContent.append(Mustache.render(modalTemplate, modalData));
+	modalContent.append(Mustache.render(modalTemplate, mustacheData));
 	$("#dialogBoxStatus").modal();	//opens modal
 }
 
@@ -659,14 +659,14 @@ function fetchTableResults() {		// Fills the main Table <div> #maintablebody
 			//alert("In fetchTableResults returnData length -- " + returnData.length);
 			$tablebody.empty();
 			$.each(returnData, function(i, resultitem){
-				var dataMustache = {
+				var mustacheData = {
 					"tableRow-ID":resultitem.ID,
 					"tableRow-Title":resultitem.Title,
 					"tableRow-Author":resultitem.Author,
 					"tableRow-Series":resultitem.Series,
 					
 				};
-				$tablebody.append(Mustache.render($templateHTML, dataMustache));
+				$tablebody.append(Mustache.render($templateHTML, mustacheData));
 			});
         },
         error: function() {
@@ -696,24 +696,15 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 	$('#searchbox').val("");	//remove the typed chars.
 }
 
-function getListItems(postData) {
-	var dataString = JSON.stringify(postData);
-    $.ajax({
-        url:'pageObjects.php',
-        type:'POST',
-        data: {postOBJ: dataString},
-        success:function(returnData) {
-			console.log("returnData -- " + returnData);			
-			return returnData;
-        },
-        error: function() {
-        	alert('In pageObjectsList().  Error with getting data from pageObjects.php');
-        }
-	});
-
-}
-
 function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from pageObjects table where = searchTerm
+	var $pageSection = $('#' + elementID);
+	var $templateHTML = $('#liItemEntryTemplate').html();
+	var elementName = "noswitch";
+	var onclickElementAttr = "noswitch";
+	//var myOBJ = document.getElementById(elementID);
+	//var $myOBJContent = $('#' + myOBJ.id);
+	//var myOBJTemplate = $('#liItemEntryTemplate').html();
+	//alert("element myOBJ.id  -- " +  myOBJ.id + " elementID -- " + elementID);
 	var postData = {
 		"forObject":forObject,	//forObject used in pageObjects.php by switch case for custom code
 		"sqlCommand":"",
@@ -729,50 +720,50 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
         data: {postOBJ: dataString},
         success:function(returnData) {
 			console.log("returnData -- " + returnData);			
-			var myOBJ = document.getElementById(elementID);
-			var $myOBJContent = $('#' + myOBJ.id);
-			var myOBJTemplate = $('#liItemEntryTemplate').html();
-			//alert("element myOBJ.id  -- " +  myOBJ.id + " elementID -- " + elementID);
-			var objIDname = "noswitch";
 			switch(elementID) {
 				case "sortDropdown":
-					var objIDname = "sortItem";
-					var objOnclick = "onclickDropdowns(this)";
+					elementName = "sortItem";
+					onclickElementAttr = "onclickDropdowns(this)";
 					break;
 				case "filterDropdown":
-					var objIDname = "filteritem";
-					var objOnclick = "onclickDropdowns(this)";
+					elementName = "filteritem";
+					onclickElementAttr = "onclickDropdowns(this)";
 					break;
 				case "utilitiesDropdown":
-					var objIDname = "utilitiesitem";
-					var objOnclick = "onclickDropdowns(this)";
+					elementName = "utilitiesitem";
 					break;
 				case "listStatusDropdown":
-					var objIDname = "listStatus";
-					var objOnclick = "setInputStatusValue(this)";
+					elementName = "listStatus";
+					onclickElementAttr = "setInputStatusValue(this)";
 					break;
 				case "listCategoriesDropdown":
-					var objIDname = "listCategories";
-					var objOnclick = "setInputCategoriesValue(this)";
+					elementName = "listCategories";
+					onclickElementAttr = "setInputCategoriesValue(this)";
 					break;
 				case "listListenedToDropdown":
-					var objIDname = "listListenedTo";
-					var objOnclick = "setInputListenedToValue(this)";
+					elementName = "listListenedTo";
+					onclickElementAttr = "setInputListenedToValue(this)";
 					break;
 			};
-			//alert("in pageObjectsList: idname -- " + objIDname);
-			$myOBJContent.empty();
+			//alert("in pageObjectsList(): \n idname -- " + elementName + "\n onclickElementAttr -- " + onclickElementAttr);
+			$pageSection.empty();
 			$.each(returnData, function(i, resultitem){
-				if(resultitem.itemDisplay == "REFRESH") {
-					var objOnclick = "fetchTableResults()";
+				switch(resultitem.itemDisplay) {
+					case "REFRESH":
+						onclickElementAttr = "fetchTableResults()";
+						break;
+					default:
+						onclickElementAttr = "onclickDropdowns(this)";
+					break;
 				}
-				var myOBJdata = {
-					"liItemEntryId":objIDname + resultitem.ID,
-					"liItemEntryOnclick":objOnclick,
+				var mustacheData = {
+					"liItemEntryId":elementName + resultitem.ID,
+					"liItemEntryOnclick":onclickElementAttr,
 					"liItemDisplay":resultitem.itemDisplay,
 				};
-				$myOBJContent.append(Mustache.render(myOBJTemplate, myOBJdata));
-				//$myOBJContent.append("<li id='" + objIDname + resultitem.ID + "' onclick='onclickDropdowns(this)' " +
+				//alert("in pageObjectsList() $.each loop: \n idname -- " + elementName + "\n onclickElementAttr -- " + onclickElementAttr);
+				$pageSection.append(Mustache.render($templateHTML, mustacheData));
+				//$myOBJContent.append("<li id='" + elementName + resultitem.ID + "' onclick='onclickDropdowns(this)' " +
 				//	"class='showitem'>" + resultitem.itemDisplay + "</li>");
 			});				
         },

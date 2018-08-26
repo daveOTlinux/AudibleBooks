@@ -32,6 +32,8 @@
 	         // Get results of query
 	         $count = 0;
 	         while($row = $result->fetch_assoc()) {  //outputs the records
+				$returnStatus[$count]["status"] = "Success";
+				$returnStatus[$count]["numrows"] = $result->num_rows;
 				$returnStatus[$count]["id"] = strval($count);
 	         	$returnStatus[$count]["field1"] = $row['field1'];
 	         	$count++;

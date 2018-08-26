@@ -461,6 +461,7 @@ function liveSearchKeyPress(element) {
 	//console.log("element id -- "+element.id + " key -- "+ $("#" + $searchBoxId).val());
 	//alert("liveSearchKeyPress() element.id -- " + $searchBoxId + "\n key -- " + key);
 	var $resultlist = $('#resultlist');
+	var $templateHTML = $('#liItemEntryTemplate').html();
 	var searchKEY = key + '%';
 	//alert("sortby dropdown -- " + $('#sortby').attr('id'));
 	var objID = $('#filterby').attr('id');
@@ -476,7 +477,7 @@ function liveSearchKeyPress(element) {
 
 	if (key.length > 0)	{	    	
 		$.ajax({
-			url:'.php',
+			url:'AudibleBooks.php',
 			type:'POST',
 			data: {postOBJ: dataString},
 			beforeSend:function () {
@@ -489,11 +490,19 @@ function liveSearchKeyPress(element) {
 
 				$.each(returnData, function(i, resultitem){
 					//alert("id -- " + resultitem.id + " " + sortBytext +" -- " + resultitem.field1);
-					var searchItemTemplate = "<li onclick='searchResults(this)' " +
-							"id=searchitem" + resultitem.id +
-							" class='showitem'>" + resultitem.field1 + "</li>";
-					$resultlist.append(searchItemTemplate);
-				});AudibleBooks
+				if (resultitem.status == 'Success') {				
+					var mustacheData = {
+						"liItemEntryId":"searchitem" + resultitem.id,
+						"liItemEntryOnclick":"searchResults(this)",
+						"liItemDisplay":resultitem.field1,
+					};
+					$resultlist.append(Mustache.render($templateHTML, mustacheData));
+				} else {
+					$("#searchbox").attr("placeholder", "No " + searchBytext + " starting with '" + key + "'");
+					$("#searchbox").val("");
+					//alert("Failed Ajax PHP call deleteTableRowByID -- " + returnData);
+				}
+				});
 				$('#resultlist').slideDown('fast');
 			},
 			error: function() {

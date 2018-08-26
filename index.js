@@ -740,7 +740,7 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
         type:'POST',
         data: {postOBJ: dataString},
         success:function(returnData) {
-			console.log("returnData -- " + returnData);			
+			//console.log("returnData -- " + returnData);			
 			switch(elementID) {
 				case "sortDropdown":
 					elementName = "sortItem";

@@ -426,10 +426,10 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	fetchImportResults(2);
 	fillTemplateSpace("footerSpace", "footerImportCSVtemplate", "");
 	
-	$("#button-Finished").on('click',function(){	//When "update" icon in row is clicked
+	$("#buttonFinished").on('click',function(){	//When "update" icon in row is clicked
 		//var element = event.target;
 		//var idClickedItem = element.id;
-		//alert("Button 'Finished' has been clicked -- " + idClickedItem);
+		//alert("Button 'Finished' has been clicked.");
 		window.close();
 	});
 

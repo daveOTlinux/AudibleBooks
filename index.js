@@ -458,16 +458,19 @@ function acknowledgeDeleteRow() {
 function liveSearchKeyPress(element) {
 	var $searchBoxId = element.id;
 	var key = $("#" + $searchBoxId).val();
-	//console.log("element id -- "+element.id + " key -- "+ $("#" + $searchBoxId).val());
 	//alert("liveSearchKeyPress() element.id -- " + $searchBoxId + "\n key -- " + key);
 	var $resultlist = $('#resultlist');
 	var $templateHTML = $('#liItemEntryTemplate').html();
-	var searchKEY = key + '%';
+	if ($("#sortby").text() == "ID") {
+		var searchKEY = key;
+	} else {
+		var searchKEY = key + '%';
+	}
 	//alert("sortby dropdown -- " + $('#sortby').attr('id'));
 	var objID = $('#filterby').attr('id');
 	var objText = document.getElementById(objID).innerHTML;	//Current text in <sortBy> dropdown
 	var searchBytext = objText.slice(objText.lastIndexOf(" ") + 1,objText.length);	//Get the last word
-	//alert("text in sortby -- " + sortBytext + "\n searchKEY -- " + searchKEY);
+	//alert("text in sortby -- " + searchBytext + "\n searchKEY -- " + searchKEY);
 	var postData = {
 		"functionCall":"getDISTINCTSearchTerms",
 		"fieldName":searchBytext,
@@ -573,7 +576,16 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					var objName = "sortby";					
 					var liID = $("#sortDropdown li").first().attr('id');	//get id of first <li> in sortby dropdown
 					$("#sortby").text('Read Order');	//set sortby dropdown to correct display
-					
+					break;
+				case 'ID':
+					sessionStorage.setItem("sortBysearchTerm", "sortOrder00");	//set sortBy pageObj session storage
+					sessionStorage.setItem("sortBysearchSelected", "ID");	//set sortBy current selection session storage
+					setStateSearchBox("enable", liText);
+					pageObjectsList("sortOrder00", 'Dropdowns', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
+					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
+					var objName = "sortby";					
+					var liID = $("#sortDropdown li").last().attr('id');	//get id of first <li> in sortby dropdown
+					$("#sortby").text('ID');	//set sortby dropdown to correct display
 					break;
 			}
 			document.getElementById('filterby').innerHTML = liText;

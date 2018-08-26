@@ -233,6 +233,8 @@ function insertAudibleTable(element) {
 	if (inputTitle.indexOf("'") > -1) {
 		var cleanTitle = inputTitle.slice(0, inputTitle.indexOf("'")) + "''" + inputTitle.slice(inputTitle.indexOf("'") + 1, inputTitle.length);
 		//alert("inputTitle has a " + "' at -" + inputTitle.indexOf("'") + "cleanTitle - " + cleanTitle);
+	} else	{
+		var cleanTitle = inputTitle;
 	}
 	var inputAuthor = $('#input-Author0').val();
 	var inputSeries = $('#input-Series0').val();
@@ -325,6 +327,8 @@ function updateAudibleTable(element) {
 	if (inputTitle.indexOf("'") > -1) {
 		var cleanTitle = inputTitle.slice(0, inputTitle.indexOf("'")) + "''" + inputTitle.slice(inputTitle.indexOf("'") + 1, inputTitle.length);
 		//alert("inputTitle has a " + "' at -" + inputTitle.indexOf("'") + "cleanTitle - " + cleanTitle);
+	} else	{
+		var cleanTitle = inputTitle;
 	}
 	var inputAuthor = $('#input-Author' + selectedBookID).val();
 	var inputSeries = $('#input-Series' + selectedBookID).val();

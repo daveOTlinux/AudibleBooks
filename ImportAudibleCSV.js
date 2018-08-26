@@ -47,34 +47,32 @@ function fetchAudibleResults() {		// Fills the main Table <div> #maintablebody
 			//console.log("returnData fetchTableResults -- " + returnData);
 			//alert("In fetchTableResults returnData length -- " + returnData.length);
 			$pageSection.empty();
+			var dataMustache = {
+				"modifyAudible-ID":"0",
+				"modifyAudible-Title":$("#import-Title").val(),
+				"modifyAudible-Author":$("#import-Author").val(),
+				"modifyAudible-Series":"",
+				"modifyAudible-BookNumber":"",
+				"modifyAudible-Button":"insertAudibleTable(this)",
+				"modifyAudible-ButtonMode":"Insert",
+				"modifyAudible-ReadOrderNumber":"",
+				"modifyAudible-ReadOrder":"",
+				"modifyAudible-Notes":"",
+			};
+			$pageSection.append(Mustache.render($templateHTML, dataMustache));
 			$.each(returnData, function(i, resultitem){
 				if (resultitem.status == 'Success') {
 					var dataMustache = {
 						"modifyAudible-ID":resultitem.ID,
-		  "modifyAudible-Title":resultitem.Title,
-		  "modifyAudible-Author":resultitem.Author,
-		  "modifyAudible-Series":resultitem.Series,
-		  "modifyAudible-BookNumber":resultitem.BookNumber,
-		  "modifyAudible-Button":"updateAudibleTable(this)",
-				   "modifyAudible-ButtonMode":"Update",
-		  "modifyAudible-ReadOrderNumber":resultitem.ReadOrderNumber,
-		  "modifyAudible-ReadOrder":resultitem.ReadOrder,
-		  "modifyAudible-Notes":resultitem.Notes,
-					};
-					$pageSection.append(Mustache.render($templateHTML, dataMustache));
-				}else {
-					//alert("Return from AJAX getAudibleRowData php call. Failed! \n resultitem.info -- " + resultitem.info);
-					var dataMustache = {
-						"modifyAudible-ID":"0",
-		  "modifyAudible-Title":$("#import-Title").val(),
-				   "modifyAudible-Author":$("#import-Author").val(),
-				   "modifyAudible-Series":"",
-		  "modifyAudible-BookNumber":"",
-		  "modifyAudible-Button":"insertAudibleTable(this)",
-				   "modifyAudible-ButtonMode":"Insert",
-		  "modifyAudible-ReadOrderNumber":"",
-		  "modifyAudible-ReadOrder":"",
-		  "modifyAudible-Notes":"",
+						"modifyAudible-Title":resultitem.Title,
+						"modifyAudible-Author":resultitem.Author,
+						"modifyAudible-Series":resultitem.Series,
+						"modifyAudible-BookNumber":resultitem.BookNumber,
+						"modifyAudible-Button":"updateAudibleTable(this)",
+						"modifyAudible-ButtonMode":"Update",
+						"modifyAudible-ReadOrderNumber":resultitem.ReadOrderNumber,
+						"modifyAudible-ReadOrder":resultitem.ReadOrder,
+						"modifyAudible-Notes":resultitem.Notes,
 					};
 					$pageSection.append(Mustache.render($templateHTML, dataMustache));
 				}

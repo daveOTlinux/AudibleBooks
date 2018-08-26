@@ -19,6 +19,8 @@ function fetchAudibleResults() {		// Fills the main Table <div> #maintablebody
 	if (inputTitleSearch.indexOf("'") > -1) {
 		//alert("inputTitleSearch has a " + "' at -" + inputTitleSearch.indexOf("'"));
 		var cleanSearch = inputTitleSearch.slice(0, inputTitleSearch.indexOf("'")) + "''" + inputTitleSearch.slice(inputTitleSearch.indexOf("'") + 1, inputTitleSearch.length);
+	} else	{
+		var cleanSearch = inputTitleSearch;
 	}
 	var $pageSection = $('#audibleSpace');
 	var $templateHTML = $('#bodyAudibletemplate').html();

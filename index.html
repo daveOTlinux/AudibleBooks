@@ -21,7 +21,11 @@
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
 		integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
 		crossorigin="anonymous"></script>
-	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<!--	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">	-->
+
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+		integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+		crossorigin="anonymous">
 
 	<script src="mustache.js"></script>
 	
@@ -243,7 +247,7 @@
 			<td>{{tableRow-Author}}</td> 
 			<td>{{tableRow-Series}}</td> 
 			<td> 
-				<a href='#' id='rowitemUpdate{{tableRow-ID}}' onclick='updateTableRow(this)' class='mr-1 fa fa-pencil' title='Update Record' data-toggle='tooltip'></a>
+				<a href='#' id='rowitemUpdate{{tableRow-ID}}' onclick='updateTableRow(this)' class='mr-1 fa fa-edit' title='Update Record' data-toggle='tooltip'></a>
 				<a href='#' id='rowitemDelete{{tableRow-ID}}' onclick='deleteThisRow(this)' class='mr-1 fa fa-trash' title='Delete Record' data-toggle='tooltip'></a>
 			</td> 
 		</tr>

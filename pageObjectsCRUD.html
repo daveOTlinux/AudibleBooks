@@ -21,7 +21,11 @@
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
 		integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
 		crossorigin="anonymous"></script>
-	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<!--	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">	-->
+
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+		integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+		crossorigin="anonymous">
 
 	<script src="mustache.js"></script>
 
@@ -169,7 +173,7 @@
 			<td id="ModifiedDatetdPageObjRow{{ID-tdPageObjRow}}">{{ModifiedDate-tdPageObjRow}}</td>
 			<td class="px-1">
 <!--				<a class='mr-1' href='#' title='View Record' data-toggle='tooltip'><span class='fa fa-eye'></span></a>	-->
-				<a class='mx-1' href="#" onclick='modalOpenUpdate(this)' id='rowitemUpdate{{ID-tdPageObjRow}}' title='Update Record' data-toggle='tooltip'><span class='fa fa-pencil'></span></a>
+				<a class='mx-1' href="#" onclick='modalOpenUpdate(this)' id='rowitemUpdate{{ID-tdPageObjRow}}' title='Update Record' data-toggle='tooltip'><span class='fa fa-edit'></span></a>
 				<a class='mx-1' href='#' onclick='deleteThisRow(this)' id='rowitemDelete{{ID-tdPageObjRow}}' title='Delete Record' data-toggle='tooltip'><span class='fa fa-trash'></span></a>
 			</td>
 		</tr>

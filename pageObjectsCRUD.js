@@ -19,7 +19,7 @@ function reorderRowsUpdate(rowID, orderItems, promise) {	//called to change the 
 				if (resultitem.status == 'Success') {
 					//alert(" call to PHP Success!");					
 				} else {
-					alert("acknowledgeDeleteRow() AJAX failed \n resultitem.info -- " + resultitem.info);
+					alert("reorderRowsUpdate() AJAX failed \n resultitem.info -- " + resultitem.info);
 				}
 			});
 			

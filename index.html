@@ -21,8 +21,6 @@
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
 		integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
 		crossorigin="anonymous"></script>
-<!--	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">	-->
-
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
 		integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
 		crossorigin="anonymous">
@@ -119,24 +117,12 @@
 
 				</div>
 			</div>
-			<div id="footerSpace">
-				<div class="row" style="height: 75px;">
-					<div class="col-sm-8">
-							
-
-					</div>
-					<div class="col-sm-4">  		
-						<div id='utilitiesdiv' class='dropdown'>
-							<a id='utilities' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Utilities <b class='caret'></b></a>
-							<ul id='utilitiesDropdown' class='dropdown-menu'></ul>
-						</div>					
-					</div>
-				</div>
-			</div>
+			<div id="footerSpace"></div>
+			<div class="row" style="height: 40px;"></div>
 		</div>        
     </div>
-	<div id="update-modal">		<!--where html code for modals is written by mustache.js -->
-	</div>
+	<div id="update-modal"></div>	<!--where html code for a modal is written by mustache.js -->
+	
 
 
 <!-- ========================================================================== -->
@@ -202,23 +188,57 @@
 	</template>
 
 	<template id="audibleFooterTemplate">
-		<div class="row" style="height: 75px;">
-			<div class="col-sm-8">
-					
-
+		<div class="row" style="font-size: 24px;" style="height: 75px;">
+			<div class="col-sm-1">
+				
 			</div>
-			<div class="col-sm-4">  		
-				<div id='utilitiesdiv' class='dropdown'>
+			<div class="col-sm-1">  		
+				<i class="fa fa-angle-double-left fa-lg"></i>
+			</div>
+			<div class="col-sm-1">  		
+				<i class="fa fa-angle-left fa-lg"></i>
+			</div>
+			<div class="px-0 col-sm-2">  		
+				<div id='divNumRowsPage' style="font-size: 16px;" class='dropdown'>
+					<a id='numRowsPage' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{numRowsPageText}}<b class='caret'></b></a>
+					<ul id='numRowsPageDropdown' class='dropdown-menu'></ul>
+				</div>									
+			</div>
+			<div class="px-0 col-sm-2">  		
+				<div id='divSelectPage' style="font-size: 16px;" class='dropdown'>
+					<button id='selectPage' data-numRows="0" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">{{selectPageText}}</button>
+					<div id='selectPageDropdown' class="dropdown-menu">
+					</div>
+				</div>									
+			</div>
+			<div class="col-sm-1">  		
+				<i class="fa fa-angle-right fa-lg"></i>
+			</div>
+			<div class="col-sm-1">  		
+				<i class="fa fa-angle-double-right fa-lg"></i>
+			</div>
+			<div class="col-sm-2">  		
+				<div id='utilitiesdiv' style="font-size: 16px;" class='dropdown'>
 					<a id='utilities' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{utilitiesText}}<b class='caret'></b></a>
 					<ul id='utilitiesDropdown' class='dropdown-menu'></ul>
 				</div>					
 			</div>
-
+			<div class="col-sm-1">  		
+				
+			</div>
 		</div>
 	</template>
 
+<template id="pageSelectHeaderTemplate">
+	<h5 class="dropdown-header">Choose Display Page</h5>	
+</template>
+	<a class="dropdown-item" href="#">Link 1</a>
+<template id="pageSelectItemsTemplate">
+	
+</template>
+
 	<template id="liItemEntryTemplate">
-		<li id='{{liItemEntryId}}' onclick='{{liItemEntryOnclick}}' class='showitem'>{{liItemDisplay}}</li>
+		<li id='{{tagItemId}}' onclick='{{tagItemOnclick}}' class='showitem'>{{tagtemDisplay}}</li>
 	</template>
 
 	<template id="audibleBodyTemplate">

@@ -70,7 +70,8 @@
 	         // Get results of query
 	         $count = 0;
 	         while($row = $result->fetch_assoc()) {  //outputs the records
-				$returnStatus[$count]["ID"] = $row['ID'];;
+				$returnStatus[$count]["status"] = "Success";
+				$returnStatus[$count]["ID"] = $row['ID'];
 				$returnStatus[$count]["Title"] = $row['Title'];
 				$returnStatus[$count]["Author"] = $row['Author'];
 				$returnStatus[$count]["Title"] = $row['Title'];
@@ -153,7 +154,7 @@
 		}
 
 		return $returnStatus;
-}
+	}
 
 	//function pass SQL INSERT part in $sqlInsert
 	// return success or fail
@@ -178,7 +179,7 @@
 		}
 
 		return $returnStatus;
-}	
+	}	
 
 	function deleteTableRowByID($rowID) {
 		// Include config file
@@ -202,7 +203,42 @@
 		}
 
 		return $returnStatus;
-}
+	}
+
+	function getCountTableRows($sqlQuery) {
+		require_once 'config.php';
+
+		$select = "SELECT Count(*) AS Count ";
+		$from = $sqlQuery['from'];
+		$where = $sqlQuery['where'];
+		
+		$strSQL = $select . $from . $where;
+		
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+		
+	    $result = $mysqli->query($strSQL);
+
+	    $returnStatus = array(array());
+	    
+	    if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error getTableRowData() - " . $mysqli->error;
+	
+	    }
+	    else {
+	         // Get results of query
+	         $count = 0;
+	         while($row = $result->fetch_assoc()) {  //outputs the records
+				$returnStatus[$count]["status"] = "Success";
+				$returnStatus[$count]["Count"] = $row['Count'];
+				$count++;
+	         }
+	    };	
+		$result->close();
+		$mysqli->close();
+		return $returnStatus;
+	}
+
 
 //======================================================================================
 
@@ -221,6 +257,9 @@
 				break;
 			case "getTableRowData":
 				$returnStatus = getTableRowData($fieldName);
+				break;
+			case "getCountTableRows":
+				$returnStatus = getCountTableRows($fieldName);
 				break;
 			case "getAllFieldsByID":
 				$itemID = (int) filter_var($searchKey, FILTER_SANITIZE_NUMBER_INT);

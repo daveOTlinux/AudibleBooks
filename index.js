@@ -23,9 +23,52 @@ function makeBodySpace() {
 
 function makeFooterSpace() {
 	var dataMustache = {
-		"utilitiesText":"Utilities "
+		"numRowsPageText":"Rows ",
+		"selectPageText":"Page ",
+		"utilitiesText":"Utilities ",
 	};
-	fillTemplateSpace("footerSpace", "audibleFooterTemplate", dataMustache)
+	fillTemplateSpace("footerSpace", "audibleFooterTemplate", dataMustache);
+	getCountCurrentTableRows(calculateNumberPages)
+
+}
+
+function calculateNumberPages() {
+	var rowCount = $("#selectPage").attr('data-numRows')
+	alert("IN calculateNumberPages(). Current rowCount -- " + rowCount);
+	
+}
+
+function getCountCurrentTableRows(callback) {
+	var from = sessionStorage.getItem("mainTable_From");	//Get from session value
+	var where = sessionStorage.getItem("mainTable_Where");	//Get where session value
+	var sqlObject = {
+		"from":from,
+		"where":where,
+	}
+	var postData = {
+		"functionCall":"getCountTableRows",
+		"fieldName":sqlObject,
+		"searchkey":""
+	};
+	var dataString = JSON.stringify(postData);
+    $.ajax({
+        url:'AudibleBooks.php',
+        type:'POST',
+        data: {postOBJ: dataString},
+        success:function(returnData) {
+			$.each(returnData, function(i, resultitem){
+				$("#selectPage").attr('data-numRows', resultitem.Count);
+			});
+ 			// Make sure the callback is a function
+			if (typeof callback === "function") {
+				// Execute the callback function and pass the parameters to it
+				callback();
+			}
+       },
+        error: function() {
+        	alert('In getCountCurrentTableRows(). Error with getting row count from AudibleBooks.php.');
+        }
+	});
 }
 
 function fillTemplateSpace(templateDivName, templateName, mustacheData) {
@@ -54,9 +97,9 @@ function closeModifyAudible() {
 	}
 	
 	//pageObjectsList(searchTerm, forObject, $elementID) function values to pass
-	pageObjectsList(sortBysearchTerm, 'Dropdowns', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
-	pageObjectsList(filterBysearchTerm, 'Dropdowns', 'filterDropdown');	//Fill in <li> values for sortBy dropdown
-	pageObjectsList(utilitySearchTerm, 'Dropdowns', 'utilitiesDropdown');	//Fill in <li> values for utilities dropdown
+	pageObjectsList(sortBysearchTerm, 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
+	pageObjectsList(filterBysearchTerm, 'Dropdowns', 'filterDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
+	pageObjectsList(utilitySearchTerm, 'Dropdowns', 'utilitiesDropdown', 'liItemEntryTemplate');	//Fill in <li> values for utilities dropdown
 
 	fetchTableResults()
 }
@@ -206,9 +249,9 @@ function addNewAudibleBook() {
 		"saveModifyFunction":"saveModifyAudible('insert')",
 	};
 	fillTemplateSpace("footerSpace", "modifyAudibleFooter", mustacheData);
-	pageObjectsList("Status", "Dropdowns", "listStatusDropdown");
-	pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown");
-	pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown");
+	pageObjectsList("Status", "Dropdowns", "listStatusDropdown", "liItemEntryTemplate");
+	pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown", "liItemEntryTemplate");
+	pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown", "liItemEntryTemplate");
 	$("#buttonAudibleTitle").prop('hidden', true);
 	$("#span-Title").prop('hidden', true);
 	$("#input-Title").prop('type', 'text');
@@ -296,9 +339,9 @@ function modifyCurrentBook(element) {
 	$("#buttonRight-modifyAudibleFooter").prop('hidden', false);
 	//$("#input-Notes").text()	//return string being displayed
 	//$("#input-CoverArt").val()	//selected file??
-	pageObjectsList("Status", "Dropdowns", "listStatusDropdown");
-	pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown");
-	pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown");
+	pageObjectsList("Status", "Dropdowns", "listStatusDropdown", "liItemEntryTemplate");
+	pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown", "liItemEntryTemplate");
+	pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown", "liItemEntryTemplate");
 	
 };
 
@@ -551,7 +594,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					sessionStorage.setItem("sortBysearchTerm", "sortOrder00");	//set sortBy pageObj session storage
 					sessionStorage.setItem("sortBysearchSelected", "Latest Modified");	//set sortBy current selection session storage
 					setStateSearchBox("disabled", liText);
-					pageObjectsList("sortOrder00", 'Dropdowns', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
+					pageObjectsList("sortOrder00", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 					var objName = "sortby";					
 					var liID = $("#sortDropdown li").last().attr('id');	//get id of first <li> in sortby dropdown
@@ -561,7 +604,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					sessionStorage.setItem("sortBysearchTerm", "sortOrder01");	//set sortBy pageObj session storage
 					sessionStorage.setItem("sortBysearchSelected", "Title");	//set sortBy current selection session storage
 					setStateSearchBox("enable", liText);
-					pageObjectsList("sortOrder01", 'Dropdowns', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
+					pageObjectsList("sortOrder01", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 					var objName = "sortby";					
 					var liID = $("#sortDropdown li").first().attr('id');	//get id of first <li> in sortby dropdown
@@ -571,7 +614,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					sessionStorage.setItem("sortBysearchTerm", "sortOrder02");	//set sortBy pageObj session storage
 					sessionStorage.setItem("sortBysearchSelected", "Read Order");	//set sortBy current selection session storage
 					setStateSearchBox("enable", liText);
-					pageObjectsList("sortOrder02", 'Dropdowns', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
+					pageObjectsList("sortOrder02", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 					var objName = "sortby";					
 					var liID = $("#sortDropdown li").first().attr('id');	//get id of first <li> in sortby dropdown
@@ -581,7 +624,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					sessionStorage.setItem("sortBysearchTerm", "sortOrder00");	//set sortBy pageObj session storage
 					sessionStorage.setItem("sortBysearchSelected", "ID");	//set sortBy current selection session storage
 					setStateSearchBox("enable", liText);
-					pageObjectsList("sortOrder00", 'Dropdowns', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
+					pageObjectsList("sortOrder00", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 					var objName = "sortby";					
 					var liID = $("#sortDropdown li").last().attr('id');	//get id of first <li> in sortby dropdown
@@ -717,9 +760,9 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 	$('#searchbox').val("");	//remove the typed chars.
 }
 
-function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from pageObjects table where = searchTerm
-	var $pageSection = $('#' + elementID);
-	var $templateHTML = $('#liItemEntryTemplate').html();
+function pageObjectsList(searchTerm, forObject, elementID, divTemplate) {	//Get row data from pageObjects table where = searchTerm
+	var $divSection = $('#' + elementID);
+	var $templateHTML = $("#" + divTemplate).html();
 	var elementName = "noswitch";
 	var onclickElementAttr = "noswitch";
 	//var myOBJ = document.getElementById(elementID);
@@ -741,6 +784,7 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
         data: {postOBJ: dataString},
         success:function(returnData) {
 			//console.log("returnData -- " + returnData);			
+			$divSection.empty();
 			switch(elementID) {
 				case "sortDropdown":
 					elementName = "sortItem";
@@ -767,7 +811,6 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 					break;
 			};
 			//alert("in pageObjectsList(): \n idname -- " + elementName + "\n onclickElementAttr -- " + onclickElementAttr);
-			$pageSection.empty();
 			$.each(returnData, function(i, resultitem){
 				switch(resultitem.itemDisplay) {
 					case "REFRESH":
@@ -778,12 +821,12 @@ function pageObjectsList(searchTerm, forObject, elementID) {	//Get row data from
 					break;
 				}
 				var mustacheData = {
-					"liItemEntryId":elementName + resultitem.ID,
-					"liItemEntryOnclick":onclickElementAttr,
-					"liItemDisplay":resultitem.itemDisplay,
+					"tagItemId":elementName + resultitem.ID,
+					"tagItemOnclick":onclickElementAttr,
+					"tagtemDisplay":resultitem.itemDisplay,
 				};
 				//alert("in pageObjectsList() $.each loop: \n idname -- " + elementName + "\n onclickElementAttr -- " + onclickElementAttr);
-				$pageSection.append(Mustache.render($templateHTML, mustacheData));
+				$divSection.append(Mustache.render($templateHTML, mustacheData));
 				//$myOBJContent.append("<li id='" + elementName + resultitem.ID + "' onclick='onclickDropdowns(this)' " +
 				//	"class='showitem'>" + resultitem.itemDisplay + "</li>");
 			});				
@@ -804,7 +847,6 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	makeHeaderSpace();
 	makeBodySpace();
 	makeFooterSpace();	*/
-	
 
 	//javascript session storage
 	var testSession = sessionStorage.getItem("sessionStorageInit");
@@ -842,15 +884,16 @@ $(document).ready(function(){	//Code to run when page finishes loading
 		//	"\n searchbox placeholder -- " + sessionStorage.getItem("searchboxPlaceholder") +
 		//	" searchbox disabled -- " + $('#searchbox').prop('disabled'));
 	}
+	makeFooterSpace();
 	
 	var sortBysearchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 	var filterBysearchTerm = sessionStorage.getItem("filterBysearchTerm");	//current filterBy pageObj search term
 	var utilitySearchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
 
-	//pageObjectsList(searchTerm, forObject, $elementID) function values to pass
-	pageObjectsList(sortBysearchTerm, 'Dropdowns', 'sortDropdown');	//Fill in <li> values for sortBy dropdown
-	pageObjectsList(filterBysearchTerm, 'Dropdowns', 'filterDropdown');	//Fill in <li> values for sortBy dropdown
-	pageObjectsList(utilitySearchTerm, 'Dropdowns', 'utilitiesDropdown');	//Fill in <li> values for utilities dropdown
+	//pageObjectsList(searchTerm, forObject, $elementID, template) function values to pass
+	pageObjectsList(sortBysearchTerm, 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate' );	//Fill in <li> values for sortBy dropdown
+	pageObjectsList(filterBysearchTerm, 'Dropdowns', 'filterDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
+	pageObjectsList(utilitySearchTerm, 'Dropdowns', 'utilitiesDropdown', 'liItemEntryTemplate');	//Fill in <li> values for utilities dropdown
 
 	//var searchkey = "";
 

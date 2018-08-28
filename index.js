@@ -1,5 +1,14 @@
 
-
+function setNumRowOnPage(element) {
+	var numRows = $("#" + element.id).attr('data-id');
+	sessionStorage.setItem("numRowsOnPage", numRows);	//setup sortBy pageObj session storage
+	var rowOnPage = sessionStorage.getItem("numRowsOnPage");
+	var pageDisplayNum = sessionStorage.getItem("pageDisplayNumber");
+	sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum + ", " + rowOnPage);	//setup filterBy pageObj session storage		
+	alert("In setNumRowOnPage().\n " + sessionStorage.getItem("mainTable_Limits"));
+	$("#numRowsPage").html(rowOnPage + ' Rows <b class="caret"></b>')
+	fetchTableResults();
+}
 
 function makeTitleSpace() {
 	var dataMustache = {
@@ -22,9 +31,11 @@ function makeBodySpace() {
 }
 
 function makeFooterSpace() {
+	var rowOnPage = sessionStorage.getItem("numRowsOnPage");
+	var pageDisplayNum = sessionStorage.getItem("pageDisplayNumber");
 	var dataMustache = {
-		"numRowsPageText":"Rows ",
-		"selectPageText":"Page ",
+		"numRowsPageText":rowOnPage + " Rows ",
+		"selectPageText":"Page " + pageDisplayNum + " ",
 		"utilitiesText":"Utilities ",
 	};
 	fillTemplateSpace("footerSpace", "audibleFooterTemplate", dataMustache);
@@ -34,7 +45,7 @@ function makeFooterSpace() {
 
 function calculateNumberPages() {
 	var rowCount = $("#selectPage").attr('data-numRows')
-	alert("IN calculateNumberPages(). Current rowCount -- " + rowCount);
+	//alert("IN calculateNumberPages(). Current rowCount -- " + rowCount);
 	
 }
 
@@ -343,7 +354,7 @@ function modifyCurrentBook(element) {
 	pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown", "liItemEntryTemplate");
 	pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown", "liItemEntryTemplate");
 	
-};
+}
 
 function setInputStatusValue(element) {
 	var liText = $("#" + element.id).text();
@@ -797,6 +808,15 @@ function pageObjectsList(searchTerm, forObject, elementID, divTemplate) {	//Get 
 				case "utilitiesDropdown":
 					elementName = "utilitiesitem";
 					break;
+				case "numRowsPageDropdown":
+					elementName = "numRowsPage";
+					onclickElementAttr = "setNumRowOnPage(this)";
+					//$divSection.append(Mustache.render("pageSelectHeaderTemplate", ""));
+					break;
+				case "selectPageDropdown":
+					elementName = "pageSelect";
+					//$divSection.append(Mustache.render("pageSelectHeaderTemplate", ""));
+					break;
 				case "listStatusDropdown":
 					elementName = "listStatus";
 					onclickElementAttr = "setInputStatusValue(this)";
@@ -816,11 +836,9 @@ function pageObjectsList(searchTerm, forObject, elementID, divTemplate) {	//Get 
 					case "REFRESH":
 						onclickElementAttr = "fetchTableResults()";
 						break;
-					default:
-						onclickElementAttr = "onclickDropdowns(this)";
-					break;
 				}
 				var mustacheData = {
+					"tagItemDataID":resultitem.itemDisplay,
 					"tagItemId":elementName + resultitem.ID,
 					"tagItemOnclick":onclickElementAttr,
 					"tagtemDisplay":resultitem.itemDisplay,
@@ -863,12 +881,16 @@ $(document).ready(function(){	//Code to run when page finishes loading
 		sessionStorage.setItem("searchboxPlaceholder", "");	//setup searchbox Placeholder current selection session storage
 		sessionStorage.setItem("utilitySearchTerm", "utilities0");	//setup sortBy pageObj session storage
 
-	
+		sessionStorage.setItem("numRowsOnPage", "15");	//setup sortBy pageObj session storage
+		var rowOnPage = sessionStorage.getItem("numRowsOnPage");
+		sessionStorage.setItem("pageDisplayNumber", "1");	//setup sortBy pageObj session storage
+		var pageDisplayNum = sessionStorage.getItem("pageDisplayNumber");
+
 		sessionStorage.setItem("mainTable_Select", "SELECT `ID`, `Title`, `Author`, `Series` ");	//setup filterBy pageObj session storage
 		sessionStorage.setItem("mainTable_From", "FROM AudibleBooks ");	//setup filterBy pageObj session storage
 		sessionStorage.setItem("mainTable_Where", "");	//setup filterBy pageObj session storage
 		sessionStorage.setItem("mainTable_Order", "ORDER BY `ModifiedDate` DESC ");	//setup filterBy pageObj session storage
-		sessionStorage.setItem("mainTable_Limits", "LIMIT 0, 15");	//setup filterBy pageObj session storage		
+		sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum + ", " + rowOnPage);	//setup filterBy pageObj session storage		
 	}
 	
 	document.getElementById('sortby').innerHTML = sessionStorage.getItem("sortBysearchSelected");
@@ -894,6 +916,7 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	pageObjectsList(sortBysearchTerm, 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate' );	//Fill in <li> values for sortBy dropdown
 	pageObjectsList(filterBysearchTerm, 'Dropdowns', 'filterDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 	pageObjectsList(utilitySearchTerm, 'Dropdowns', 'utilitiesDropdown', 'liItemEntryTemplate');	//Fill in <li> values for utilities dropdown
+	pageObjectsList('numRowsOnPage', 'Dropdowns', 'numRowsPageDropdown', 'footerNumPageTemplate');	//Fill in <li> values for rows/page dropdown
 
 	//var searchkey = "";
 

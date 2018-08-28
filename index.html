@@ -200,15 +200,14 @@
 			</div>
 			<div class="px-0 col-sm-2">  		
 				<div id='divNumRowsPage' style="font-size: 16px;" class='dropdown'>
-					<a id='numRowsPage' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{numRowsPageText}}<b class='caret'></b></a>
+					<button id='numRowsPage' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>{{numRowsPageText}}<b class='caret'></b></button>
 					<ul id='numRowsPageDropdown' class='dropdown-menu'></ul>
 				</div>									
 			</div>
 			<div class="px-0 col-sm-2">  		
 				<div id='divSelectPage' style="font-size: 16px;" class='dropdown'>
-					<button id='selectPage' data-numRows="0" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">{{selectPageText}}</button>
-					<div id='selectPageDropdown' class="dropdown-menu">
-					</div>
+					<button id='selectPage' data-numRows="0" type="button" class="dropdown-toggle" data-toggle="dropdown">{{selectPageText}}<b class='caret'></b></button>
+					<ul id='selectPageDropdown' class='dropdown-menu'></ul>
 				</div>									
 			</div>
 			<div class="col-sm-1">  		
@@ -229,12 +228,16 @@
 		</div>
 	</template>
 
-<template id="pageSelectHeaderTemplate">
+<template id="dropdownHeaderTemplate">
 	<h5 class="dropdown-header">Choose Display Page</h5>	
 </template>
-	<a class="dropdown-item" href="#">Link 1</a>
-<template id="pageSelectItemsTemplate">
-	
+
+<template id="footerNumPageTemplate">
+	<li><a id="{{tagItemId}}" data-id="{{tagItemDataID}}" onclick="{{tagItemOnclick}}" class="dropdown-item" href="#">{{tagtemDisplay}}</a></li>	
+</template>
+
+<template id="footerListItemsTemplate">
+	<li><a data-id="{{tagItemId}}" class="dropdown-item" href="#">{{tagtemDisplay}}</a></li>	
 </template>
 
 	<template id="liItemEntryTemplate">

@@ -1,12 +1,12 @@
 
 function setNumRowOnPage(element) {
 	var numRows = $("#" + element.id).attr('data-id');
-	sessionStorage.setItem("numRowsOnPage", numRows);	//setup sortBy pageObj session storage
+	sessionStorage.setItem("numRowsOnPage", Number(numRows));	//setup sortBy pageObj session storage
 	var rowOnPage = sessionStorage.getItem("numRowsOnPage");
 	var pageDisplayNum = sessionStorage.getItem("pageDisplayNumber");
-	sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum + ", " + rowOnPage);	//setup filterBy pageObj session storage		
-	alert("In setNumRowOnPage().\n " + sessionStorage.getItem("mainTable_Limits"));
-	$("#numRowsPage").html(rowOnPage + ' Rows <b class="caret"></b>')
+	sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum + ", " + rowOnPage);	//setup filterBy pageObj session storage
+	//alert("In setNumRowOnPage().\n " + sessionStorage.getItem("mainTable_Limits"));
+	$("#numRowsPage").html(rowOnPage + ' Rows <b class="caret"></b>');
 	fetchTableResults();
 }
 
@@ -34,8 +34,8 @@ function makeFooterSpace() {
 	var rowOnPage = sessionStorage.getItem("numRowsOnPage");
 	var pageDisplayNum = sessionStorage.getItem("pageDisplayNumber");
 	var dataMustache = {
-		"numRowsPageText":rowOnPage + " Rows ",
-		"selectPageText":"Page " + pageDisplayNum + " ",
+		"numRowsPageText":rowOnPage.toString() + " Rows ",
+		"selectPageText":"Page " + pageDisplayNum.toString() + " ",
 		"utilitiesText":"Utilities ",
 	};
 	fillTemplateSpace("footerSpace", "audibleFooterTemplate", dataMustache);
@@ -43,10 +43,48 @@ function makeFooterSpace() {
 
 }
 
-function calculateNumberPages() {
-	var rowCount = $("#selectPage").attr('data-numRows')
+function calculateNumberPages(element) {
+	var elementId = element.id;
+	var rowCount = Number($("#selectPage").attr('data-numRows'));	//Number of rows in current SQL query
+	var rowOnPage = Number(sessionStorage.getItem("numRowsOnPage")) - 1;	//Number of rows per page - 1 Allows repeat of top or bottom row
+	var pageDisplayNum = Number(sessionStorage.getItem("pageDisplayNumber"));	//current row in SQL query
+	var remainder = rowCount % rowOnPage;
+	var totalPages = (rowCount - remainder) / rowOnPage
 	//alert("IN calculateNumberPages(). Current rowCount -- " + rowCount);
-	
+	switch(elementId) {
+		case "":
+			break;
+		case "pageTop":
+			sessionStorage.setItem("pageDisplayNumber", 0);
+			break;
+		case "pagePrev":
+			var num = pageDisplayNum - rowOnPage;
+			if (num < 0) {
+				num = 0;
+			}
+			sessionStorage.setItem("pageDisplayNumber", num);
+			break;
+		case "pageNext":
+			var num = pageDisplayNum + rowOnPage;
+			if (num < 0) {
+				num = 0;
+			}
+			sessionStorage.setItem("pageDisplayNumber", num);
+			break;
+		case "pageBottom":
+			if (num < 0) {
+				num = 0;
+			}
+			sessionStorage.setItem("pageDisplayNumber", num);
+			break;
+	}
+	var remainder = pageDisplayNum % rowOnPage;
+	var pageNum = 1 + (pageDisplayNum - remainder) / rowOnPage;
+	$("#selectPage").html("Page " + pageNum.toString() + ' <b class="caret"></b>');
+	rowOnPage++;	//put it back to proper value after calculations
+	pageDisplayNum = Number(sessionStorage.getItem("pageDisplayNumber"));
+	sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum.toString() + ", " + rowOnPage.toString());	//setup filterBy pageObj session storage
+	fetchTableResults();
 }
 
 function getCountCurrentTableRows(callback) {
@@ -73,7 +111,7 @@ function getCountCurrentTableRows(callback) {
  			// Make sure the callback is a function
 			if (typeof callback === "function") {
 				// Execute the callback function and pass the parameters to it
-				callback();
+				callback("");
 			}
        },
         error: function() {
@@ -881,16 +919,16 @@ $(document).ready(function(){	//Code to run when page finishes loading
 		sessionStorage.setItem("searchboxPlaceholder", "");	//setup searchbox Placeholder current selection session storage
 		sessionStorage.setItem("utilitySearchTerm", "utilities0");	//setup sortBy pageObj session storage
 
-		sessionStorage.setItem("numRowsOnPage", "15");	//setup sortBy pageObj session storage
+		sessionStorage.setItem("numRowsOnPage", 15);	//setup sortBy pageObj session storage
 		var rowOnPage = sessionStorage.getItem("numRowsOnPage");
-		sessionStorage.setItem("pageDisplayNumber", "1");	//setup sortBy pageObj session storage
+		sessionStorage.setItem("pageDisplayNumber", 0);	//setup sortBy pageObj session storage
 		var pageDisplayNum = sessionStorage.getItem("pageDisplayNumber");
 
 		sessionStorage.setItem("mainTable_Select", "SELECT `ID`, `Title`, `Author`, `Series` ");	//setup filterBy pageObj session storage
 		sessionStorage.setItem("mainTable_From", "FROM AudibleBooks ");	//setup filterBy pageObj session storage
 		sessionStorage.setItem("mainTable_Where", "");	//setup filterBy pageObj session storage
 		sessionStorage.setItem("mainTable_Order", "ORDER BY `ModifiedDate` DESC ");	//setup filterBy pageObj session storage
-		sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum + ", " + rowOnPage);	//setup filterBy pageObj session storage		
+		sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum.toString() + ", " + rowOnPage.toString());	//setup filterBy pageObj session storage		
 	}
 	
 	document.getElementById('sortby').innerHTML = sessionStorage.getItem("sortBysearchSelected");

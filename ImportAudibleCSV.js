@@ -59,7 +59,7 @@ function fetchAudibleResults() {		// Fills the main Table <div> #maintablebody
 				"modifyAudible-ReadOrder":"",
 				"modifyAudible-Notes":"",
 			};
-			$pageSection.append(Mustache.render($templateHTML, dataMustache));
+			$pageSection.append(Mustache.render($templateHTML, dataMustache));	//Add Aubibles INSERT block
 			$.each(returnData, function(i, resultitem){
 				if (resultitem.status == 'Success') {
 					var dataMustache = {
@@ -74,7 +74,7 @@ function fetchAudibleResults() {		// Fills the main Table <div> #maintablebody
 						"modifyAudible-ReadOrder":resultitem.ReadOrder,
 						"modifyAudible-Notes":resultitem.Notes,
 					};
-					$pageSection.append(Mustache.render($templateHTML, dataMustache));
+					$pageSection.append(Mustache.render($templateHTML, dataMustache));	//Add Aubibles UPDATE block for all row results
 				}
 			});
 		},
@@ -243,6 +243,7 @@ function insertAudibleTable(element) {
 	var inputReadOrderNumber = $('#input-ReadOrderNumber0').val();
 	var inputLength = $('#import-Length').val();
 	var inputDateAdded = $('#import-DateAdded').val();
+	var inputNotes = $('#input-Notes0').val();
 	/*	alert("In updateAudibleTable(). " +
 	 *	"\n inputTitle -- " + inputTitle +
 	 *	"\n inputAuthor -- " + inputAuthor +
@@ -254,7 +255,7 @@ function insertAudibleTable(element) {
 	 *	"\n inputDateAdded -- " + inputDateAdded);
 	 */
 	var sqlCommand = "(`ID`, `Title`, `Author`, `Series`, `BookNumber`, `ReadOrderNumber`, " +
-	"`ReadOrder`, `Length`, `DateAdded`, `ModifiedDate`) " +
+	"`ReadOrder`, `Length`, `DateAdded`, `Notes`, `ModifiedDate`) " +
 	"VALUES (NULL, " +
 	"'" + cleanTitle + "', " +
 	"'" + inputAuthor + "', " +
@@ -263,7 +264,8 @@ function insertAudibleTable(element) {
 	"'" + inputReadOrderNumber + "', " +
 	"'" + inputReadOrder + "', " +
 	"'" + inputLength + "', " +
-	"'" + inputDateAdded + "', NOW())";
+	"'" + inputDateAdded + "', " +
+	"'" + inputNotes + "', NOW())";
 	
 	var postData = {
 		"functionCall":"insertNewRowTable",
@@ -337,6 +339,7 @@ function updateAudibleTable(element) {
 	var inputReadOrderNumber = $('#input-ReadOrderNumber' + selectedBookID).val();
 	var inputLength = $('#import-Length').val();
 	var inputDateAdded = $('#import-DateAdded').val();
+	var inputNotes = $('#input-Notes' + selectedBookID).val();
 	/*	alert("In updateAudibleTable(). " +
 	 * "\n inputTitle -- " + cleanTitle +
 	 *	"\n inputAuthor -- " + inputAuthor +
@@ -355,6 +358,7 @@ function updateAudibleTable(element) {
 	"', `ReadOrder` = '" + inputReadOrder +
 	"', `Length` = '" + inputLength +
 	"', `DateAdded` = '" + inputDateAdded +
+	"', `Notes` = '" + inputNotes +
 	"', `ModifiedDate` = NOW() ";
 	
 	var postData = {

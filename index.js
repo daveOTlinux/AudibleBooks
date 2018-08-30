@@ -72,6 +72,7 @@ function calculateNumberPages(element) {
 			sessionStorage.setItem("pageDisplayNumber", num);
 			break;
 		case "pageBottom":
+			var num = rowCount - rowOnPage;
 			if (num < 0) {
 				num = 0;
 			}
@@ -814,6 +815,7 @@ function pageObjectsList(searchTerm, forObject, elementID, divTemplate) {	//Get 
 	var $templateHTML = $("#" + divTemplate).html();
 	var elementName = "noswitch";
 	var onclickElementAttr = "noswitch";
+	var onclickFunction = "noswitch";
 	//var myOBJ = document.getElementById(elementID);
 	//var $myOBJContent = $('#' + myOBJ.id);
 	//var myOBJTemplate = $('#liItemEntryTemplate').html();
@@ -845,6 +847,7 @@ function pageObjectsList(searchTerm, forObject, elementID, divTemplate) {	//Get 
 					break;
 				case "utilitiesDropdown":
 					elementName = "utilitiesitem";
+					onclickElementAttr = "onclickDropdowns(this)";
 					break;
 				case "numRowsPageDropdown":
 					elementName = "numRowsPage";
@@ -872,13 +875,15 @@ function pageObjectsList(searchTerm, forObject, elementID, divTemplate) {	//Get 
 			$.each(returnData, function(i, resultitem){
 				switch(resultitem.itemDisplay) {
 					case "REFRESH":
-						onclickElementAttr = "fetchTableResults()";
+						onclickFunction = "fetchTableResults()";
 						break;
+					default:
+						onclickFunction = onclickElementAttr;
 				}
 				var mustacheData = {
 					"tagItemDataID":resultitem.itemDisplay,
 					"tagItemId":elementName + resultitem.ID,
-					"tagItemOnclick":onclickElementAttr,
+					"tagItemOnclick":onclickFunction,
 					"tagtemDisplay":resultitem.itemDisplay,
 				};
 				//alert("in pageObjectsList() $.each loop: \n idname -- " + elementName + "\n onclickElementAttr -- " + onclickElementAttr);
@@ -950,7 +955,7 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	var filterBysearchTerm = sessionStorage.getItem("filterBysearchTerm");	//current filterBy pageObj search term
 	var utilitySearchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
 
-	//pageObjectsList(searchTerm, forObject, $elementID, template) function values to pass
+	//pageObjectsList(searchTerm, forObject, elementID, template) function values to pass
 	pageObjectsList(sortBysearchTerm, 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate' );	//Fill in <li> values for sortBy dropdown
 	pageObjectsList(filterBysearchTerm, 'Dropdowns', 'filterDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 	pageObjectsList(utilitySearchTerm, 'Dropdowns', 'utilitiesDropdown', 'liItemEntryTemplate');	//Fill in <li> values for utilities dropdown

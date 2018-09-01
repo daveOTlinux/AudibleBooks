@@ -63,55 +63,54 @@
 
 </head>
 <body>
-    <div class="wrapper">
-        <div class="container-fluid">
-			<div class="row" style="height: 75px;">
-				<div class="pt-2 col-sm-6">
-					<div class="page-header clearfix">
-						<h2 class="pull-left">Edit pageObjects</h2>
-					</div>
-				</div>
-				<div class="pt-2 col-sm-2">  		
-					<button id="buttonFinished" type="button" class="btn btn-success">Finished</button>
-				</div>
-				<div class="pt-2 col-sm-4">  		
-					<a href="#" id="pageObjectsAdd" onclick="modalOpenAppend()" class="btn btn-success pull-right">Add New pageObject</a>
+	<div class="wrapper">
+			<div class="container-fluid">
+		<div class="row" style="height: 75px;">
+			<div class="pt-2 col-sm-6">
+				<div class="page-header clearfix">
+					<h2 class="pull-left">Edit pageObjects</h2>
 				</div>
 			</div>
-			<div class="row" style="height: 75px;">
-				<div class="col-sm-4">
-					<div id='searchtermdiv' class='dropdown'>
-				        <a id='searchterm' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Search Term<b class='caret'></b></a>
-						<ul id='searchTermDropdown' class='dropdown-menu'>
-	
-						</ul>
-					</div>
-					<div class="col-sm-8"></div>
-				</div>
+			<div class="pt-2 col-sm-2">  		
+				<button id="buttonFinished" type="button" class="btn btn-success">Finished</button>
 			</div>
-			<div class='row' id='maintable'>
-				<table class='table table-bordered table-hover'>
-					<thead>
-						<tr>
-							<th style='width: 5'>ID</th>
-							<th style='width: 15'>SearchTerm</th>
-							<th style='width: 15'>orderItems</th>
-							<th style='width: 15'>itemDisplay</th>
-							<th style='width: 15'>itemSQL</th>
-							<th style='width: 15'>ModifiedDate</th>
-							<th style='width: 20'>Action</th>
-						</tr>
-					</thead>
-					<tbody id='maintablebody'>
-					
-					</tbody>
-				</table>				
+			<div class="pt-2 col-sm-4">  		
+				<a href="#" id="pageObjectsAdd" onclick="modalOpenAppend()" class="btn btn-success pull-right">Add New pageObject</a>
 			</div>
-
 		</div>
-    </div>
-	<div id="update-modal">		<!--where html code for modals is written by mustache.js -->
+		<div class="row" style="height: 75px;">
+			<div class="col-sm-4">
+				<div id='searchtermdiv' class='dropdown'>
+							<a id='searchterm' data-target'#' data-toggle='dropdown' class='dropdown-toggle'>Search Term<b class='caret'></b></a>
+					<ul id='searchTermDropdown' class='dropdown-menu'>
+
+					</ul>
+				</div>
+				<div class="col-sm-8"></div>
+			</div>
+		</div>
+		<div class='row' id='maintable'>
+			<table class='table table-bordered table-hover'>
+				<thead>
+					<tr>
+						<th style='width: 5'>ID</th>
+						<th style='width: 15'>SearchTerm</th>
+						<th style='width: 15'>orderItems</th>
+						<th style='width: 15'>itemDisplay</th>
+						<th style='width: 15'>itemSQL</th>
+						<th style='width: 15'>ModifiedDate</th>
+						<th style='width: 20'>Action</th>
+					</tr>
+				</thead>
+				<tbody id='maintablebody'>
+				
+				</tbody>
+			</table>				
+		</div>
 	</div>
+	</div>
+
+	<div id="update-modal"></div>		<!--where html code for modals is written by mustache.js -->
 
 <!-- ************************************************************************************************ -->
 
@@ -235,7 +234,7 @@
 			</div> 
 		</div>
 
-<!-- **************************************************************************************** -->
+		<!-- **************************************************************************************** -->
 		<script type="text/javascript">
 			$(document).ready(function(){	//Code to run when page finishes loading
 				$("#listSearchtermDropdown-modal").on('click',function(){	//When dropdown data <li> is clicked

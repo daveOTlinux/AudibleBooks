@@ -207,7 +207,7 @@ function gotoPreviousRow() {
 
 function gotoRowID() {
 	var modalContent = $("#update-modal");
-	var modalTemplate = $('#dialogBox-template').html();	
+	var modalTemplate = $('#dialogBoxTemplate').html();	
 
 	modalContent.empty();				
 	var modalData = {
@@ -217,7 +217,7 @@ function gotoRowID() {
 		"dialogBody-modal":"",
 		"acceptButton-modal":"OK",
 		"cancelButton-modal":"Cancel",
-		"cancelButton-modalHidden":"",
+		"cancelButton-modalHidden":"hidden='true'",
 		"acceptFunction-modal":"getImportRowbyID()",
 	};
 	modalContent.append(Mustache.render(modalTemplate, modalData));

@@ -206,22 +206,17 @@ function gotoPreviousRow() {
 }
 
 function gotoRowID() {
-	var modalContent = $("#update-modal");
-	var modalTemplate = $('#dialogBoxTemplate').html();	
-
-	modalContent.empty();				
-	var modalData = {
-		"dialogInput-modal":"",
-		"dialogInputType-modal":"text",
-		"dialogTitle-modal":"Enter row ID of Import Table",
-		"dialogBody-modal":"",
-		"acceptButton-modal":"OK",
-		"cancelButton-modal":"Cancel",
-		"cancelButton-modalHidden":"hidden='true'",
-		"acceptFunction-modal":"getImportRowbyID()",
-	};
-	modalContent.append(Mustache.render(modalTemplate, modalData));
-	$("#dialogBoxStatus").modal();	//opens modal
+	bootbox.prompt({ 
+		title: "Enter Import CSV row ID -", 
+		callback: function(dialogRowID){
+			/* result = String containing user input if OK clicked or null if Cancel clicked */ 
+			if (dialogRowID == "" && dialogRowID === null) {
+				
+			}else {
+				fetchImportResults(dialogRowID);
+			}
+		}
+	})
 }
 
 function insertAudibleTable(element) {
@@ -427,8 +422,8 @@ function updateImportRowDone(rowID) {
 
 $(document).ready(function(){	//Code to run when page finishes loading
 	fillTemplateSpace("titleSpace", "headerImportCSVtemplate", "");
-	fetchImportResults(2);
 	fillTemplateSpace("footerSpace", "footerImportCSVtemplate", "");
+	fetchImportResults(2);
 	
 	$("#buttonFinished").on('click',function(){	//When "update" icon in row is clicked
 		//var element = event.target;

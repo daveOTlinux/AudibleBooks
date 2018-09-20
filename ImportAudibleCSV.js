@@ -148,10 +148,14 @@ function fillTemplateSpace(templateDivName, templateName, mustacheData) {
 }
 
 function getImportRowbyID() {
-	$('#dialogBoxStatus').modal('hide');
-	var dialogRowID = parseInt($('#dialogInput-modal').val());
+	var dialogRowID = parseInt($("#getRowID").val());
 	//alert("In getImportRowbyID() \n dialogRowID value and type -- " + dialogRowID + " and -- " + typeof(dialogRowID));
-	fetchImportResults(dialogRowID);
+	if (dialogRowID == null || isNaN(dialogRowID)) {
+		alert("Please enter a number.");
+		//$( "#gotoRowID" ).dialog( "open" );
+	} else {
+		fetchImportResults(dialogRowID);
+	}
 }
 
 function gotoNextRow() {
@@ -206,17 +210,19 @@ function gotoPreviousRow() {
 }
 
 function gotoRowID() {
-	bootbox.prompt({ 
+	$( "#gotoRowID" ).dialog( "open" );
+	
+/*	bootbox.prompt({ 
 		title: "Enter Import CSV row ID -", 
 		callback: function(dialogRowID){
-			/* result = String containing user input if OK clicked or null if Cancel clicked */ 
+			/* result = String containing user input if OK clicked or null if Cancel clicked */ /*
 			if (dialogRowID == "" && dialogRowID === null) {
 				
 			}else {
 				fetchImportResults(dialogRowID);
 			}
 		}
-	})
+	})	*/
 }
 
 function insertAudibleTable(element) {
@@ -313,6 +319,31 @@ function popupDialogModal() {
 	modalContent.append(Mustache.render(modalTemplate, modalData));
 	$("#dialogBoxStatus").modal();	//opens modal
 	
+}
+
+function setupRowIdDialog() {
+	$( "#gotoRowID").dialog({
+		autoOpen: false,
+		buttons: [
+			{
+				text: "Cancel",
+				click: function() {
+					$( this ).dialog( "close" );
+				}
+			},
+			{
+				text: "Goto ID",
+				click: function() {
+					getImportRowbyID();
+					$( this ).dialog( "close" );
+				},
+				class: "primary"
+			}
+		],
+		minWidth: 400,
+		modal: true
+	});
+
 }
 
 function updateAudibleTable(element) {
@@ -423,6 +454,7 @@ function updateImportRowDone(rowID) {
 $(document).ready(function(){	//Code to run when page finishes loading
 	fillTemplateSpace("titleSpace", "headerImportCSVtemplate", "");
 	fillTemplateSpace("footerSpace", "footerImportCSVtemplate", "");
+	setupRowIdDialog();
 	fetchImportResults(2);
 	
 	$("#buttonFinished").on('click',function(){	//When "update" icon in row is clicked

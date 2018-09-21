@@ -588,9 +588,9 @@ function liveSearchKeyPress(element) {
 					//alert("id -- " + resultitem.id + " " + sortBytext +" -- " + resultitem.field1);
 				if (resultitem.status == 'Success') {				
 					var mustacheData = {
-						"liItemEntryId":"searchitem" + resultitem.id,
-						"liItemEntryOnclick":"searchResults(this)",
-						"liItemDisplay":resultitem.field1,
+						"tagItemId":"searchitem" + resultitem.id,
+						"tagItemOnclick":"searchResults(this)",
+						"tagItemDisplay":resultitem.field1,
 					};
 					$resultlist.append(Mustache.render($templateHTML, mustacheData));
 				} else {
@@ -884,7 +884,7 @@ function pageObjectsList(searchTerm, forObject, elementID, divTemplate) {	//Get 
 					"tagItemDataID":resultitem.itemDisplay,
 					"tagItemId":elementName + resultitem.ID,
 					"tagItemOnclick":onclickFunction,
-					"tagtemDisplay":resultitem.itemDisplay,
+					"tagItemDisplay":resultitem.itemDisplay,
 				};
 				//alert("in pageObjectsList() $.each loop: \n idname -- " + elementName + "\n onclickElementAttr -- " + onclickElementAttr);
 				$divSection.append(Mustache.render($templateHTML, mustacheData));

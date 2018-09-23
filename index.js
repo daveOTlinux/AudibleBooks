@@ -34,10 +34,11 @@ function acknowledgeDeleteRow() {
 }
 
 function addNewAudibleBook() {
-	var $tablebody = $('#bodySpace');
-	var $templateHTML = $('#modifyAudibleBodyTemplate').html();
+	var $tablebody = $("#bodySpace");
+	var $templateHTML = $("#modifyAudibleBodyTemplate").html();
 	$tablebody.empty();
 	var dataMustache = {
+		"titleButton":"Copy Current Book",
 		"modifyAudible-Title":"",
 		"modifyAudible-Author":"",
 		"modifyAudible-Series":"",
@@ -58,8 +59,10 @@ function addNewAudibleBook() {
 	};
 	$tablebody.append(Mustache.render($templateHTML, dataMustache));
 	var mustacheData = {
-		"modifyAudible-h2":"Add New Book",
+		"modifyAudible-h2":"Add New Audible Book",
 		"modifyAudible-ID":"",
+		"modifyAudible-onclick":"copyCurrentRowData()",
+		"modifyAudible-text":"Copy Current Book",
 	};
 	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
 	fillTemplateSpace("headerSpace", "modifyAudibleHeaderTemplate", "");
@@ -179,6 +182,10 @@ function closeModifyAudible() {
 	pageObjectsList(utilitySearchTerm, 'Dropdowns', 'utilitiesDropdown', 'liItemEntryTemplate');	//Fill in <li> values for utilities dropdown
 	
 	fetchTableResults()
+}
+
+function copyCurrentRowData() {
+	
 }
 
 function deleteThisRow(element) {	//Come here when the "Delete" icon in row is clicked
@@ -397,6 +404,8 @@ function modifyCurrentBook(element) {
 	var mustacheData = {
 		"modifyAudible-h2":"Edit Book  ID- ",
 		"modifyAudible-ID":currentID,
+		"modifyAudible-onclick":"modifyCurrentBook(this)",
+		"modifyAudible-text":"Edit Book",
 	};
 	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
 	$("#buttonAudibleTitle").prop('hidden', true);
@@ -692,9 +701,9 @@ function saveModifyAudible(mode) {
 			"', `DateAdded` = '" + inputDateAdded +
 			"', `MyRating` = '" + inputMyRating +
 			"', `Notes` = '" + inputNotes +
-			"', `ModifiedDate` = NOW() ";
+			"', `ModifiedDate` = NOW()";
 			if(!(pathCoverArt == "CoverArt/")) {
-				sqlCommand + "`CoverArt` = '" + pathCoverArt + "' "
+				sqlCommand = sqlCommand + ", `CoverArt` = '" + pathCoverArt + "' "
 			}			
 			var postData = {
 				"functionCall":"updateTableByID",
@@ -827,6 +836,8 @@ function updateTableRow(element) {
 	var mustacheData = {
 		"modifyAudible-h2":"View Book  ID- ",
 		"modifyAudible-ID":$clickedID,
+		"modifyAudible-onclick":"modifyCurrentBook(this)",
+		"modifyAudible-text":"Edit Book",
 	};
 	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
 	fillTemplateSpace("headerSpace", "modifyAudibleHeaderTemplate", "");

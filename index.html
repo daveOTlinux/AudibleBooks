@@ -52,7 +52,7 @@
 							<h2 class="pull-left">Audible Books</h2>
 						</div>
 					</div>
-					<div class="pt-2 col-sm-6">  		
+					<div class="pt-2 col-sm-6">
 						<a href="#" onclick="addNewAudibleBook()" class="btn btn-success pull-right">Add New Audible Book</a>
 					</div>
 				</div>
@@ -254,8 +254,8 @@
 			<td>{{tableRow-Author}}</td> 
 			<td>{{tableRow-Series}}</td> 
 			<td> 
-				<a href='#' id='rowitemUpdate{{tableRow-ID}}' onclick='updateTableRow(this)' class='mr-1 fa fa-edit' title='Update Record' data-toggle='tooltip'></a>
-				<a href='#' id='rowitemDelete{{tableRow-ID}}' onclick='deleteThisRow(this)' class='mr-1 fa fa-trash' title='Delete Record' data-toggle='tooltip'></a>
+				<a href='#' id='rowitemUpdate{{tableRow-ID}}' data-ID="{{tableRow-ID}}" onclick='updateTableRow(this)' class='mr-1 fa fa-edit' title='Update Record' data-toggle='tooltip'></a>
+				<a href='#' id='rowitemDelete{{tableRow-ID}}' data-ID="{{tableRow-ID}}" onclick='deleteThisRow(this)' class='mr-1 fa fa-trash' title='Delete Record' data-toggle='tooltip'></a>
 			</td> 
 		</tr>
 	</template>
@@ -268,7 +268,7 @@
 				</div>
 			</div>
 				<div class="pt-2 col-sm-4">
-					<a href='#' id="buttonAudibleTitle" data-ID="{{modifyAudible-ID}}" onclick="modifyCurrentBook(this)" class='btn btn-success pull-right'>Edit Book</a>
+					<a href='#' id="buttonAudibleTitle" data-ID="{{modifyAudible-ID}}" onclick="{{modifyAudible-onclick}}" class='btn btn-success pull-right'>{{modifyAudible-text}}</a>
 				</div>
 		</div>
 	</template>
@@ -279,12 +279,12 @@
 
 	<template id="modifyAudibleBodyTemplate">
 		<div class="row">
-			<div class="col-sm-3">				
+			<div class="col-sm-3">
 				<img id="img-CoverArt" src='{{modifyAudible-CoverArt}}' alt='{{modifyAudible-Title}}' style='width:150px;height:210px;'>
 			</div>
 			<div class="col-sm-9">
 				
-				<div class="row">            		
+				<div class="row">
 					<div class='text-right pr-0 col-sm-3'>
 						<strong><span>Title:</span></strong>
 					</div>
@@ -293,7 +293,7 @@
 						<input id="input-Title" class='edit' size='33' placeholder="Enter Book Title" value="{{modifyAudible-Title}}" type="hidden"/>
 					</div>
 				</div>
-				<div class="row">            		
+				<div class="row">
 					<div class='text-right pr-0 col-sm-3'>
 						<strong><span>Author:</span></strong>
 					</div>
@@ -302,7 +302,7 @@
 						<input id="input-Author" class='edit' size='33' placeholder="Enter Author" value="{{modifyAudible-Author}}" type="hidden"/>
 					</div>
 				</div>
-				<div class="row">            		
+				<div class="row">
 					<div class='text-right pr-0 col-sm-3'>
 						<strong><span>Series:</span></strong>
 					</div>
@@ -313,7 +313,7 @@
 						<input id="input-SeriesBook" class='edit' size='3' placeholder="#" value="{{modifyAudible-BookNumber}}" type="hidden"/>
 					</div>
 				</div>			
-				<div class="row">            		
+				<div class="row">
 					<div class='text-right pr-0 col-sm-3'>
 						<strong><span>Read Order:</span></strong>
 					</div>
@@ -324,7 +324,7 @@
 						<input id="input-ReadOrderNumber" class='edit' size='3' placeholder="#" value="{{modifyAudible-ReadOrderNumber}}" type="hidden"/>
 					</div>
 				</div>
-				<div class="row">            		
+				<div class="row">
 					<div class='text-right pr-0 col-sm-3'>
 						<strong><span>Categories:</span></strong>
 					</div>
@@ -334,7 +334,7 @@
 						<ul id='listCategoriesDropdown' class='dropdown-menu'></ul>
 					</div>
 				</div>
-				<div class="row">            		
+				<div class="row">
 					<div class='text-right pr-0 col-sm-3'>
 						<strong><span>Listened To:</span></strong>
 					</div>
@@ -345,10 +345,10 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="text-right pr-0 col-sm-3">  		
+					<div class="text-right pr-0 col-sm-3">
 						<strong><span>Status:</span></strong>
 					</div>
-					<div class="col-sm-9">  		
+					<div class="col-sm-9">
 						<span id="span-Status">{{modifyAudible-Status}}</span>
 						<input id="input-Status" class="edit form-control" data-target='#' data-toggle='dropdown' class='dropdown-toggle' size='15' value="{{modifyAudible-Status}}" type="hidden"/>
 						<ul id='listStatusDropdown' class='dropdown-menu'></ul>
@@ -358,13 +358,13 @@
 					<div class="text-right pr-0 col-sm-3">  		
 						<strong><span>Length:</span></strong>
 					</div>
-					<div class="col-sm-9">  		
+					<div class="col-sm-9">
 						<span id="span-Length">{{modifyAudible-Length}}</span>
 						<input id="input-Length" class='edit' size='15' value="{{modifyAudible-Length}}" type="hidden"/>
 					</div>
 				</div>
 				<div class="row">
-					<div class="text-right pr-0 col-sm-3">  		
+					<div class="text-right pr-0 col-sm-3">
 						<strong><span>My Rating:</span></strong>
 					</div>
 					<div class="col-sm-9">  		
@@ -376,16 +376,16 @@
 					<div class="text-right pr-0 col-sm-3">  		
 						<strong><span>Date Added:</span></strong>
 					</div>
-					<div class="col-sm-9">  		
+					<div class="col-sm-9">
 						<span id="span-DateAdded">{{modifyAudible-DateAdded}}</span>
 						<input id="input-DateAdded" class='edit' value="{{modifyAudible-DateAdded}}" type="hidden"/>
 					</div>
-				</div>				
+				</div>
 				<div class="row">
 					<div class="text-right pr-0 col-sm-3">  		
 						<strong><span id="strongSpan-Timestamp">Timestamp:</span></strong>
 					</div>
-					<div class="col-sm-9">  		
+					<div class="col-sm-9">
 						<span id="span-Timestamp">{{modifyAudible-ModifiedDate}}</span>
 					</div>
 				</div>
@@ -395,15 +395,15 @@
 			<div class="text-right pr-0 col-sm-3">  		
 					<strong><span id="strongSpan-CoverArt" >Cover Art Link:</span></strong>
 			</div>
-			<div class="col-sm-9">  		
+			<div class="col-sm-9">
 				<input id="input-CoverArt" class='edit' size='20' value="" type="file"/>
 			</div>	
 		</div>
 		<div id="div-Notes" class="pt-3 row" style="height: 60px;">
-			<div class="col-sm-1">  		
+			<div class="col-sm-1">
 				<strong><span>Notes:</span></strong>
 			</div>
-			<div class="col-sm-11">  		
+			<div class="col-sm-11">
 				<span id="span-Notes">{{modifyAudible-Notes}}</span>
 				<textarea hidden id="input-Notes" name="title" cols='50' rows='5'>{{modifyAudible-Notes}}</textarea>
 			</div>
@@ -415,13 +415,13 @@
 			<div class="text-right col-sm-4">  		
 				<a id='buttonLeft-modifyAudibleFooter' href="#" onclick="closeModifyAudible()" class="btn btn-primary">Back</a>
 			</div>
-			<div class="col-sm-4">  		
+			<div class="col-sm-4">
 				
 			</div>
-			<div class="col-sm-4">  		
+			<div class="col-sm-4">
 				<a id='buttonRight-modifyAudibleFooter' href="#" hidden onclick="{{saveModifyFunction}}" class="btn btn-primary">Save</a>
 			</div>
-		</div>			
+		</div>
 	</template>
 
 	<template id='dialogBox-template'>	<!-- dialog box popup to ask question. -->

@@ -18,7 +18,7 @@
 				
 		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 
-	    $returnStatus = array(array());
+		$returnStatus = array(array());
 
 		if($mysqli->query($strSQL) === TRUE) {
 			$returnStatus[0]["status"] = "Success";
@@ -146,6 +146,35 @@
 		return $returnStatus;
 	}
 	
+	function getLatestModifiedRowID() {
+		// Include config file
+		require_once 'config.php';
+
+		$strSQL = "SELECT `ID` FROM `AudibleBooks` ORDER BY `ModifiedDate` DESC LIMIT 1";
+				
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+
+		$result = $mysqli->query($strSQL);
+
+		$returnStatus = array(array());
+
+		if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error getLatestModifiedRowID() - " . $mysqli->error;
+		} else {
+			// Get results of query
+			$count = 0;
+			while($row = $result->fetch_assoc()) {  //outputs the records
+				$returnStatus[$count]["status"] = "Success";
+				$returnStatus[$count]["ID"] = $row['ID'];
+				$count++;
+			}
+		}
+		$result->close();
+		$mysqli->close();
+		return $returnStatus;
+	}
+	
 	function getTableRowData($sqlQuery){
 		require_once 'config.php';
 
@@ -166,7 +195,7 @@
 		if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
 			$returnStatus[0]["status"] = "FAILED";
 			$returnStatus[0]["info"] = "Error getTableRowData() - " . $mysqli->error;
-		}else {
+		} else {
 			// Get results of query
 			$count = 0;
 			while($row = $result->fetch_assoc()) {  //outputs the records
@@ -207,7 +236,7 @@
 		}
 
 		return $returnStatus;
-	}	
+	}
 
 	//function pass SQL SET part in $sqlSET, and the required row in $rowID
 	// return success or fail
@@ -261,6 +290,9 @@
 				break;
 			case "getDISTINCTSearchTerms":
 				$returnStatus = getDISTINCTSearchTerms($fieldName, $searchKey);
+				break;
+			case "getLatestModifiedRowID":
+				$returnStatus = getLatestModifiedRowID();
 				break;
 			case "getTableRowData":
 				$returnStatus = getTableRowData($fieldName);

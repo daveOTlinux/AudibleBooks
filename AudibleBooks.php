@@ -4,9 +4,112 @@
 	//require_once 'config.php';
 
 	global $count, $returnStatus;
-	//Functions
 
-	//function 
+	// Functions ************************************************
+	
+	function deleteTableRowByID($rowID) {
+		// Include config file
+		require_once 'config.php';
+
+		$delete = "DELETE FROM `AudibleBooks` ";
+		$where = "WHERE `ID` = " . $rowID;
+
+		$strSQL = $delete . $where;
+				
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+
+	    $returnStatus = array(array());
+
+		if($mysqli->query($strSQL) === TRUE) {
+			$returnStatus[0]["status"] = "Success";
+			$returnStatus[0]["info"] = "Record deleted successfully";
+		} else {
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error deleting record: " . $mysqli->error;
+		}
+
+		return $returnStatus;
+	}
+
+	function getAllFieldsByID($rowID) {
+		// Include config file
+		require_once 'config.php';
+		
+		// Prepare a select statement
+		$strSQL = "SELECT * FROM AudibleBooks WHERE ID = " . $rowID;
+
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+
+		$result = $mysqli->query($strSQL);
+
+		$returnStatus = array(array());
+
+
+		if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error getDISTINCTSearchTerms() - " . $mysqli->error;
+		}
+		else {
+			// Get results of query
+			$count = 0;
+			while($row = $result->fetch_assoc()) {  //outputs the records
+				$returnStatus[$count]["ID"] = $row["ID"];
+				$returnStatus[$count]["Title"] = $row["Title"];
+				$returnStatus[$count]["Author"] = $row["Author"];
+				$returnStatus[$count]["Series"] = $row["Series"];
+				$returnStatus[$count]["BookNumber"] = $row["BookNumber"];
+				$returnStatus[$count]["ReadOrderNumber"] = $row["ReadOrderNumber"];
+				$returnStatus[$count]["ReadOrder"] = $row["ReadOrder"];
+				$returnStatus[$count]["Length"] = $row["Length"];
+				$returnStatus[$count]["Categories"] = $row["Categories"];
+				$returnStatus[$count]["Status"] = $row["Status"];
+				$returnStatus[$count]["ListenedTo"] = $row["ListenedTo"];
+				$returnStatus[$count]["DateAdded"] = $row["DateAdded"];
+				$returnStatus[$count]["MyRating"] = $row["MyRating"];
+				$returnStatus[$count]["CoverArt"] = $row["CoverArt"];
+				$returnStatus[$count]["Notes"] = $row["Notes"];
+				$returnStatus[$count]["ModifiedDate"] = $row["ModifiedDate"];
+				$count++;
+			}
+		}
+		$result->close();
+		$mysqli->close();
+		return $returnStatus;
+	}
+
+	function getCountTableRows($sqlQuery) {
+		require_once 'config.php';
+
+		$select = "SELECT Count(*) AS Count ";
+		$from = $sqlQuery['from'];
+		$where = $sqlQuery['where'];
+		
+		$strSQL = $select . $from . $where;
+		
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+		
+		$result = $mysqli->query($strSQL);
+
+		$returnStatus = array(array());
+
+		if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error getTableRowData() - " . $mysqli->error;
+		}
+		else {
+			// Get results of query
+			$count = 0;
+			while($row = $result->fetch_assoc()) {  //outputs the records
+				$returnStatus[$count]["status"] = "Success";
+				$returnStatus[$count]["Count"] = $row['Count'];
+				$count++;
+			}
+		}	
+		$result->close();
+		$mysqli->close();
+		return $returnStatus;
+	}
+
 	function getDISTINCTSearchTerms($fieldName, $searchKey) {
  		require_once 'config.php';
 
@@ -81,51 +184,30 @@
 		return $returnStatus;
 	}
 
-	function getAllFieldsByID($rowID) {
+	//function pass SQL INSERT part in $sqlInsert
+	// return success or fail
+	function insertNewRowTable($sqlInsert) {
 		// Include config file
 		require_once 'config.php';
-		
-		// Prepare a select statement
-		$strSQL = "SELECT * FROM AudibleBooks WHERE ID = " . $rowID;
+
+		$insert = "INSERT INTO `AudibleBooks`";
+
+		$strSQL = $insert . $sqlInsert;
 
 		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 
-		$result = $mysqli->query($strSQL);
-
 		$returnStatus = array(array());
 
-
-		if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
+		if($mysqli->query($strSQL) === TRUE) {
+			$returnStatus[0]["status"] = "Success";
+			$returnStatus[0]["info"] = "Inserted Record successfully";
+		} else {
 			$returnStatus[0]["status"] = "FAILED";
-			$returnStatus[0]["info"] = "Error getDISTINCTSearchTerms() - " . $mysqli->error;
+			$returnStatus[0]["info"] = "Error Inserting record: " . $mysqli->error;
 		}
-		else {
-			// Get results of query
-			$count = 0;
-			while($row = $result->fetch_assoc()) {  //outputs the records
-				$returnStatus[$count]["ID"] = $row["ID"];
-				$returnStatus[$count]["Title"] = $row["Title"];
-				$returnStatus[$count]["Author"] = $row["Author"];
-				$returnStatus[$count]["Series"] = $row["Series"];
-				$returnStatus[$count]["BookNumber"] = $row["BookNumber"];
-				$returnStatus[$count]["ReadOrderNumber"] = $row["ReadOrderNumber"];
-				$returnStatus[$count]["ReadOrder"] = $row["ReadOrder"];
-				$returnStatus[$count]["Length"] = $row["Length"];
-				$returnStatus[$count]["Categories"] = $row["Categories"];
-				$returnStatus[$count]["Status"] = $row["Status"];
-				$returnStatus[$count]["ListenedTo"] = $row["ListenedTo"];
-				$returnStatus[$count]["DateAdded"] = $row["DateAdded"];
-				$returnStatus[$count]["MyRating"] = $row["MyRating"];
-				$returnStatus[$count]["CoverArt"] = $row["CoverArt"];
-				$returnStatus[$count]["Notes"] = $row["Notes"];
-				$returnStatus[$count]["ModifiedDate"] = $row["ModifiedDate"];
-				$count++;
-			}
-		}
-		$result->close();
-		$mysqli->close();
+
 		return $returnStatus;
-	}
+	}	
 
 	//function pass SQL SET part in $sqlSET, and the required row in $rowID
 	// return success or fail
@@ -153,88 +235,6 @@
 		return $returnStatus;
 	}
 
-	//function pass SQL INSERT part in $sqlInsert
-	// return success or fail
-	function insertNewRowTable($sqlInsert) {
-		// Include config file
-		require_once 'config.php';
-
-		$insert = "INSERT INTO `AudibleBooks`";
-
-		$strSQL = $insert . $sqlInsert;
-
-		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
-
-		$returnStatus = array(array());
-
-		if($mysqli->query($strSQL) === TRUE) {
-			$returnStatus[0]["status"] = "Success";
-			$returnStatus[0]["info"] = "Inserted Record successfully";
-		} else {
-			$returnStatus[0]["status"] = "FAILED";
-			$returnStatus[0]["info"] = "Error Inserting record: " . $mysqli->error;
-		}
-
-		return $returnStatus;
-	}	
-
-	function deleteTableRowByID($rowID) {
-		// Include config file
-		require_once 'config.php';
-
-		$delete = "DELETE FROM `AudibleBooks` ";
-		$where = "WHERE `ID` = " . $rowID;
-
-		$strSQL = $delete . $where;
-				
-		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
-
-	    $returnStatus = array(array());
-
-		if($mysqli->query($strSQL) === TRUE) {
-			$returnStatus[0]["status"] = "Success";
-			$returnStatus[0]["info"] = "Record deleted successfully";
-		} else {
-			$returnStatus[0]["status"] = "FAILED";
-			$returnStatus[0]["info"] = "Error deleting record: " . $mysqli->error;
-		}
-
-		return $returnStatus;
-	}
-
-	function getCountTableRows($sqlQuery) {
-		require_once 'config.php';
-
-		$select = "SELECT Count(*) AS Count ";
-		$from = $sqlQuery['from'];
-		$where = $sqlQuery['where'];
-		
-		$strSQL = $select . $from . $where;
-		
-		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
-		
-		$result = $mysqli->query($strSQL);
-
-		$returnStatus = array(array());
-
-		if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
-			$returnStatus[0]["status"] = "FAILED";
-			$returnStatus[0]["info"] = "Error getTableRowData() - " . $mysqli->error;
-		}
-		else {
-			// Get results of query
-			$count = 0;
-			while($row = $result->fetch_assoc()) {  //outputs the records
-				$returnStatus[$count]["status"] = "Success";
-				$returnStatus[$count]["Count"] = $row['Count'];
-				$count++;
-			}
-		}	
-		$result->close();
-		$mysqli->close();
-		return $returnStatus;
-	}
-
 
 //======================================================================================
 
@@ -248,29 +248,29 @@
 		$searchKey = $postOBJ["searchkey"];
 
 		switch($functionCall) {
+			case "deleteTableRowByID":
+				$itemID = (int) filter_var($searchKey, FILTER_SANITIZE_NUMBER_INT);
+				$returnStatus = deleteTableRowByID($itemID);
+				break;
+			case "getAllFieldsByID":
+				$itemID = (int) filter_var($searchKey, FILTER_SANITIZE_NUMBER_INT);
+				$returnStatus = getAllFieldsByID($itemID);
+				break;
+			case "getCountTableRows":
+				$returnStatus = getCountTableRows($fieldName);
+				break;
 			case "getDISTINCTSearchTerms":
 				$returnStatus = getDISTINCTSearchTerms($fieldName, $searchKey);
 				break;
 			case "getTableRowData":
 				$returnStatus = getTableRowData($fieldName);
 				break;
-			case "getCountTableRows":
-				$returnStatus = getCountTableRows($fieldName);
-				break;
-			case "getAllFieldsByID":
-				$itemID = (int) filter_var($searchKey, FILTER_SANITIZE_NUMBER_INT);
-				$returnStatus = getAllFieldsByID($itemID);
+			case "insertNewRowTable":
+				$returnStatus = insertNewRowTable($fieldName);
 				break;
 			case "updateTableByID":
 				$itemID = (int) filter_var($searchKey, FILTER_SANITIZE_NUMBER_INT);
 				$returnStatus = updateTableByID($fieldName, $itemID);
-				break;
-			case "insertNewRowTable":
-				$returnStatus = insertNewRowTable($fieldName);
-				break;
-			case "deleteTableRowByID":
-				$itemID = (int) filter_var($searchKey, FILTER_SANITIZE_NUMBER_INT);
-				$returnStatus = deleteTableRowByID($itemID);
 				break;
 		}
 

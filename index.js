@@ -34,9 +34,6 @@ function acknowledgeDeleteRow() {
 }
 
 function addNewAudibleBook() {
-	var $tablebody = $("#bodySpace");
-	var $templateHTML = $("#modifyAudibleBodyTemplate").html();
-	$tablebody.empty();
 	var dataMustache = {
 		"titleButton":"Copy Current Book",
 		"modifyAudible-Title":"",
@@ -55,63 +52,9 @@ function addNewAudibleBook() {
 		"modifyAudible-MyRating":0,
 		"modifyAudible-CoverArt":"",
 		"modifyAudible-Notes":"",
-		"modifyAudible-ModifiedDate":"",					
+		"modifyAudible-ModifiedDate":"",
 	};
-	$tablebody.append(Mustache.render($templateHTML, dataMustache));
-	var mustacheData = {
-		"modifyAudible-h2":"Add New Audible Book",
-		"modifyAudible-ID":"",
-		"modifyAudible-onclick":"copyCurrentRowData()",
-		"modifyAudible-text":"Copy Current Book",
-	};
-	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
-	fillTemplateSpace("headerSpace", "modifyAudibleHeaderTemplate", "");
-	var mustacheData = {
-		"saveModifyFunction":"saveModifyAudible('insert')",
-	};
-	fillTemplateSpace("footerSpace", "modifyAudibleFooter", mustacheData);
-	pageObjectsList("Status", "Dropdowns", "listStatusDropdown", "liItemEntryTemplate");
-	pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown", "liItemEntryTemplate");
-	pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown", "liItemEntryTemplate");
-	$("#buttonAudibleTitle").prop('hidden', true);
-	$("#span-Title").prop('hidden', true);
-	$("#input-Title").prop('type', 'text');
-	$("#span-Author").prop('hidden', true);
-	$("#input-Author").prop('type', 'text');
-	$("#span-Series").prop('hidden', true);
-	$("#input-Series").prop('type', 'text');
-	$("#span-SeriesBook").prop('hidden', false);
-	$("#input-SeriesBook").prop('type', 'text');
-	$("#span-ReadOrder").prop('hidden', true);
-	$("#input-ReadOrder").prop('type', 'text');
-	$("#span-ReadOrderNumber").prop('hidden', false);
-	$("#input-ReadOrderNumber").prop('type', 'text');
-	$("#span-Categories").prop('hidden', true);
-	$("#input-Categories").prop('type', 'text');
-	$("#span-ListenedTo").prop('hidden', true);
-	$("#input-ListenedTo").prop('type', 'text');
-	$("#span-Status").prop('hidden', true);
-	$("#input-Status").prop('type', 'text');
-	$("#span-Length").prop('hidden', true);
-	$("#input-Length").prop('type', 'text');
-	$("#span-MyRating").prop('hidden', true);
-	$("#input-MyRating").prop('type', 'text');
-	$("#span-DateAdded").prop('hidden', true);
-	$("#input-DateAdded").prop('type', 'text');
-	$("#span-Timestamp").prop('hidden', true);
-	$("#strongSpan-Timestamp").prop('hidden', true);
-	//	$("#img-CoverArt").prop('hidden', true);
-	$("#div-CoverArt").prop('hidden', false);
-	//$("#strongSpan-CoverArt").prop('hidden', false);
-	//$("#input-CoverArt").prop('type', 'text')
-	$("#span-Notes").prop('hidden', true);
-	$("#input-Notes").prop('hidden', false);
-	$("#div-Notes").prop('style').height = '170px';
-	$("#buttonLeft-modifyAudibleFooter").prop('text', 'Cancel');
-	$("#buttonRight-modifyAudibleFooter").prop('hidden', false);
-	//$("#input-Notes").text()	//return string being displayed
-	//$("#input-CoverArt").val()	//selected file??
-	
+	fillNewAudibleBook(dataMustache);	
 }
 
 function calculateNumberPages(element) {
@@ -185,7 +128,18 @@ function closeModifyAudible() {
 }
 
 function copyCurrentRowData() {
+	var deferred = $.Deferred();
+	deferred
+	.then(getLatestModifiedRowID())
+	.then(fillBookForm(sessionStorage.getItem("lastRowModified")))
+	.then(pageObjectsList("Status", "Dropdowns", "listStatusDropdown", "liItemEntryTemplate"))
+	.then(pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown", "liItemEntryTemplate"))
+	.then(pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown", "liItemEntryTemplate"))
+	.done(setFormToModifyMode(true));
+	deferred.resolve();
 	
+	//getLatestModifiedRowID(fillBookForm);
+	//setFormToModifyMode(true);
 }
 
 function deleteThisRow(element) {	//Come here when the "Delete" icon in row is clicked
@@ -262,6 +216,91 @@ function fetchTableResults() {		// Fills the main Table <div> #maintablebody
 	});
 }
 
+function fillBookForm(clickedRowID) {
+	var $tablebody = $('#bodySpace');
+	var $templateHTML = $('#modifyAudibleBodyTemplate').html();
+	
+	var postData = {
+		"functionCall":"getAllFieldsByID",
+		"fieldName":"",
+		"searchkey":clickedRowID,		//ID of row to edit
+	};
+	var dataString = JSON.stringify(postData);
+	$.ajax({
+		url:'AudibleBooks.php',
+		type:'POST',
+		data: {postOBJ: dataString},
+		success:function(returnData) {
+			//console.log("returnData fetchTableResults -- " + returnData);
+			//alert("In fetchTableResults returnData length -- " + returnData.length);
+			$tablebody.empty();
+			$.each(returnData, function(i, resultitem){
+				if(resultitem.BookNumber==0) {
+					var modifySeries = resultitem.Series;
+				}else {
+					var modifySeries = resultitem.Series + " -- Book " + resultitem.BookNumber;
+				}
+				if(resultitem.BookOrderNumber==0) {
+					var modifyBook = resultitem.ReadOrder;
+				}else {
+					var modifyBook = resultitem.ReadOrder + " -- Book " + resultitem.ReadOrderNumber;
+				}
+				if(resultitem.ListenedTo==0) {
+					var modifyListenedTo = "NO";
+				}else {
+					var modifyListenedTo = "YES";
+				}	    					
+				//var SeriesReadOrder = resultitem.ReadOrder + " Book - " + resultitem.ReadOrderNumber;
+				var mustacheData = {
+					"modifyAudible-ID":resultitem.ID,
+					"modifyAudible-Title":resultitem.Title,
+					"modifyAudible-Author":resultitem.Author,
+					"modifyAudible-Series":resultitem.Series,
+					"modifyAudible-modSeries":modifySeries,
+					"modifyAudible-modBook":modifyBook,
+					"modifyAudible-BookNumber":resultitem.BookNumber,
+					"modifyAudible-ReadOrderNumber":resultitem.ReadOrderNumber,
+					"modifyAudible-ReadOrder":resultitem.ReadOrder,
+					"modifyAudible-Length":resultitem.Length,
+					"modifyAudible-Categories":resultitem.Categories,
+					"modifyAudible-Status":resultitem.Status,
+					"modifyAudible-ListenedTo":modifyListenedTo,
+					"modifyAudible-DateAdded":resultitem.DateAdded,
+					"modifyAudible-MyRating":resultitem.MyRating,
+					"modifyAudible-CoverArt":resultitem.CoverArt,
+					"modifyAudible-Notes":resultitem.Notes,
+					"modifyAudible-ModifiedDate":resultitem.ModifiedDate,					
+				};
+				$tablebody.append(Mustache.render($templateHTML, mustacheData));
+			});
+		},
+		error: function() {
+			alert('In tableRowUpdate(). Error with getting row data from AudibleBooks.php.');
+		}
+	});
+	
+}
+
+function fillNewAudibleBook(dataMustache) {
+	var $tablebody = $("#bodySpace");
+	var $templateHTML = $("#modifyAudibleBodyTemplate").html();
+	$tablebody.empty();
+	$tablebody.append(Mustache.render($templateHTML, dataMustache));
+	var mustacheData = {
+		"modifyAudible-h2":"Add New Audible Book",
+		"modifyAudible-ID":"",
+		"modifyAudible-onclick":"copyCurrentRowData()",
+		"modifyAudible-text":"Copy Current Book",
+	};
+	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
+	fillTemplateSpace("headerSpace", "modifyAudibleHeaderTemplate", "");
+	var mustacheData = {
+		"saveModifyFunction":"saveModifyAudible('insert')",
+	};
+	fillTemplateSpace("footerSpace", "modifyAudibleFooter", mustacheData);
+	setFormToModifyMode(false);	
+}
+
 function fillTemplateSpace(templateDivName, templateName, mustacheData) {
 	var $templateDivSpace = $("#" + templateDivName);
 	var templateHTML = $("#" + templateName).html();
@@ -301,6 +340,43 @@ function getCountCurrentTableRows(callback) {
 			alert('In getCountCurrentTableRows(). Error with getting row count from AudibleBooks.php.');
 		}
 	});
+}
+
+function getLatestModifiedRowID() {
+	//	alert("In copyCurrentRowData()");
+	sessionStorage.setItem("lastRowModifiedValid", false);
+	var postData = {
+		"functionCall":"getLatestModifiedRowID",
+		"fieldName":"",
+		"searchkey":"",
+	};
+	var dataString = JSON.stringify(postData);
+	$.ajax({
+		url:'AudibleBooks.php',
+		type:'POST',
+		data: {postOBJ: dataString},
+		success:function(returnData) {
+			$.each(returnData, function(i, resultitem){
+				if (resultitem.status == 'Success') {
+					sessionStorage.setItem("lastRowModified", resultitem.ID);
+					sessionStorage.setItem("lastRowModifiedValid", true);
+				} else {
+					alert("Failed Ajax PHP call getLatestModifiedRowID -- " + returnData);
+				}
+				
+			});
+		},
+		error: function() {
+			alert('AJAX Error deleteTableRow(element).');
+		}
+		//console.log("Out of switch");
+	});
+	// Make sure the callback is a function
+	//if (typeof callback === "function") {
+		// Execute the callback function and pass the parameters to it
+	//	callback(sessionStorage.getItem("lastRowModified"));
+	//}
+	
 }
 
 function liveSearchKeyPress(element) {
@@ -398,58 +474,17 @@ function makeTitleSpace() {
 	fillTemplateSpace("titleSpace", "audibleTitleTemplate", dataMustache)
 }
 
-function modifyCurrentBook(element) {
+function modifyCurrentBook() {
 	var currentID = $("#buttonAudibleTitle").attr('data-id');
 	//alert("In modifyCurrentBook(). currentID -- " + currentID);
 	var mustacheData = {
 		"modifyAudible-h2":"Edit Book  ID- ",
 		"modifyAudible-ID":currentID,
-		"modifyAudible-onclick":"modifyCurrentBook(this)",
-		"modifyAudible-text":"Edit Book",
+		"modifyAudible-onclick":"",
+		"modifyAudible-text":"",
 	};
 	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
-	$("#buttonAudibleTitle").prop('hidden', true);
-	$("#span-Title").prop('hidden', true);
-	$("#input-Title").prop('type', 'text');
-	$("#span-Author").prop('hidden', true);
-	$("#input-Author").prop('type', 'text');
-	$("#span-Series").prop('hidden', true);
-	$("#input-Series").prop('type', 'text');
-	$("#span-SeriesBook").prop('hidden', false);
-	$("#input-SeriesBook").prop('type', 'text');
-	$("#span-ReadOrder").prop('hidden', true);
-	$("#input-ReadOrder").prop('type', 'text');
-	$("#span-ReadOrderNumber").prop('hidden', false);
-	$("#input-ReadOrderNumber").prop('type', 'text');
-	$("#span-Categories").prop('hidden', true);
-	$("#input-Categories").prop('type', 'text');
-	$("#span-ListenedTo").prop('hidden', true);
-	$("#input-ListenedTo").prop('type', 'text');
-	$("#span-Status").prop('hidden', true);
-	$("#input-Status").prop('type', 'text');
-	$("#span-Length").prop('hidden', true);
-	$("#input-Length").prop('type', 'text');
-	$("#span-MyRating").prop('hidden', true);
-	$("#input-MyRating").prop('type', 'text');
-	$("#span-DateAdded").prop('hidden', true);
-	$("#input-DateAdded").prop('type', 'text');
-	$("#span-Timestamp").prop('hidden', true);
-	$("#strongSpan-Timestamp").prop('hidden', true);
-	//	$("#img-CoverArt").prop('hidden', true);
-	$("#div-CoverArt").prop('hidden', false);
-	//$("#strongSpan-CoverArt").prop('hidden', false);
-	//$("#input-CoverArt").prop('type', 'text')
-	$("#span-Notes").prop('hidden', true);
-	$("#input-Notes").prop('hidden', false);
-	$("#div-Notes").prop('style').height = '170px';
-	$("#buttonLeft-modifyAudibleFooter").prop('text', 'Cancel');
-	$("#buttonRight-modifyAudibleFooter").prop('hidden', false);
-	//$("#input-Notes").text()	//return string being displayed
-	//$("#input-CoverArt").val()	//selected file??
-	pageObjectsList("Status", "Dropdowns", "listStatusDropdown", "liItemEntryTemplate");
-	pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown", "liItemEntryTemplate");
-	pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown", "liItemEntryTemplate");
-	
+	setFormToModifyMode(true);
 }
 
 function onclickDropdowns(element) {	//comes here for when an item in the dropdowns is clicked 
@@ -786,6 +821,55 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 	$('#searchbox').val("");	//remove the typed chars.
 }
 
+function setFormToModifyMode(hideCopyButton) {
+	//pageObjectsList("Status", "Dropdowns", "listStatusDropdown", "liItemEntryTemplate");
+	//pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown", "liItemEntryTemplate");
+	//pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown", "liItemEntryTemplate");
+
+	if (hideCopyButton == true) {
+		$("#buttonAudibleTitle").prop('hidden', true);
+	} else {
+		$("#buttonAudibleTitle").prop('hidden', false);
+	}
+	$("#span-Title").prop('hidden', true);
+	$("#input-Title").prop('type', 'text');
+	$("#span-Author").prop('hidden', true);
+	$("#input-Author").prop('type', 'text');
+	$("#span-Series").prop('hidden', true);
+	$("#input-Series").prop('type', 'text');
+	$("#span-SeriesBook").prop('hidden', false);
+	$("#input-SeriesBook").prop('type', 'text');
+	$("#span-ReadOrder").prop('hidden', true);
+	$("#input-ReadOrder").prop('type', 'text');
+	$("#span-ReadOrderNumber").prop('hidden', false);
+	$("#input-ReadOrderNumber").prop('type', 'text');
+	$("#span-Categories").prop('hidden', true);
+	$("#input-Categories").prop('type', 'text');
+	$("#span-ListenedTo").prop('hidden', true);
+	$("#input-ListenedTo").prop('type', 'text');
+	$("#span-Status").prop('hidden', true);
+	$("#input-Status").prop('type', 'text');
+	$("#span-Length").prop('hidden', true);
+	$("#input-Length").prop('type', 'text');
+	$("#span-MyRating").prop('hidden', true);
+	$("#input-MyRating").prop('type', 'text');
+	$("#span-DateAdded").prop('hidden', true);
+	$("#input-DateAdded").prop('type', 'text');
+	$("#span-Timestamp").prop('hidden', true);
+	$("#strongSpan-Timestamp").prop('hidden', true);
+	//	$("#img-CoverArt").prop('hidden', true);
+	$("#div-CoverArt").prop('hidden', false);
+	//$("#strongSpan-CoverArt").prop('hidden', false);
+	//$("#input-CoverArt").prop('type', 'text')
+	$("#span-Notes").prop('hidden', true);
+	$("#input-Notes").prop('hidden', false);
+	$("#div-Notes").prop('style').height = '170px';
+	$("#buttonLeft-modifyAudibleFooter").prop('text', 'Cancel');
+	$("#buttonRight-modifyAudibleFooter").prop('hidden', false);
+	//$("#input-Notes").text()	//return string being displayed
+	//$("#input-CoverArt").val()	//selected file??
+}
+
 function setInputCategoriesValue(element) {
 	var liText = $("#" + element.id).text();
 	//alert("In setInputCategoriesValue().\n liText --" + liText);
@@ -829,14 +913,13 @@ function setStateSearchBox(state, liText) {
 }
 
 function updateTableRow(element) {
-	var $tablebody = $('#bodySpace');
-	var $templateHTML = $('#modifyAudibleBodyTemplate').html();
-	var $clickedIcon = element.id;
-	var $clickedID = $clickedIcon.slice(13, $clickedIcon.length);
+	var clickedRowID = $("#" + element.id).attr('data-ID');
+	//var $clickedIcon = element.id;
+	//var $clickedID = $clickedIcon.slice(13, $clickedIcon.length);
 	var mustacheData = {
 		"modifyAudible-h2":"View Book  ID- ",
-		"modifyAudible-ID":$clickedID,
-		"modifyAudible-onclick":"modifyCurrentBook(this)",
+		"modifyAudible-ID":clickedRowID,
+		"modifyAudible-onclick":"modifyCurrentBook()",
 		"modifyAudible-text":"Edit Book",
 	};
 	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
@@ -847,67 +930,8 @@ function updateTableRow(element) {
 	fillTemplateSpace("footerSpace", "modifyAudibleFooter", mustacheData);
 	
 	//	alert ("In tableRowUpdate(). \n$clickedIcon -- " +
-	//		$clickedIcon + "\n ID -- " + $clickedID);
-	
-	var postData = {
-		"functionCall":"getAllFieldsByID",
-		"fieldName":"",
-		"searchkey":$clickedID,		//ID of row to edit
-	};
-	var dataString = JSON.stringify(postData);
-	$.ajax({
-		url:'AudibleBooks.php',
-		type:'POST',
-		data: {postOBJ: dataString},
-		success:function(returnData) {
-			//console.log("returnData fetchTableResults -- " + returnData);
-			//alert("In fetchTableResults returnData length -- " + returnData.length);
-			$tablebody.empty();
-			$.each(returnData, function(i, resultitem){
-				if(resultitem.BookNumber==0) {
-					var modifySeries = resultitem.Series;
-				}else {
-					var modifySeries = resultitem.Series + " -- Book " + resultitem.BookNumber;
-				}
-				if(resultitem.BookOrderNumber==0) {
-					var modifyBook = resultitem.ReadOrder;
-				}else {
-					var modifyBook = resultitem.ReadOrder + " -- Book " + resultitem.ReadOrderNumber;
-				}
-				if(resultitem.ListenedTo==0) {
-					var modifyListenedTo = "NO";
-				}else {
-					var modifyListenedTo = "YES";
-				}	    					
-				//var SeriesReadOrder = resultitem.ReadOrder + " Book - " + resultitem.ReadOrderNumber;
-				var mustacheData = {
-					"modifyAudible-ID":resultitem.ID,
-		  "modifyAudible-Title":resultitem.Title,
-		  "modifyAudible-Author":resultitem.Author,
-		  "modifyAudible-Series":resultitem.Series,
-		  "modifyAudible-modSeries":modifySeries,
-		  "modifyAudible-modBook":modifyBook,
-		  "modifyAudible-BookNumber":resultitem.BookNumber,
-		  "modifyAudible-ReadOrderNumber":resultitem.ReadOrderNumber,
-		  "modifyAudible-ReadOrder":resultitem.ReadOrder,
-		  "modifyAudible-Length":resultitem.Length,
-		  "modifyAudible-Categories":resultitem.Categories,
-		  "modifyAudible-Status":resultitem.Status,
-		  "modifyAudible-ListenedTo":modifyListenedTo,
-		  "modifyAudible-DateAdded":resultitem.DateAdded,
-		  "modifyAudible-MyRating":resultitem.MyRating,
-		  "modifyAudible-CoverArt":resultitem.CoverArt,
-		  "modifyAudible-Notes":resultitem.Notes,
-		  "modifyAudible-ModifiedDate":resultitem.ModifiedDate,					
-				};
-				$tablebody.append(Mustache.render($templateHTML, mustacheData));
-			});
-		},
-		error: function() {
-			alert('In tableRowUpdate(). Error with getting row data from AudibleBooks.php.');
-		}
-	});
-	
+	//		$clickedIcon + "\n ID -- " + clickedRowID);
+	fillBookForm(clickedRowID);
 }
 
 $(document).ready(function(){	//Code to run when page finishes loading
@@ -933,18 +957,21 @@ $(document).ready(function(){	//Code to run when page finishes loading
 		sessionStorage.setItem("filterBysearchTerm", "filterBy00");	//setup filterBy pageObj session storage
 		sessionStorage.setItem("filterBysearchSelected", "Nothing");	//setup sortBy current selection session storage
 		sessionStorage.setItem("searchboxPlaceholder", "");	//setup searchbox Placeholder current selection session storage
-		sessionStorage.setItem("utilitySearchTerm", "utilities0");	//setup sortBy pageObj session storage
+		sessionStorage.setItem("utilitySearchTerm", "utilities0");	//setup utilities pageObj session storage
 
-		sessionStorage.setItem("numRowsOnPage", 15);	//setup sortBy pageObj session storage
-		var rowOnPage = sessionStorage.getItem("numRowsOnPage");
-		sessionStorage.setItem("pageDisplayNumber", 0);	//setup sortBy pageObj session storage
-		var pageDisplayNum = sessionStorage.getItem("pageDisplayNumber");
-
-		sessionStorage.setItem("mainTable_Select", "SELECT `ID`, `Title`, `Author`, `Series` ");	//setup filterBy pageObj session storage
-		sessionStorage.setItem("mainTable_From", "FROM AudibleBooks ");	//setup filterBy pageObj session storage
-		sessionStorage.setItem("mainTable_Where", "");	//setup filterBy pageObj session storage
-		sessionStorage.setItem("mainTable_Order", "ORDER BY `ModifiedDate` DESC ");	//setup filterBy pageObj session storage
-		sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum.toString() + ", " + rowOnPage.toString());	//setup filterBy pageObj session storage		
+		sessionStorage.setItem("numRowsOnPage", 15);	//Initial # rows displayed on page session storage
+		//var rowOnPage = sessionStorage.getItem("numRowsOnPage");
+		sessionStorage.setItem("pageDisplayNumber", 0);	//Initial page of rows being displayed session storage
+		//var pageDisplayNum = sessionStorage.getItem("pageDisplayNumber");
+		
+		sessionStorage.setItem("lastRowModified", 0);	//Initilize last Row Modified session storage
+		sessionStorage.setItem("lastRowModifiedValid", true);	//Initilize last Row Modified ID Valid session storage
+		
+		sessionStorage.setItem("mainTable_Select", "SELECT `ID`, `Title`, `Author`, `Series` ");	//Initial SQL SELECT string session storage
+		sessionStorage.setItem("mainTable_From", "FROM AudibleBooks ");	//Initial SQL FROM string session storage
+		sessionStorage.setItem("mainTable_Where", "");	//Initial SQL WHERE string session storage
+		sessionStorage.setItem("mainTable_Order", "ORDER BY `ModifiedDate` DESC ");	//Initial SQL ORDER BY string session storage
+		sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum.toString() + ", " + rowOnPage.toString());	//Initial SQL LIMIT string session storage
 	}
 	
 	document.getElementById('sortby').innerHTML = sessionStorage.getItem("sortBysearchSelected");

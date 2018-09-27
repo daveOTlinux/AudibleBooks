@@ -40,9 +40,9 @@ function addNewAudibleBook() {
 		"modifyAudible-Author":"",
 		"modifyAudible-Series":"",
 		"modifyAudible-modSeries":"",
-		"modifyAudible-modBook":0,
-		"modifyAudible-BookNumber":0,
-		"modifyAudible-ReadOrderNumber":0,
+		"modifyAudible-modBook":"",
+		"modifyAudible-BookNumber":"",
+		"modifyAudible-ReadOrderNumber":"",
 		"modifyAudible-ReadOrder":"",
 		"modifyAudible-Length":"",
 		"modifyAudible-Categories":"",
@@ -127,15 +127,15 @@ function closeModifyAudible() {
 	fetchTableResults()
 }
 
-function copyCurrentRowData() {
+function copyLastModifiedRowData() {
 	var deferred = $.Deferred();
 	deferred
 	.then(getLatestModifiedRowID())
-	.then(fillBookForm(sessionStorage.getItem("lastRowModified")))
-	.then(pageObjectsList("Status", "Dropdowns", "listStatusDropdown", "liItemEntryTemplate"))
-	.then(pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown", "liItemEntryTemplate"))
-	.then(pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown", "liItemEntryTemplate"))
-	.done(setFormToModifyMode(true));
+	//.then(fillBookForm(sessionStorage.getItem("lastRowModified"), displayBookFormData))
+	//.then(pageObjectsList("Status", "Dropdowns", "listStatusDropdown", "liItemEntryTemplate"))
+	//.then(pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown", "liItemEntryTemplate"))
+	//.then(pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown", "liItemEntryTemplate"))
+	.done(fillBookForm(sessionStorage.getItem("lastRowModified"), fillNewFormLastData));
 	deferred.resolve();
 	
 	//getLatestModifiedRowID(fillBookForm);
@@ -161,6 +161,54 @@ function deleteThisRow(element) {	//Come here when the "Delete" icon in row is c
 	};
 	modalContent.append(Mustache.render(modalTemplate, mustacheData));
 	$("#dialogBoxStatus").modal();	//opens modal
+}
+
+function displayBookFormData(returnData) {
+	var $tablebody = $('#bodySpace');
+	var $templateHTML = $('#modifyAudibleBodyTemplate').html();
+	
+	//console.log("returnData fetchTableResults -- " + returnData);
+	//alert("In fetchTableResults returnData length -- " + returnData.length);
+	$tablebody.empty();
+	$.each(returnData, function(i, resultitem){
+		if(resultitem.BookNumber==0) {
+			var modifySeries = resultitem.Series;
+		}else {
+			var modifySeries = resultitem.Series + " -- Book " + resultitem.BookNumber;
+		}
+		if(resultitem.BookOrderNumber==0) {
+			var modifyBook = resultitem.ReadOrder;
+		}else {
+			var modifyBook = resultitem.ReadOrder + " -- Book " + resultitem.ReadOrderNumber;
+		}
+		if(resultitem.ListenedTo==0) {
+			var modifyListenedTo = "NO";
+		}else {
+			var modifyListenedTo = "YES";
+		}	    					
+		//var SeriesReadOrder = resultitem.ReadOrder + " Book - " + resultitem.ReadOrderNumber;
+		var mustacheData = {
+			"modifyAudible-ID":resultitem.ID,
+			"modifyAudible-Title":resultitem.Title,
+			"modifyAudible-Author":resultitem.Author,
+			"modifyAudible-Series":resultitem.Series,
+			"modifyAudible-modSeries":modifySeries,
+			"modifyAudible-modBook":modifyBook,
+			"modifyAudible-BookNumber":resultitem.BookNumber,
+			"modifyAudible-ReadOrderNumber":resultitem.ReadOrderNumber,
+			"modifyAudible-ReadOrder":resultitem.ReadOrder,
+			"modifyAudible-Length":resultitem.Length,
+			"modifyAudible-Categories":resultitem.Categories,
+			"modifyAudible-Status":resultitem.Status,
+			"modifyAudible-ListenedTo":modifyListenedTo,
+			"modifyAudible-DateAdded":resultitem.DateAdded,
+			"modifyAudible-MyRating":resultitem.MyRating,
+			"modifyAudible-CoverArt":resultitem.CoverArt,
+			"modifyAudible-Notes":resultitem.Notes,
+			"modifyAudible-ModifiedDate":resultitem.ModifiedDate,
+		};
+		$tablebody.append(Mustache.render($templateHTML, mustacheData));
+	});
 }
 
 function fetchTableResults() {		// Fills the main Table <div> #maintablebody
@@ -216,10 +264,7 @@ function fetchTableResults() {		// Fills the main Table <div> #maintablebody
 	});
 }
 
-function fillBookForm(clickedRowID) {
-	var $tablebody = $('#bodySpace');
-	var $templateHTML = $('#modifyAudibleBodyTemplate').html();
-	
+function fillBookForm(clickedRowID, callback) {
 	var postData = {
 		"functionCall":"getAllFieldsByID",
 		"fieldName":"",
@@ -230,49 +275,13 @@ function fillBookForm(clickedRowID) {
 		url:'AudibleBooks.php',
 		type:'POST',
 		data: {postOBJ: dataString},
-		success:function(returnData) {
-			//console.log("returnData fetchTableResults -- " + returnData);
-			//alert("In fetchTableResults returnData length -- " + returnData.length);
-			$tablebody.empty();
-			$.each(returnData, function(i, resultitem){
-				if(resultitem.BookNumber==0) {
-					var modifySeries = resultitem.Series;
-				}else {
-					var modifySeries = resultitem.Series + " -- Book " + resultitem.BookNumber;
-				}
-				if(resultitem.BookOrderNumber==0) {
-					var modifyBook = resultitem.ReadOrder;
-				}else {
-					var modifyBook = resultitem.ReadOrder + " -- Book " + resultitem.ReadOrderNumber;
-				}
-				if(resultitem.ListenedTo==0) {
-					var modifyListenedTo = "NO";
-				}else {
-					var modifyListenedTo = "YES";
-				}	    					
-				//var SeriesReadOrder = resultitem.ReadOrder + " Book - " + resultitem.ReadOrderNumber;
-				var mustacheData = {
-					"modifyAudible-ID":resultitem.ID,
-					"modifyAudible-Title":resultitem.Title,
-					"modifyAudible-Author":resultitem.Author,
-					"modifyAudible-Series":resultitem.Series,
-					"modifyAudible-modSeries":modifySeries,
-					"modifyAudible-modBook":modifyBook,
-					"modifyAudible-BookNumber":resultitem.BookNumber,
-					"modifyAudible-ReadOrderNumber":resultitem.ReadOrderNumber,
-					"modifyAudible-ReadOrder":resultitem.ReadOrder,
-					"modifyAudible-Length":resultitem.Length,
-					"modifyAudible-Categories":resultitem.Categories,
-					"modifyAudible-Status":resultitem.Status,
-					"modifyAudible-ListenedTo":modifyListenedTo,
-					"modifyAudible-DateAdded":resultitem.DateAdded,
-					"modifyAudible-MyRating":resultitem.MyRating,
-					"modifyAudible-CoverArt":resultitem.CoverArt,
-					"modifyAudible-Notes":resultitem.Notes,
-					"modifyAudible-ModifiedDate":resultitem.ModifiedDate,					
-				};
-				$tablebody.append(Mustache.render($templateHTML, mustacheData));
-			});
+		success: function(returnData) {
+			// Make sure the callback is a function
+			if (typeof callback === "function") {
+				// Execute the callback function and pass the parameters to it
+				callback(returnData);
+			}
+			//displayBookFormData(returnData);
 		},
 		error: function() {
 			alert('In tableRowUpdate(). Error with getting row data from AudibleBooks.php.');
@@ -289,8 +298,8 @@ function fillNewAudibleBook(dataMustache) {
 	var mustacheData = {
 		"modifyAudible-h2":"Add New Audible Book",
 		"modifyAudible-ID":"",
-		"modifyAudible-onclick":"copyCurrentRowData()",
-		"modifyAudible-text":"Copy Current Book",
+		"modifyAudible-onclick":"copyLastModifiedRowData()",
+		"modifyAudible-text":"Copy Last Modified Book",
 	};
 	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
 	fillTemplateSpace("headerSpace", "modifyAudibleHeaderTemplate", "");
@@ -299,6 +308,31 @@ function fillNewAudibleBook(dataMustache) {
 	};
 	fillTemplateSpace("footerSpace", "modifyAudibleFooter", mustacheData);
 	setFormToModifyMode(false);	
+}
+
+function fillNewFormLastData(returnData) {
+	$.each(returnData, function(i, resultitem) {
+		if(resultitem.ListenedTo==0) {
+			var modifyListenedTo = "NO";
+		}else {
+			var modifyListenedTo = "YES";
+		}
+		$('#input-Title').val(resultitem.Title);
+		$('#input-Author').val(resultitem.Author);
+		$('#input-Series').val(resultitem.Series);
+		$('#input-SeriesBook').val(resultitem.BookNumber);
+		$('#input-ReadOrderNumber').val(resultitem.ReadOrderNumber);
+		$('#input-ReadOrder').val(resultitem.ReadOrder);
+		$('#input-Length').val(resultitem.Length);
+		$('#input-Categories').val(resultitem.Categories);
+		$('#input-Status').val(resultitem.Status);
+		$('#input-ListenedTo').val(modifyListenedTo);
+		$('#input-DateAdded').val(resultitem.DateAdded);
+		$('#input-MyRating').val(resultitem.MyRating);
+		$('#input-CoverArt').val(resultitem.CoverArt);
+		$('#input-Notes').val(resultitem.Notes);
+	});
+
 }
 
 function fillTemplateSpace(templateDivName, templateName, mustacheData) {
@@ -343,7 +377,7 @@ function getCountCurrentTableRows(callback) {
 }
 
 function getLatestModifiedRowID() {
-	//	alert("In copyCurrentRowData()");
+	//	alert("In getLatestModifiedRowID()");
 	sessionStorage.setItem("lastRowModifiedValid", false);
 	var postData = {
 		"functionCall":"getLatestModifiedRowID",
@@ -931,7 +965,7 @@ function updateTableRow(element) {
 	
 	//	alert ("In tableRowUpdate(). \n$clickedIcon -- " +
 	//		$clickedIcon + "\n ID -- " + clickedRowID);
-	fillBookForm(clickedRowID);
+	fillBookForm(clickedRowID, displayBookFormData);
 }
 
 $(document).ready(function(){	//Code to run when page finishes loading

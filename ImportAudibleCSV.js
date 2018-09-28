@@ -1,4 +1,13 @@
 
+function checkInputForQuote(inputText) {
+	if (inputText.indexOf("'") > -1) {
+		var cleanText = inputText.slice(0, inputText.indexOf("'")) + "''" + inputText.slice(inputText.indexOf("'") + 1, inputText.length);
+		//alert("inputText has a " + "' at -" + inputText.indexOf("'") + "cleanText - " + cleanText);
+	} else	{
+		var cleanText = inputText;
+	}
+	return cleanText
+
 function cleanupPageAfterUpdateInsert(currentImportID) {
 	updateImportRowDone(currentImportID);
 	fillTemplateSpace("titleSpace", "headerImportCSVtemplate", "");
@@ -351,21 +360,15 @@ function updateAudibleTable(element) {
 	var currentImportID = Number($("#importHeaderID").attr('data-id'));
 	var selectedBookID = Number($("#" + buttonId).attr('data-id'));
 	//alert("In updateAudibleTable(). currentImportID -- " + currentImportID + "\n selectedBookID -- " + selectedBookID);
-	var inputTitle = $('#input-Title' + selectedBookID).val();
-	if (inputTitle.indexOf("'") > -1) {
-		var cleanTitle = inputTitle.slice(0, inputTitle.indexOf("'")) + "''" + inputTitle.slice(inputTitle.indexOf("'") + 1, inputTitle.length);
-		//alert("inputTitle has a " + "' at -" + inputTitle.indexOf("'") + "cleanTitle - " + cleanTitle);
-	} else	{
-		var cleanTitle = inputTitle;
-	}
-	var inputAuthor = $('#input-Author' + selectedBookID).val();
-	var inputSeries = $('#input-Series' + selectedBookID).val();
+	var inputTitle = checkInputForQuote($('#input-Title' + selectedBookID).val());
+	var inputAuthor = checkInputForQuote($('#input-Author' + selectedBookID).val());
+	var inputSeries = checkInputForQuote($('#input-Series' + selectedBookID).val());
 	var inputBookNumber = $('#input-SeriesBook' + selectedBookID).val();
 	var inputReadOrder = $('#input-ReadOrder' + selectedBookID).val();
 	var inputReadOrderNumber = $('#input-ReadOrderNumber' + selectedBookID).val();
 	var inputLength = $('#import-Length').val();
 	var inputDateAdded = $('#import-DateAdded').val();
-	var inputNotes = $('#input-Notes' + selectedBookID).val();
+	var inputNotes = checkInputForQuote($('#input-Notes' + selectedBookID).val());
 	/*	alert("In updateAudibleTable(). " +
 	 * "\n inputTitle -- " + cleanTitle +
 	 *	"\n inputAuthor -- " + inputAuthor +

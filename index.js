@@ -706,9 +706,9 @@ function pageObjectsList(searchTerm, forObject, elementID, divTemplate) {	//Get 
 				}
 				var mustacheData = {
 					"tagItemDataID":resultitem.itemDisplay,
-		  "tagItemId":elementName + resultitem.ID,
-		  "tagItemOnclick":onclickFunction,
-		  "tagItemDisplay":resultitem.itemDisplay,
+					"tagItemId":elementName + resultitem.ID,
+					"tagItemOnclick":onclickFunction,
+					"tagItemDisplay":resultitem.itemDisplay,
 				};
 				//alert("in pageObjectsList() $.each loop: \n idname -- " + elementName + "\n onclickElementAttr -- " + onclickElementAttr);
 				$divSection.append(Mustache.render($templateHTML, mustacheData));
@@ -994,9 +994,9 @@ $(document).ready(function(){	//Code to run when page finishes loading
 		sessionStorage.setItem("utilitySearchTerm", "utilities0");	//setup utilities pageObj session storage
 
 		sessionStorage.setItem("numRowsOnPage", 15);	//Initial # rows displayed on page session storage
-		//var rowOnPage = sessionStorage.getItem("numRowsOnPage");
+		var rowOnPage = sessionStorage.getItem("numRowsOnPage");
 		sessionStorage.setItem("pageDisplayNumber", 0);	//Initial page of rows being displayed session storage
-		//var pageDisplayNum = sessionStorage.getItem("pageDisplayNumber");
+		var pageDisplayNum = sessionStorage.getItem("pageDisplayNumber");
 		
 		sessionStorage.setItem("lastRowModified", 0);	//Initilize last Row Modified session storage
 		sessionStorage.setItem("lastRowModifiedValid", true);	//Initilize last Row Modified ID Valid session storage

@@ -747,14 +747,14 @@ function saveModifyAudible(mode) {
 	var pathCoverArt = "CoverArt/" + inputCoverArt.slice(12,inputCoverArt.length)
 	var inputNotes = $('#input-Notes').val();
 	
-	alert("In saveModifyAudible(). mode -- " + mode +
+/*	alert("In saveModifyAudible(). mode -- " + mode +
 	"\n Title -- " + inputTitle +
 	"\n Author -- " + inputAuthor +
 	"\n Series -- " + inputSeries +
 	"\n CoverArt -- " + pathCoverArt +
 	"\n inputListenedTo -- " + inputListenedToValue +
 	"\n Status -- " + inputStatus +
-	"\n Categories -- " + inputCategories);
+	"\n Categories -- " + inputCategories);	*/
 	switch(mode) {
 		case "update":
 			var sqlCommand = "SET `Title` = '" + inputTitle +

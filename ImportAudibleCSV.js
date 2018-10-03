@@ -7,6 +7,7 @@ function checkInputForQuote(inputText) {
 		var cleanText = inputText;
 	}
 	return cleanText
+}
 
 function cleanupPageAfterUpdateInsert(currentImportID) {
 	updateImportRowDone(currentImportID);

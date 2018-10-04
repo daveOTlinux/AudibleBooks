@@ -18,6 +18,11 @@ function cleanupPageAfterUpdateInsert(currentImportID) {
 	
 }
 
+function clickedButtonFinished() {
+	//alert("In clickedButtonFinished(). \n Button 'Finished' has been clicked.");
+	window.close();
+}
+
 function displayNoRowsFound() {
 	$('#dialogBoxStatus').modal('hide');
 	fetchImportResults(2);
@@ -455,12 +460,12 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	setupRowIdDialog();
 	fetchImportResults(2);
 	
-	$("#buttonFinished").on('click',function(){	//When "update" icon in row is clicked
+/*	$("#buttonFinished").on('click',function(){	//When "update" icon in row is clicked
 		//var element = event.target;
 		//var idClickedItem = element.id;
-		//alert("Button 'Finished' has been clicked.");
+		alert("Button 'Finished' has been clicked.");
 		window.close();
-	});
+	});	*/
 
 	$("#button-Previous").on('click',function(){	//When "update" icon in row is clicked
 		//var element = event.target;

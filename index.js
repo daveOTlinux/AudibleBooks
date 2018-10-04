@@ -308,6 +308,9 @@ function fillNewAudibleBook(dataMustache) {
 	};
 	fillTemplateSpace("footerSpace", "modifyAudibleFooter", mustacheData);
 	setFormToModifyMode(false);	
+	$( "#input-DateAdded" ).datepicker({
+		dateFormat: "yy-mm-dd"
+	});
 }
 
 function fillNewFormLastData(returnData) {
@@ -519,6 +522,9 @@ function modifyCurrentBook() {
 	};
 	fillTemplateSpace("titleSpace", "modifyAudibleTitleTemplate", mustacheData);
 	setFormToModifyMode(true);
+	$( "#input-DateAdded" ).datepicker({
+		dateFormat: "yy-mm-dd"
+	});
 }
 
 function onclickDropdowns(element) {	//comes here for when an item in the dropdowns is clicked 

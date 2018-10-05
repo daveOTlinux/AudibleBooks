@@ -102,6 +102,16 @@ function calculateNumberPages(element) {
 	fetchTableResults();
 }
 
+function checkInputForQuote(inputText) {
+	if (inputText.indexOf("'") > -1) {
+		var cleanText = inputText.slice(0, inputText.indexOf("'")) + "''" + inputText.slice(inputText.indexOf("'") + 1, inputText.length);
+		//alert("inputText has a " + "' at -" + inputText.indexOf("'") + "cleanText - " + cleanText);
+	} else	{
+		var cleanText = inputText;
+	}
+	return cleanText
+}
+
 function closeModifyAudible() {
 	makeTitleSpace();
 	makeHeaderSpace();
@@ -732,9 +742,9 @@ function pageObjectsList(searchTerm, forObject, elementID, divTemplate) {	//Get 
 function saveModifyAudible(mode) {
 	var currentID = $("#buttonAudibleTitle").attr('data-id');
 	//alert("In saveModifyAudible(). currentID -- " + currentID);
-	var inputTitle = $('#input-Title').val();
-	var inputAuthor = $('#input-Author').val();
-	var inputSeries = $('#input-Series').val();
+	var inputTitle = checkInputForQuote($('#input-Title').val());
+	var inputAuthor = checkInputForQuote($('#input-Author').val());
+	var inputSeries = checkInputForQuote($('#input-Series').val());
 	var inputBookNumber = $('#input-SeriesBook').val();
 	var inputReadOrder = $('#input-ReadOrder').val();
 	var inputReadOrderNumber = $('#input-ReadOrderNumber').val();

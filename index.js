@@ -93,11 +93,11 @@ function calculateNumberPages(element) {
 			sessionStorage.setItem("pageDisplayNumber", num);
 			break;
 	}
+	pageDisplayNum = Number(sessionStorage.getItem("pageDisplayNumber"));
 	var remainder = pageDisplayNum % rowOnPage;
 	var pageNum = 1 + (pageDisplayNum - remainder) / rowOnPage;
 	$("#selectPage").html("Page " + pageNum.toString() + ' <b class="caret"></b>');
 	rowOnPage++;	//put it back to proper value after calculations
-	pageDisplayNum = Number(sessionStorage.getItem("pageDisplayNumber"));
 	sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum.toString() + ", " + rowOnPage.toString());	//setup filterBy pageObj session storage
 	fetchTableResults();
 }
@@ -862,10 +862,11 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 	var rowOnPage = sessionStorage.getItem("numRowsOnPage");
 	var pageDisplayNum = sessionStorage.getItem("pageDisplayNumber");
 	sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum.toString() + ", " + rowOnPage.toString());
-	fetchTableResults();
 	$("#resultlist").slideUp('fast');	//hid results list
 	$('#searchbox').attr("placeholder", sessionStorage.getItem("searchboxPlaceholder"));	//placeholder give idea of what to type
 	$('#searchbox').val("");	//remove the typed chars.
+	calculateNumberPages("");
+	//fetchTableResults();
 }
 
 function setFormToModifyMode(hideCopyButton) {

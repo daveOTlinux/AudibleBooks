@@ -855,17 +855,14 @@ function searchResults(thisID) {	//Called when item in Live Search box is clicke
 	var itemClickedText = document.getElementById(thisID.id).innerHTML;
 	var filterbyText = $("#filterby").html();
 	var where = "WHERE `" + filterbyText + "` = '" + itemClickedText + "' " ;	//get rows matching item clicked in searchbox results
-	
 	//alert("searchResults() Clicked element innerHTML -- " + itemClickedText + "\n filterbyText -- " +
 	//	filterbyText + "\n WHERE -- " + where);	
-	
-	
-	sessionStorage.setItem("mainTable_Where", where);	//Get where session value
-	
-	
-	//sessionStorage.setItem("mainTable_Where", "WHERE `Author` = '" + itemClicked + "' ");	//update mainTable SQL with selected search value. 
-	//fetchTableResults() uses variables
-	fetchTableResults();	//Get table rows based on new WHERE
+	sessionStorage.setItem("mainTable_Where", where);
+	sessionStorage.setItem("pageDisplayNumber", 0);
+	var rowOnPage = sessionStorage.getItem("numRowsOnPage");
+	var pageDisplayNum = sessionStorage.getItem("pageDisplayNumber");
+	sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum.toString() + ", " + rowOnPage.toString());
+	fetchTableResults();
 	$("#resultlist").slideUp('fast');	//hid results list
 	$('#searchbox').attr("placeholder", sessionStorage.getItem("searchboxPlaceholder"));	//placeholder give idea of what to type
 	$('#searchbox').val("");	//remove the typed chars.

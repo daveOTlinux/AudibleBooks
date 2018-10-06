@@ -82,6 +82,8 @@ function calculateNumberPages(element) {
 			var num = pageDisplayNum + rowOnPage;
 			if (num < 0) {
 				num = 0;
+			} else if (rowCount < num) {
+				num = pageDisplayNum;
 			}
 			sessionStorage.setItem("pageDisplayNumber", num);
 			break;
@@ -100,6 +102,10 @@ function calculateNumberPages(element) {
 	rowOnPage++;	//put it back to proper value after calculations
 	sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum.toString() + ", " + rowOnPage.toString());	//setup filterBy pageObj session storage
 	fetchTableResults();
+}
+
+function changePageDisplayed(element) {
+	getCountCurrentTableRows(calculateNumberPages, element);
 }
 
 function checkInputForQuote(inputText) {
@@ -266,6 +272,7 @@ function fetchTableResults() {		// Fills the main Table <div> #maintablebody
 		  
 				};
 				$tablebody.append(Mustache.render($templateHTML, mustacheData));
+				$("#selectPage").attr('data-numrows', resultitem.rowCount)
 			});
 		},
 		error: function() {
@@ -356,7 +363,7 @@ function fillTemplateSpace(templateDivName, templateName, mustacheData) {
 	$templateDivSpace.append(Mustache.render(templateHTML, mustacheData));
 }
 
-function getCountCurrentTableRows(callback) {
+function getCountCurrentTableRows(callback, element) {
 	var from = sessionStorage.getItem("mainTable_From");	//Get from session value
 	var where = sessionStorage.getItem("mainTable_Where");	//Get where session value
 	var sqlObject = {
@@ -380,7 +387,7 @@ function getCountCurrentTableRows(callback) {
 			// Make sure the callback is a function
 			if (typeof callback === "function") {
 				// Execute the callback function and pass the parameters to it
-				callback("");
+				callback(element);
 			}
 		},
 		error: function() {
@@ -501,8 +508,7 @@ function makeFooterSpace() {
 		"utilitiesText":"Utilities ",
 	};
 	fillTemplateSpace("footerSpace", "audibleFooterTemplate", dataMustache);
-	getCountCurrentTableRows(calculateNumberPages)
-	
+	getCountCurrentTableRows(calculateNumberPages, "");
 }
 
 function makeHeaderSpace() {

@@ -200,6 +200,7 @@
 			$count = 0;
 			while($row = $result->fetch_assoc()) {  //outputs the records
 				$returnStatus[$count]["status"] = "Success";
+				$returnStatus[$count]["rowCount"] = $result->num_rows;
 				$returnStatus[$count]["ID"] = $row['ID'];
 				$returnStatus[$count]["Title"] = $row['Title'];
 				$returnStatus[$count]["Author"] = $row['Author'];

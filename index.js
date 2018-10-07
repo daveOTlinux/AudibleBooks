@@ -782,7 +782,7 @@ function saveModifyAudible(mode) {
 	var inputLength = $('#input-Length').val();
 	var inputMyRating = $('#input-MyRating').val();
 	var inputDateAdded = $('#input-DateAdded').val();
-	var inputCoverArt = $('#input-CoverArt').val();
+	var inputCoverArt = checkInputForQuote($('#input-CoverArt').val());
 	var pathCoverArt = "CoverArt/" + inputCoverArt.slice(12,inputCoverArt.length)
 	var inputNotes = $('#input-Notes').val();
 	

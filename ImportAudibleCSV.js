@@ -77,15 +77,25 @@ function fetchAudibleResults() {		// Fills the main Table <div> #maintablebody
 			$pageSection.append(Mustache.render($templateHTML, dataMustache));	//Add Aubibles INSERT block
 			$.each(returnData, function(i, resultitem){
 				if (resultitem.status == 'Success') {
+					if (resultitem.BookNumber == 0) {
+						var bookNumber = "";
+					} else {
+						var bookNumber = resultitem.BookNumber;
+					}
+					if (resultitem.ReadOrderNumber == 0) {
+						var readOrderNumber = "";
+					} else {
+						var readOrderNumber = resultitem.ReadOrderNumber;
+					}
 					var dataMustache = {
 						"modifyAudible-ID":resultitem.ID,
 						"modifyAudible-Title":resultitem.Title,
 						"modifyAudible-Author":resultitem.Author,
 						"modifyAudible-Series":resultitem.Series,
-						"modifyAudible-BookNumber":resultitem.BookNumber,
+						"modifyAudible-BookNumber":bookNumber,
 						"modifyAudible-Button":"updateAudibleTable(this)",
 						"modifyAudible-ButtonMode":"Update",
-						"modifyAudible-ReadOrderNumber":resultitem.ReadOrderNumber,
+						"modifyAudible-ReadOrderNumber":readOrderNumber,
 						"modifyAudible-ReadOrder":resultitem.ReadOrder,
 						"modifyAudible-Notes":resultitem.Notes,
 					};

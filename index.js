@@ -202,7 +202,16 @@ function displayBookFormData(returnData) {
 		}else {
 			var modifyListenedTo = "YES";
 		}	    					
-		//var SeriesReadOrder = resultitem.ReadOrder + " Book - " + resultitem.ReadOrderNumber;
+		if (resultitem.BookNumber == 0) {
+			var bookNumber = "";
+		} else {
+			var bookNumber = resultitem.BookNumber;
+		}
+		if (resultitem.ReadOrderNumber == 0) {
+			var readOrderNumber = "";
+		} else {
+			var readOrderNumber = resultitem.ReadOrderNumber;
+		}
 		var mustacheData = {
 			"modifyAudible-ID":resultitem.ID,
 			"modifyAudible-Title":resultitem.Title,
@@ -210,8 +219,8 @@ function displayBookFormData(returnData) {
 			"modifyAudible-Series":resultitem.Series,
 			"modifyAudible-modSeries":modifySeries,
 			"modifyAudible-modBook":modifyBook,
-			"modifyAudible-BookNumber":resultitem.BookNumber,
-			"modifyAudible-ReadOrderNumber":resultitem.ReadOrderNumber,
+			"modifyAudible-BookNumber":bookNumber,
+			"modifyAudible-ReadOrderNumber":readOrderNumber,
 			"modifyAudible-ReadOrder":resultitem.ReadOrder,
 			"modifyAudible-Length":resultitem.Length,
 			"modifyAudible-Categories":resultitem.Categories,
@@ -340,8 +349,16 @@ function fillNewFormLastData(returnData) {
 		$('#input-Title').val(resultitem.Title);
 		$('#input-Author').val(resultitem.Author);
 		$('#input-Series').val(resultitem.Series);
-		$('#input-SeriesBook').val(resultitem.BookNumber);
-		$('#input-ReadOrderNumber').val(resultitem.ReadOrderNumber);
+		if (resultitem.BookNumber == 0) {
+			$('#input-SeriesBook').val("");
+		} else {
+			$('#input-SeriesBook').val(resultitem.BookNumber);
+		}
+		if (resultitem.ReadOrderNumber == 0) {
+			$('#input-ReadOrderNumber').val("");
+		} else {
+			$('#input-ReadOrderNumber').val(resultitem.ReadOrderNumber);
+		}
 		$('#input-ReadOrder').val(resultitem.ReadOrder);
 		$('#input-Length').val(resultitem.Length);
 		$('#input-Categories').val(resultitem.Categories);
@@ -891,10 +908,16 @@ function setFormToModifyMode(hideCopyButton) {
 	$("#input-Author").prop('type', 'text');
 	$("#span-Series").prop('hidden', true);
 	$("#input-Series").prop('type', 'text');
+	if ($('#input-SeriesBook').val() == 0) {
+		$('#input-SeriesBook').val("");
+	}
 	$("#span-SeriesBook").prop('hidden', false);
 	$("#input-SeriesBook").prop('type', 'text');
 	$("#span-ReadOrder").prop('hidden', true);
 	$("#input-ReadOrder").prop('type', 'text');
+	if ($('#input-ReadOrderNumbe').val() == 0) {
+		$('#input-ReadOrderNumber').val("");		
+	}
 	$("#span-ReadOrderNumber").prop('hidden', false);
 	$("#input-ReadOrderNumber").prop('type', 'text');
 	$("#span-Categories").prop('hidden', true);

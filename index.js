@@ -462,9 +462,14 @@ function liveSearchKeyPress(element) {
 		var searchKEY = key + '%';
 	}
 	//alert("sortby dropdown -- " + $('#sortby').attr('id'));
-	var objID = $('#filterby').attr('id');
-	var objText = document.getElementById(objID).innerHTML;	//Current text in <sortBy> dropdown
-	var searchBytext = objText.slice(objText.lastIndexOf(" ") + 1,objText.length);	//Get the last word
+	// objID = $('#filterby').attr('id');
+	//var objText = document.getElementById(objID).innerHTML;	//Current text in <sortBy> dropdown
+	var objText = $("#filterby").html();
+	if (objText.indexOf("<") == -1) {
+		var searchBytext = objText;
+	} else {
+		var searchBytext = objText.slice(0, objText.indexOf("<"));	//Get the first word
+	}
 	//alert("text in sortby -- " + searchBytext + "\n searchKEY -- " + searchKEY);
 	var postData = {
 		"functionCall":"getDISTINCTSearchTerms",
@@ -473,7 +478,7 @@ function liveSearchKeyPress(element) {
 	};
 	var dataString = JSON.stringify(postData);
 	
-	if (key.length > 0)	{	    	
+	if (key.length > 0)	{
 		$.ajax({
 			url:'AudibleBooks.php',
 		 type:'POST',
@@ -488,11 +493,11 @@ function liveSearchKeyPress(element) {
 			 
 			 $.each(returnData, function(i, resultitem){
 				 //alert("id -- " + resultitem.id + " " + sortBytext +" -- " + resultitem.field1);
-				 if (resultitem.status == 'Success') {				
+				 if (resultitem.status == 'Success') {
 					 var mustacheData = {
 						 "tagItemId":"searchitem" + resultitem.id,
-		   "tagItemOnclick":"searchResults(this)",
-					"tagItemDisplay":resultitem.field1,
+						"tagItemOnclick":"searchResults(this)",
+						"tagItemDisplay":resultitem.field1,
 					 };
 					 $resultlist.append(Mustache.render($templateHTML, mustacheData));
 				 } else {
@@ -508,7 +513,7 @@ function liveSearchKeyPress(element) {
 		 }
 		});
 	} else {
-		$('#resultlist').slideUp('fast');	
+		$('#resultlist').slideUp('fast');
 	}
 }
 
@@ -876,7 +881,12 @@ function saveModifyAudible(mode) {
 function searchResults(thisID) {	//Called when item in Live Search box is clicked
 	//var $searchbox = $('#searchbox');
 	var itemClickedText = document.getElementById(thisID.id).innerHTML;
-	var filterbyText = $("#filterby").html();
+	var objText = $("#filterby").html();
+	if (objText.indexOf("<") == -1) {
+		var filterbyText = objText;
+	} else {
+		var filterbyText = objText.slice(0, objText.indexOf("<"));	//Get the first word
+	}
 	var where = "WHERE `" + filterbyText + "` = '" + itemClickedText + "' " ;	//get rows matching item clicked in searchbox results
 	//alert("searchResults() Clicked element innerHTML -- " + itemClickedText + "\n filterbyText -- " +
 	//	filterbyText + "\n WHERE -- " + where);	

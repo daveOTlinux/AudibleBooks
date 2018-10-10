@@ -563,6 +563,8 @@ function modifyCurrentBook() {
 	$( "#input-DateAdded" ).datepicker({
 		dateFormat: "yy-mm-dd"
 	});
+	//$( "#spinnerSeriesBook" ).spinner();
+	//$( "#input-ReadOrderNumber" ).spinner();
 }
 
 function onclickDropdowns(element) {	//comes here for when an item in the dropdowns is clicked 
@@ -922,14 +924,14 @@ function setFormToModifyMode(hideCopyButton) {
 		$('#input-SeriesBook').val("");
 	}
 	$("#span-SeriesBook").prop('hidden', false);
-	$("#input-SeriesBook").prop('type', 'text');
+	$("#input-SeriesBook").prop('type', 'number');
 	$("#span-ReadOrder").prop('hidden', true);
 	$("#input-ReadOrder").prop('type', 'text');
 	if ($('#input-ReadOrderNumbe').val() == 0) {
 		$('#input-ReadOrderNumber').val("");		
 	}
 	$("#span-ReadOrderNumber").prop('hidden', false);
-	$("#input-ReadOrderNumber").prop('type', 'text');
+	$("#input-ReadOrderNumber").prop('type', 'number');
 	$("#span-Categories").prop('hidden', true);
 	$("#input-Categories").prop('type', 'text');
 	$("#span-ListenedTo").prop('hidden', true);

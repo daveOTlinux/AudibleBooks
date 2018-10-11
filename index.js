@@ -273,19 +273,22 @@ function fetchTableResults() {		// Fills the main Table <div> #maintablebody
 			//alert("In fetchTableResults returnData length -- " + returnData.length);
 			$tablebody.empty();
 			$.each(returnData, function(i, resultitem){
-				var mustacheData = {
-					"tableRow-ID":resultitem.ID,
-		  "tableRow-Title":resultitem.Title,
-		  "tableRow-Author":resultitem.Author,
-		  "tableRow-Series":resultitem.Series,
-		  
-				};
-				$tablebody.append(Mustache.render($templateHTML, mustacheData));
-				$("#selectPage").attr('data-numrows', resultitem.rowCount)
+				if (resultitem.status == "Success") {
+					var mustacheData = {
+						"tableRow-ID":resultitem.ID,
+						"tableRow-Title":resultitem.Title,
+						"tableRow-Author":resultitem.Author,
+						"tableRow-Series":resultitem.Series,  
+					};
+					$tablebody.append(Mustache.render($templateHTML, mustacheData));
+					$("#selectPage").attr('data-numrows', resultitem.rowCount)
+				} else if (resultitem.status == "FAILED") {
+					alert("In fetchTableResults(). Error with getting row data\n from AudibleBooks.php, using getTableRowData function.\n Error -- " + resultitem.info);
+				}
 			});
 		},
 		error: function() {
-			alert('In fetchTableResults(). Error with getting row data from AudibleBooks.php.');
+			alert("In fetchTableResults(). Error with getting row data from AudibleBooks.php.");
 		}
 	});
 }
@@ -880,16 +883,16 @@ function saveModifyAudible(mode) {
 	});	
 }
 
-function searchResults(thisID) {	//Called when item in Live Search box is clicked
+	function searchResults(thisID) {	//Called when item in Live Search box is clicked
 	//var $searchbox = $('#searchbox');
-	var itemClickedText = document.getElementById(thisID.id).innerHTML;
+	var itemClickedText = document.getElementById(thisID.id).innerText;
 	var objText = $("#filterby").html();
 	if (objText.indexOf("<") == -1) {
 		var filterbyText = objText;
 	} else {
 		var filterbyText = objText.slice(0, objText.indexOf("<"));	//Get the first word
 	}
-	var where = "WHERE `" + filterbyText + "` = '" + itemClickedText + "' " ;	//get rows matching item clicked in searchbox results
+	var where = "WHERE `" + filterbyText + "` LIKE '%" + itemClickedText + "%' " ;	//get rows matching item clicked in searchbox results
 	//alert("searchResults() Clicked element innerHTML -- " + itemClickedText + "\n filterbyText -- " +
 	//	filterbyText + "\n WHERE -- " + where);	
 	sessionStorage.setItem("mainTable_Where", where);

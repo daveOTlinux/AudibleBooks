@@ -462,7 +462,10 @@ function liveSearchKeyPress(element) {
 	if ($("#sortby").text() == "ID") {
 		var searchKEY = key;
 	} else {
-		var searchKEY = key + '%';
+		var searchKEY = key + "%";
+	}
+	if (key.length > 4) {
+		searchKEY = "%" + key + "%";
 	}
 	//alert("sortby dropdown -- " + $('#sortby').attr('id'));
 	// objID = $('#filterby').attr('id');

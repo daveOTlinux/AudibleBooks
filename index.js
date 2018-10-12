@@ -236,6 +236,12 @@ function displayBookFormData(returnData) {
 	});
 }
 
+function displayTableRows(searchText) {
+	if (searchText == "") {
+		closeModifyAudible();
+	}
+}
+
 function fetchTableResults() {		// Fills the main Table <div> #maintablebody
 	var $tablebody = $('#maintablebody');
 	//var $templateDivSpace = $("#" + templateDivName);
@@ -502,7 +508,7 @@ function liveSearchKeyPress(element) {
 				 if (resultitem.status == 'Success') {
 					 var mustacheData = {
 						 "tagItemId":"searchitem" + resultitem.id,
-						"tagItemOnclick":"searchResults(this)",
+						"tagItemOnclick":"searchResults(this, '')",
 						"tagItemDisplay":resultitem.field1,
 					 };
 					 $resultlist.append(Mustache.render($templateHTML, mustacheData));
@@ -605,6 +611,16 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					sessionStorage.setItem("sortBysearchSelected", "Title");	//set sortBy current selection session storage
 					setStateSearchBox("enable", liText);
 					pageObjectsList("sortOrder01", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
+					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
+					var objName = "sortby";					
+					var liID = $("#sortDropdown li").first().attr('id');	//get id of first <li> in sortby dropdown
+					$("#sortby").text('Title');	//set sortby dropdown to correct display
+					break;
+				case 'Title':
+					sessionStorage.setItem("sortBysearchTerm", "sortOrder03");	//set sortBy pageObj session storage
+					sessionStorage.setItem("sortBysearchSelected", "Title");	//set sortBy current selection session storage
+					setStateSearchBox("enable", liText);
+					pageObjectsList("sortOrder03", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 					var objName = "sortby";					
 					var liID = $("#sortDropdown li").first().attr('id');	//get id of first <li> in sortby dropdown
@@ -798,7 +814,19 @@ function saveModifyAudible(mode) {
 	var inputCoverArt = checkInputForQuote($('#input-CoverArt').val());
 	var pathCoverArt = "CoverArt/" + inputCoverArt.slice(12,inputCoverArt.length)
 	var inputNotes = $('#input-Notes').val();
-	
+
+	switch (sessionStorage.getItem("sortBysearchSelected")) {
+		case "Author":
+			var searchText = inputAuthor;
+			break;
+		case "Title":
+			var searchText = inputTitle;
+			break;
+		default:
+			var searchText = "";
+			break;
+	}
+
 /*	alert("In saveModifyAudible(). mode -- " + mode +
 	"\n Title -- " + inputTitle +
 	"\n Author -- " + inputAuthor +
@@ -873,7 +901,8 @@ function saveModifyAudible(mode) {
 			$.each(returnData, function(i, resultitem){
 				if (resultitem.status == 'Success') {
 					//alert("Return from AJAX updateTableByID php call. Success!");
-					closeModifyAudible();
+					displayTableRows(searchText);
+					//closeModifyAudible();
 					//checkSearchTermChange(searchTermUpdate, doListUpdateDisplayRefresh);
 				} else {
 					alert("Return from AJAX updateTableByID php call. Failed! \n resultitem.info -- " + resultitem.info);
@@ -886,7 +915,7 @@ function saveModifyAudible(mode) {
 	});	
 }
 
-	function searchResults(thisID) {	//Called when item in Live Search box is clicked
+	function searchResults(thisID, searchText) {	//Called when item in Live Search box is clicked
 	//var $searchbox = $('#searchbox');
 	var itemClickedText = document.getElementById(thisID.id).innerText;
 	var objText = $("#filterby").html();

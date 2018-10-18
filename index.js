@@ -148,15 +148,8 @@ function copyLastModifiedRowData() {
 	var deferred = $.Deferred();
 	deferred
 	.then(getLatestModifiedRowID())
-	//.then(fillBookForm(sessionStorage.getItem("lastRowModified"), displayBookFormData))
-	//.then(pageObjectsList("Status", "Dropdowns", "listStatusDropdown", "liItemEntryTemplate"))
-	//.then(pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown", "liItemEntryTemplate"))
-	//.then(pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown", "liItemEntryTemplate"))
 	.done(fillBookForm(sessionStorage.getItem("lastRowModified"), fillNewFormLastData));
 	deferred.resolve();
-	
-	//getLatestModifiedRowID(fillBookForm);
-	//setFormToModifyMode(true);
 }
 
 function deleteThisRow(element) {	//Come here when the "Delete" icon in row is clicked
@@ -244,6 +237,7 @@ function displayTableRows(searchText) {
 		closeModifyAudible(false);
 		searchResults("", searchText);
 	}
+	getLatestModifiedRowID();
 }
 
 function fetchTableResults() {		// Fills the main Table <div> #maintablebody
@@ -919,7 +913,7 @@ function saveModifyAudible(mode) {
 	});	
 }
 
-	function searchResults(thisID, searchText) {	//Called when item in Live Search box is clicked
+function searchResults(thisID, searchText) {	//Called when item in Live Search box is clicked
 	if (searchText == "") {
 		var itemClickedText = document.getElementById(thisID.id).innerText;	//use this value on searchbox clicked LI
 	} else {

@@ -118,7 +118,7 @@ function checkInputForQuote(inputText) {
 	return cleanText
 }
 
-function closeModifyAudible() {
+function closeModifyAudible(fetchResults) {
 	makeTitleSpace();
 	makeHeaderSpace();
 	makeBodySpace();
@@ -139,8 +139,9 @@ function closeModifyAudible() {
 	pageObjectsList(sortBysearchTerm, 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 	pageObjectsList(filterBysearchTerm, 'Dropdowns', 'filterDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 	pageObjectsList(utilitySearchTerm, 'Dropdowns', 'utilitiesDropdown', 'liItemEntryTemplate');	//Fill in <li> values for utilities dropdown
-	
-	fetchTableResults()
+	if (fetchResults == true) {
+		fetchTableResults();
+	}
 }
 
 function copyLastModifiedRowData() {
@@ -238,7 +239,10 @@ function displayBookFormData(returnData) {
 
 function displayTableRows(searchText) {
 	if (searchText == "") {
-		closeModifyAudible();
+		closeModifyAudible(true);
+	} else {
+		closeModifyAudible(false);
+		searchResults("", searchText);
 	}
 }
 
@@ -375,7 +379,7 @@ function fillNewFormLastData(returnData) {
 		$('#input-ListenedTo').val(modifyListenedTo);
 		$('#input-DateAdded').val(resultitem.DateAdded);
 		$('#input-MyRating').val(resultitem.MyRating);
-		$('#input-CoverArt').val(resultitem.CoverArt);
+		//$('#input-CoverArt').val(resultitem.CoverArt);
 		$('#input-Notes').val(resultitem.Notes);
 	});
 
@@ -461,7 +465,7 @@ function getLatestModifiedRowID() {
 
 function liveSearchKeyPress(element) {
 	var $searchBoxId = element.id;
-	var key = $("#" + $searchBoxId).val();
+	var key = checkInputForQuote($("#" + $searchBoxId).val());
 	//alert("liveSearchKeyPress() element.id -- " + $searchBoxId + "\n key -- " + key);
 	var $resultlist = $('#resultlist');
 	var $templateHTML = $('#liItemEntryTemplate').html();
@@ -916,8 +920,11 @@ function saveModifyAudible(mode) {
 }
 
 	function searchResults(thisID, searchText) {	//Called when item in Live Search box is clicked
-	//var $searchbox = $('#searchbox');
-	var itemClickedText = document.getElementById(thisID.id).innerText;
+	if (searchText == "") {
+		var itemClickedText = document.getElementById(thisID.id).innerText;	//use this value on searchbox clicked LI
+	} else {
+		var itemClickedText = searchText;	//current Title or Author. use this value when saving row.
+	}
 	var objText = $("#filterby").html();
 	if (objText.indexOf("<") == -1) {
 		var filterbyText = objText;
@@ -940,9 +947,9 @@ function saveModifyAudible(mode) {
 }
 
 function setFormToModifyMode(hideCopyButton) {
-	//pageObjectsList("Status", "Dropdowns", "listStatusDropdown", "liItemEntryTemplate");
-	//pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown", "liItemEntryTemplate");
-	//pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown", "liItemEntryTemplate");
+	pageObjectsList("Status", "Dropdowns", "listStatusDropdown", "liItemEntryTemplate");
+	pageObjectsList("ListenedTo", "Dropdowns", "listListenedToDropdown", "liItemEntryTemplate");
+	pageObjectsList("Categories", "Dropdowns", "listCategoriesDropdown", "liItemEntryTemplate");
 
 	if (hideCopyButton == true) {
 		$("#buttonAudibleTitle").prop('hidden', true);

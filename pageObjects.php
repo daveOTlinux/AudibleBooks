@@ -3,11 +3,62 @@
 	global $count, $returnStatus;
 
 	//Functions
-	
+
+	//function pass SQL VALUES part in $sqlSET
+	// return success or fail
+	function appendPageObjectRow($sqlSET) {
+		// Include config file
+		require_once 'config.php';
+    
+		$update = "INSERT INTO `pageObjects`(`SearchTerm`, `orderItems`, `itemDisplay`, `itemSQL`, `ModifiedDate`) ";
+
+		$strSQL = $update . $sqlSET;
+
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+
+		$returnStatus = array(array());
+
+		if($mysqli->query($strSQL) === TRUE) {
+			$returnStatus[0]["status"] = "Success";
+			$returnStatus[0]["info"] = "Record Appended successfully";
+		} else {
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error appending record: " . $mysqli->error;
+		}
+
+		return $returnStatus;	
+	}
+
+	//function pass ID of row in $whereID
+	// return success or fail
+	function deletePageObjectbyID($whereID) {
+		// Include config file
+		require_once 'config.php';
+    
+		$delete = "DELETE FROM `pageObjects` WHERE `ID` = ";
+
+		$strSQL = $delete . $whereID;
+
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+
+		$returnStatus = array(array());
+
+		if($mysqli->query($strSQL) === TRUE) {
+			$returnStatus[0]["status"] = "Success";
+			$returnStatus[0]["info"] = "Record Deleted successfully";
+		} else {
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error deleteing record: " . $mysqli->error;
+		}
+
+		return $returnStatus;	
+	}
+
+
 	// return fieldDATA contains the rows of data from a SELECT DISTINCT `SearchTerm` search
 	function getDISTINCTSearchTerms($fieldName) {
 		// Include config file
-	    require_once 'config.php';
+		require_once 'config.php';
     
 		$select = "SELECT DISTINCT `" . $fieldName . "` ";
 		$from = "FROM `pageObjects` ";
@@ -15,69 +66,28 @@
 		$orderby = "ORDER BY `" . $fieldName . "` ";
 		$limit = "LIMIT 0, 10";
 
-		$strSQL = $select . $from . $where . $orderby . $limit;				
+		$strSQL = $select . $from . $where . $orderby . $limit;
 
 		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 
-	    $result = $mysqli->query($strSQL);
+		$result = $mysqli->query($strSQL);
 
-	    $returnStatus = array(array());
+		$returnStatus = array(array());
 
-	    if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
+		if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
 			$returnStatus[0]["status"] = "FAILED";
 			$returnStatus[0]["info"] = "Error getDISTINCTSearchTerms() - " . $mysqli->error;
-	    }
-	    else {
-	         // Get results of query
-	         $count = 0;
-	         while($row = $result->fetch_assoc()) {  //outputs the records
+		} else {
+			// Get results of query
+			$count = 0;
+			while($row = $result->fetch_assoc()) {  //outputs the records
 				$returnStatus[$count]["id"] = $count;
-	         	$returnStatus[$count]["SearchTerm"] = $row['SearchTerm'];
-	         	$count++;
-	         }
-		}
-        $result->close();
-        $mysqli->close();
-		return $returnStatus;
-	}
-
-	//function pass ID of pageObjects "numeric part of clicked itemID"
-	// return fieldDATA contains data from all the fields of the record given by ID
-	function getPageObjectByID($pageObjectID) {
-		// Include config file
-	    require_once 'config.php';
-    
-		$select = "SELECT * ";
-		$from = "FROM `pageObjects` ";
-		$where = "WHERE `ID` = " . $pageObjectID;
-
-		$strSQL = $select . $from . $where;
-				
-		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
-
-	    $result = $mysqli->query($strSQL);
-
-	    $returnStatus = array(array());
-
-	    if($result->num_rows == 0) {	// so if we have 0 records acc. to keyword display no records found
-			$returnStatus[0]["status"] = "FAILED";
-			$returnStatus[0]["info"] = "Error getPageObjectByID() - " . $mysqli->error;
-	    }
-	    else {
-	         // Get results of query
-	         $count = 0;
-	         while($row = $result->fetch_assoc()) {  //outputs the records
-				$returnStatus[$count]["ID"] = $row['ID'];
 				$returnStatus[$count]["SearchTerm"] = $row['SearchTerm'];
-				$returnStatus[$count]["orderItems"] = $row['orderItems'];
-	         	$returnStatus[$count]["itemDisplay"] = $row['itemDisplay'];
-				$returnStatus[$count]["itemSQL"] = $row['itemSQL'];
-				$returnStatus[$count]["ModifiedDate"] = $row['ModifiedDate'];
-	         	$count++;
-	         }
+				$count++;
+			}
 		}
-        $result->close();
-        $mysqli->close();
+		$result->close();
+		$mysqli->close();
 		return $returnStatus;
 	}
 
@@ -85,41 +95,79 @@
 	// return returnStatus info contains the data from field itemSQL of the record given by ID
 	function getitemSQLPageObjectByID($pageObjectID) {
 		// Include config file
-	    require_once 'config.php';
+		require_once 'config.php';
     
 		$select = "SELECT `ID`, `itemSQL` ";
 		$from = "FROM `pageObjects` ";
 		$where = "WHERE `ID` = " . $pageObjectID;
 
 		$strSQL = $select . $from . $where;
-				
+
 		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
-		
-	    $result = $mysqli->query($strSQL);
 
-	    $returnStatus = array(array());
+		$result = $mysqli->query($strSQL);
 
-	    if($result->num_rows == 0) {	// so if we have 0 records acc. to keyword display no records found
+		$returnStatus = array(array());
+
+		if($result->num_rows == 0) {	// so if we have 0 records acc. to keyword display no records found
 			$returnStatus[0]["status"] = "FAILED";
 			$returnStatus[0]["info"] = "Error getitemSQLPageObjectByID() - " . $mysqli->error;
-	    }
-	    else {
-	         // Get results of query
-	         while($row = $result->fetch_assoc()) {  //outputs the records
-		        $returnStatus[0]["status"] = "Success";
-				$returnStatus[0]["info"] = $row['itemSQL'];				
-	         }
+		} else {
+			// Get results of query
+			while($row = $result->fetch_assoc()) {  //outputs the records
+				$returnStatus[0]["status"] = "Success";
+				$returnStatus[0]["info"] = $row['itemSQL'];
+			}
 		}
-        $result->close();
-        $mysqli->close();
+		$result->close();
+		$mysqli->close();
+		return $returnStatus;
+	}
+
+	//function pass ID of pageObjects "numeric part of clicked itemID"
+	// return fieldDATA contains data from all the fields of the record given by ID
+	function getPageObjectByID($pageObjectID) {
+		// Include config file
+		require_once 'config.php';
+    
+		$select = "SELECT * ";
+		$from = "FROM `pageObjects` ";
+		$where = "WHERE `ID` = " . $pageObjectID;
+
+		$strSQL = $select . $from . $where;
+
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+
+		$result = $mysqli->query($strSQL);
+
+		$returnStatus = array(array());
+
+		if($result->num_rows == 0) {	// so if we have 0 records acc. to keyword display no records found
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error getPageObjectByID() - " . $mysqli->error;
+		} else {
+			// Get results of query
+			$count = 0;
+			while($row = $result->fetch_assoc()) {  //outputs the records
+				$returnStatus[$count]["ID"] = $row['ID'];
+				$returnStatus[$count]["SearchTerm"] = $row['SearchTerm'];
+				$returnStatus[$count]["orderItems"] = $row['orderItems'];
+				$returnStatus[$count]["itemDisplay"] = $row['itemDisplay'];
+				$returnStatus[$count]["itemSQL"] = $row['itemSQL'];
+				$returnStatus[$count]["ModifiedDate"] = $row['ModifiedDate'];
+				$count++;
+			}
+		}
+		$result->close();
+		$mysqli->close();
 		return $returnStatus;
 	}
 
 	//function pass SearchTerm of pageObjects in $objectSearch and choice of fields returned in $sqlModes
 	// return returnStatus contains the rows of data from search
-	function getpageObjectsBySearch($objectSearch, $sqlModes) {
+	function getPageObjectsBySearch($objectSearch, $sqlModes) {
 		// Include config file
-	    require_once 'config.php';
+		require_once 'config.php';
     
 		$select = "SELECT * ";
 		$from = "FROM `pageObjects` ";
@@ -140,36 +188,35 @@
 		$orderby = "ORDER BY `orderItems` ASC";
 
 		$strSQL = $select . $from . $where . $orderby;
-				
+
 		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
-		 
-	    $result = $mysqli->query($strSQL);
 
-	    $returnStatus = array(array());
+		$result = $mysqli->query($strSQL);
 
-	    if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
+		$returnStatus = array(array());
+
+		if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
 			$returnStatus[0]["status"] = "FAILED";
 			$returnStatus[0]["info"] = "Error getpageObjectsBySearch() - " . $mysqli->error;
-	    }
-	    else {
-	         // Get results of query
-	         $count = 0;
-	         while($row = $result->fetch_assoc()) {  //outputs the records
+		} else {
+			// Get results of query
+			$count = 0;
+			while($row = $result->fetch_assoc()) {  //outputs the records
 				$returnStatus[$count]["status"] = "Success";
 				$returnStatus[$count]["info"] = $result->num_rows;
 				$returnStatus[$count]["ID"] = $row['ID'];
-	         	$returnStatus[$count]["itemDisplay"] = $row['itemDisplay'];
+				$returnStatus[$count]["itemDisplay"] = $row['itemDisplay'];
 				if(!($sqlModes == "Dropdowns")) {
 					$returnStatus[$count]["SearchTerm"] = $row['SearchTerm'];
 					$returnStatus[$count]["orderItems"] = $row['orderItems'];
 					$returnStatus[$count]["itemSQL"] = $row['itemSQL'];
 					$returnStatus[$count]["ModifiedDate"] = $row['ModifiedDate'];
 				}
-	         	$count++;
-	         }
+				$count++;
+			}
 		}
-        $result->close();
-        $mysqli->close();
+		$result->close();
+		$mysqli->close();
 		return $returnStatus;
 	}
 
@@ -177,77 +224,27 @@
 	// return success or fail
 	function updatePageObjectRow($sqlSET, $rowID) {
 		// Include config file
-	    require_once 'config.php';
+		require_once 'config.php';
     
 		$update = "UPDATE `pageObjects` ";
 		$where = "WHERE `ID` = " . $rowID;
 
 		$strSQL = $update . $sqlSET . $where;
-				
+
 		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 
-	    $returnStatus = array(array());
+		$returnStatus = array(array());
 
 		if($mysqli->query($strSQL) === TRUE) {
 			$returnStatus[0]["status"] = "Success";
-			$returnStatus[0]["info"] = "Record updated successfully";				
+			$returnStatus[0]["info"] = "Record updated successfully";
 		} else {
 			$returnStatus[0]["status"] = "FAILED";
 			$returnStatus[0]["info"] = "Error updating record: " . $mysqli->error;
 		}
 
 		return $returnStatus;
-}	
-
-	//function pass SQL VALUES part in $sqlSET
-	// return success or fail
-	function appendPageObjectRow($sqlSET) {
-		// Include config file
-	    require_once 'config.php';
-    
-		$update = "INSERT INTO `pageObjects`(`SearchTerm`, `orderItems`, `itemDisplay`, `itemSQL`, `ModifiedDate`) ";
-
-		$strSQL = $update . $sqlSET;
-				
-		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
-
-	    $returnStatus = array(array());
-
-		if($mysqli->query($strSQL) === TRUE) {
-			$returnStatus[0]["status"] = "Success";
-			$returnStatus[0]["info"] = "Record Appended successfully";				
-		} else {
-			$returnStatus[0]["status"] = "FAILED";
-			$returnStatus[0]["info"] = "Error appending record: " . $mysqli->error;
-		}
-
-		return $returnStatus;	
-	}
-
-	//function pass ID of row in $whereID
-	// return success or fail
-	function deletePageObjectbyID($whereID) {
-		// Include config file
-	    require_once 'config.php';
-    
-		$delete = "DELETE FROM `pageObjects` WHERE `ID` = ";
-
-		$strSQL = $delete . $whereID;
-				
-		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
-
-	    $returnStatus = array(array());
-
-		if($mysqli->query($strSQL) === TRUE) {
-			$returnStatus[0]["status"] = "Success";
-			$returnStatus[0]["info"] = "Record Deleted successfully";				
-		} else {
-			$returnStatus[0]["status"] = "FAILED";
-			$returnStatus[0]["info"] = "Error deleteing record: " . $mysqli->error;
-		}
-
-		return $returnStatus;	
-	}
+}
 
 
 
@@ -263,17 +260,15 @@
 		$pageObject = $postOBJ["pageObject"];
 
 		switch ($forObject) {
-			case "getsqlItemByID":
+			case "appendPageObject":
+				$returnStatus = appendPageObjectRow($sqlCommand);
+				break;
+			case "deletePageObjectbyID":
 				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
-				$returnStatus = getitemSQLPageObjectByID($itemID);
+				$returnStatus = deletePageObjectbyID($itemID);
 				break;
 			case "Dropdowns":
 				$returnStatus = getpageObjectsBySearch($pageObject, $forObject);
-				break;
-			case "searchbox":
-				$strSQL = $sqlCommand . " `" . $fieldName . "` = '" . $clickedData ."' ";
-				$_SESSION["mainWHERE"] = $strSQL;
-				$_SESSION["searchWHEREset"] = TRUE;
 				break;
 			case "pageObjectRow":
 				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
@@ -282,18 +277,20 @@
 			case "getDISTINCTSearchTerms":
 				$returnStatus = getDISTINCTSearchTerms($pageObject);
 				break;
+			case "getsqlItemByID":
+				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
+				$returnStatus = getitemSQLPageObjectByID($itemID);
+				break;
+			case "searchbox":
+				$strSQL = $sqlCommand . " `" . $fieldName . "` = '" . $clickedData ."' ";
+				$_SESSION["mainWHERE"] = $strSQL;
+				$_SESSION["searchWHEREset"] = TRUE;
+				break;
 			case "searchTermRows":
 				$returnStatus = getpageObjectsBySearch($pageObject, $sqlCommand);
 				break;
 			case "updatePageObject":
 				$returnStatus = updatePageObjectRow($sqlCommand, $clickedData);
-				break;
-			case "appendPageObject":
-				$returnStatus = appendPageObjectRow($sqlCommand);
-				break;
-			case "deletePageObjectbyID":
-				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
-				$returnStatus = deletePageObjectbyID($itemID);
 				break;
 		}
 

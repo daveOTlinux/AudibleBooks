@@ -287,7 +287,7 @@
 				$_SESSION["searchWHEREset"] = TRUE;
 				break;
 			case "searchTermRows":
-				$returnStatus = getpageObjectsBySearch($pageObject, $sqlCommand);
+				$returnStatus = getPageObjectsBySearch($pageObject, $sqlCommand);
 				break;
 			case "updatePageObject":
 				$returnStatus = updatePageObjectRow($sqlCommand, $clickedData);

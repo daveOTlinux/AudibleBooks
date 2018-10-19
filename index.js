@@ -58,7 +58,11 @@ function addNewAudibleBook() {
 }
 
 function calculateNumberPages(element) {
-	var elementId = element.id;
+	if (element != "") {
+		var elementId = element.id;
+	} else {
+		var elementId = "";
+	}
 	var rowCount = Number($("#selectPage").attr('data-numRows'));	//Number of rows in current SQL query
 	var rowOnPage = Number(sessionStorage.getItem("numRowsOnPage")) - 1;	//Number of rows per page - 1 Allows repeat of top or bottom row
 	var pageDisplayNum = Number(sessionStorage.getItem("pageDisplayNumber"));	//current row in SQL query
@@ -491,36 +495,37 @@ function liveSearchKeyPress(element) {
 	if (key.length > 0)	{
 		$.ajax({
 			url:'AudibleBooks.php',
-		 type:'POST',
-		 data: {postOBJ: dataString},
-		 beforeSend:function () {
-			 $("#resultlist").slideUp('fast');
-		 },
-		 success:function(returnData) {
-			 //console.log("returnData '#searchbox').on('keyup' -- " + returnData);
-			 //alert("In '#searchbox').on('keyup' returnData length -- " + returnData.length)
-			 $resultlist.empty();
-			 
-			 $.each(returnData, function(i, resultitem){
-				 //alert("id -- " + resultitem.id + " " + sortBytext +" -- " + resultitem.field1);
-				 if (resultitem.status == 'Success') {
-					 var mustacheData = {
-						 "tagItemId":"searchitem" + resultitem.id,
+			type:'POST',
+			data: {postOBJ: dataString},
+			beforeSend:function () {
+				$("#resultlist").slideUp('fast');
+			},
+			success:function(returnData) {
+				//console.log("returnData '#searchbox').on('keyup' -- " + returnData);
+				//alert("In '#searchbox').on('keyup' returnData length -- " + returnData.length)
+				$resultlist.empty();
+
+				$.each(returnData, function(i, resultitem){
+					//alert("id -- " + resultitem.id + " " + sortBytext +" -- " + resultitem.field1);
+					if (resultitem.status == 'Success') {
+						var mustacheData = {
+						"tagItemId":"searchitem" + resultitem.id,
+						"tagItemDataID":resultitem.ID,
 						"tagItemOnclick":"searchResults(this, '')",
 						"tagItemDisplay":resultitem.field1,
-					 };
-					 $resultlist.append(Mustache.render($templateHTML, mustacheData));
-				 } else {
-					 $("#searchbox").attr("placeholder", "No " + searchBytext + " starting with '" + key + "'");
-					 $("#searchbox").val("");
-					 //alert("Failed Ajax PHP call deleteTableRowByID -- " + returnData);
-				 }
-			 });
-			 $('#resultlist').slideDown('fast');
-		 },
-		 error: function() {
-			 alert('Error with Live Search. NO data from AudibleBooks.php');
-		 }
+						};
+						$resultlist.append(Mustache.render($templateHTML, mustacheData));
+					} else {
+						$("#searchbox").attr("placeholder", "No " + searchBytext + " starting with '" + key + "'");
+						$("#searchbox").val("");
+						//alert("Failed Ajax PHP call deleteTableRowByID -- " + returnData);
+					}
+				});
+				$('#resultlist').slideDown('fast');
+			},
+			error: function() {
+				alert('Error with Live Search. NO data from AudibleBooks.php');
+			}
 		});
 	} else {
 		$('#resultlist').slideUp('fast');
@@ -625,12 +630,23 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					$("#sortby").text('Title');	//set sortby dropdown to correct display
 					break;
 				case 'Series':
+					sessionStorage.setItem("sortBysearchTerm", "sortOrder04");	//set sortBy pageObj session storage
+					sessionStorage.setItem("sortBysearchSelected", "Book Number");	//set sortBy current selection session storage
+					setStateSearchBox("enable", liText);
+					pageObjectsList("sortOrder04", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
+					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
+					var objName = "sortby";
+					//var liID = $("#" + element.id).attr('data-id');
+					var liID = $("#sortDropdown li").first().attr('data-id');	//get id of first <li> in sortby dropdown
+					$("#sortby").text('Book Number');	//set sortby dropdown to correct display
+					break;
+				case "Reading List":
 					sessionStorage.setItem("sortBysearchTerm", "sortOrder02");	//set sortBy pageObj session storage
 					sessionStorage.setItem("sortBysearchSelected", "Read Order");	//set sortBy current selection session storage
 					setStateSearchBox("enable", liText);
 					pageObjectsList("sortOrder02", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
-					var objName = "sortby";					
+					var objName = "sortby";
 					var liID = $("#sortDropdown li").first().attr('id');	//get id of first <li> in sortby dropdown
 					$("#sortby").text('Read Order');	//set sortby dropdown to correct display
 					break;
@@ -640,7 +656,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					setStateSearchBox("enable", liText);
 					pageObjectsList("sortOrder00", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
-					var objName = "sortby";					
+					var objName = "sortby";
 					var liID = $("#sortDropdown li").last().attr('id');	//get id of first <li> in sortby dropdown
 					$("#sortby").text('ID');	//set sortby dropdown to correct display
 					break;
@@ -672,8 +688,8 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 		success:function(returnData) {
 			$.each(returnData, function(i, resultitem){
 				//alert("Success with Ajax onclickDropdowns()) -- " + resultitem.info);				
-				if (resultitem.status == 'Success') {				
-					//console.log("returnData -- " + returnData);				
+				if (resultitem.status == 'Success') {
+					//console.log("returnData -- " + returnData);
 					switch(objName) {
 						case "sortby":
 							sessionStorage.setItem("mainTable_Order", "ORDER BY " + resultitem.info + " ");
@@ -684,7 +700,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 							window.open("https://onthebay.info" + resultitem.info);
 							break;
 						default:
-							fetchTableResults();							
+							fetchTableResults();
 							break;
 					}
 				} else {
@@ -697,7 +713,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 			alert('Error on sortby or filterby item clicked.');
 		}
 		//console.log("Out of switch");
-	});	
+	});
 }
 
 function pageObjectsList(searchTerm, forObject, elementID, divTemplate) {	//Get row data from pageObjects table where = searchTerm
@@ -773,6 +789,7 @@ function pageObjectsList(searchTerm, forObject, elementID, divTemplate) {	//Get 
 				var mustacheData = {
 					"tagItemDataID":resultitem.itemDisplay,
 					"tagItemId":elementName + resultitem.ID,
+					"tagItemDataID":resultitem.ID,
 					"tagItemOnclick":onclickFunction,
 					"tagItemDisplay":resultitem.itemDisplay,
 				};

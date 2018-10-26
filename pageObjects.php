@@ -91,6 +91,38 @@
 		return $returnStatus;
 	}
 
+	function getIDbyItemDisplay(itemDisplay) {
+		// Include config file
+		require_once 'config.php';
+    
+		$select = "SELECT `ID` ";
+		$from = "FROM `pageObjects` ";
+		$where = "WHERE `itemDisplay` = '" . itemDisplay ."'";
+
+		$strSQL = $select . $from . $where;
+
+		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+
+		$result = $mysqli->query($strSQL);
+
+		$returnStatus = array(array());
+
+		if($result->num_rows == 0) { // so if we have 0 records acc. to keyword display no records found
+			$returnStatus[0]["status"] = "FAILED";
+			$returnStatus[0]["info"] = "Error getIDbyItemDisplay() - " . $mysqli->error;
+		} else {
+			// Get results of query
+			while($row = $result->fetch_assoc()) {  //outputs the records
+				$returnStatus[0]["status"] = "Success";
+				$returnStatus[0]["ID"] = $row['ID'];
+			}
+		}
+		$result->close();
+		$mysqli->close();
+		return $returnStatus;
+
+	}
+	
 	//function pass ID of pageObjects "numeric part of clicked itemID"
 	// return returnStatus info contains the data from field itemSQL of the record given by ID
 	function getitemSQLPageObjectByID($pageObjectID) {
@@ -277,14 +309,12 @@
 			case "getDISTINCTSearchTerms":
 				$returnStatus = getDISTINCTSearchTerms($pageObject);
 				break;
-			case "getsqlItemByID":
+			case "getIDbyItemDisplay":
+				$returnStatus = getIDbyItemDisplay($clickedData);
+				break;
+				case "getsqlItemByID":
 				$itemID = (int) filter_var($clickedData, FILTER_SANITIZE_NUMBER_INT);
 				$returnStatus = getitemSQLPageObjectByID($itemID);
-				break;
-			case "searchbox":
-				$strSQL = $sqlCommand . " `" . $fieldName . "` = '" . $clickedData ."' ";
-				$_SESSION["mainWHERE"] = $strSQL;
-				$_SESSION["searchWHEREset"] = TRUE;
 				break;
 			case "searchTermRows":
 				$returnStatus = getPageObjectsBySearch($pageObject, $sqlCommand);

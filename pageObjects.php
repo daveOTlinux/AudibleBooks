@@ -91,17 +91,17 @@
 		return $returnStatus;
 	}
 
-	function getIDbyItemDisplay(itemDisplay) {
+	function getIDbyItemDisplay($itemDisplay) {
 		// Include config file
 		require_once 'config.php';
     
 		$select = "SELECT `ID` ";
 		$from = "FROM `pageObjects` ";
-		$where = "WHERE `itemDisplay` = '" . itemDisplay ."'";
+		$where = "WHERE `itemDisplay` = '" . $itemDisplay ."'";
 
 		$strSQL = $select . $from . $where;
 
-		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
+		echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 
 		$result = $mysqli->query($strSQL);
 

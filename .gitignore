@@ -7,6 +7,10 @@
 # Kate editor files
 *.kate-swp
 
+# Dolphin file selector
+.directory
+.htmlindex
+
 #Bluefish project file
 *.bfproject
 

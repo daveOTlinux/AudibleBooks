@@ -2,7 +2,7 @@
 function acknowledgeDeleteRow() {
 	var rowID = $('#dialogID-modal').val();
 	$('#dialogBoxStatus').modal('hide');
-	
+
 	//	alert("In acknowledgeDeleteRow() rowID -- " + rowID);
 	var postData = {
 		"functionCall":"deleteTableRowByID",
@@ -16,21 +16,21 @@ function acknowledgeDeleteRow() {
 		data: {postOBJ: dataString},
 		success:function(returnData) {
 			$.each(returnData, function(i, resultitem){
-				//alert("Success with Ajax onclickDropdowns()) -- " + resultitem.info);				
-				if (resultitem.status == 'Success') {				
-					//console.log("returnData -- " + returnData);				
+				//alert("Success with Ajax onclickDropdowns()) -- " + resultitem.info);
+				if (resultitem.status == 'Success') {
+					//console.log("returnData -- " + returnData);
 					fetchTableResults()
 				} else {
 					alert("Failed Ajax PHP call deleteTableRowByID -- " + returnData);
 				}
-				
+
 			});
 		},
 		error: function() {
 			alert('AJAX Error deleteTableRow(element).');
 		}
 		//console.log("Out of switch");
-	});	
+	});
 }
 
 function addNewAudibleBook() {
@@ -54,7 +54,7 @@ function addNewAudibleBook() {
 		"modifyAudible-Notes":"",
 		"modifyAudible-ModifiedDate":"",
 	};
-	fillNewAudibleBook(dataMustache);	
+	fillNewAudibleBook(dataMustache);
 }
 
 function calculateNumberPages(element) {
@@ -127,7 +127,7 @@ function closeModifyAudible(fetchResults) {
 	makeHeaderSpace();
 	makeBodySpace();
 	makeFooterSpace();
-	
+
 	var sortBysearchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 	var filterBysearchTerm = sessionStorage.getItem("filterBysearchTerm");	//current filterBy pageObj search term
 	var utilitySearchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
@@ -136,9 +136,9 @@ function closeModifyAudible(fetchResults) {
 	if (liText == "Nothing") {
 		setStateSearchBox("disabled", liText)
 	} else {
-		setStateSearchBox("enabled", liText)		
+		setStateSearchBox("enabled", liText)
 	}
-	
+
 	//pageObjectsList(searchTerm, forObject, $elementID) function values to pass
 	pageObjectsList(sortBysearchTerm, 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 	pageObjectsList(filterBysearchTerm, 'Dropdowns', 'filterDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
@@ -163,8 +163,8 @@ function deleteThisRow(element) {	//Come here when the "Delete" icon in row is c
 	var modalTemplate = $('#dialogBox-template').html();
 	/*	alert("In deleteThisRow() \n rowItemID to delete -- " + rowItemID +
 	 *		"\n database row ID - " + rowRecordID);	*/
-	
-	modalContent.empty();				
+
+	modalContent.empty();
 	var mustacheData = {
 		"dialogID-modal":rowRecordID,
 		"dialogTitle-modal":"Delete Record",
@@ -180,7 +180,7 @@ function deleteThisRow(element) {	//Come here when the "Delete" icon in row is c
 function displayBookFormData(returnData) {
 	var $tablebody = $('#bodySpace');
 	var $templateHTML = $('#modifyAudibleBodyTemplate').html();
-	
+
 	//console.log("returnData fetchTableResults -- " + returnData);
 	//alert("In fetchTableResults returnData length -- " + returnData.length);
 	$tablebody.empty();
@@ -199,7 +199,7 @@ function displayBookFormData(returnData) {
 			var modifyListenedTo = "NO";
 		}else {
 			var modifyListenedTo = "YES";
-		}	    					
+		}
 		if (resultitem.BookNumber == 0) {
 			var bookNumber = "";
 		} else {
@@ -234,6 +234,10 @@ function displayBookFormData(returnData) {
 	});
 }
 
+function displaySelection(element) {	//When DisplaySelection radio buttons pressed
+
+}
+
 function displayTableRows(searchText) {
 	if (searchText == "") {
 		closeModifyAudible(true);
@@ -248,13 +252,13 @@ function fetchTableResults() {		// Fills the main Table <div> #maintablebody
 	var $tablebody = $('#maintablebody');
 	//var $templateDivSpace = $("#" + templateDivName);
 	var $templateHTML = $('#tableRowsTemplate').html();
-	
+
 	var select = sessionStorage.getItem("mainTable_Select");	//Get select session value
 	var from = sessionStorage.getItem("mainTable_From");	//Get from session value
 	var where = sessionStorage.getItem("mainTable_Where");	//Get where session value
 	var order = sessionStorage.getItem("mainTable_Order");	//Get select session value
 	var limits = sessionStorage.getItem("mainTable_Limits");	//Get select session value
-	
+
 	var sqlObject = {
 		"select":select,
 		"from":from,
@@ -262,10 +266,10 @@ function fetchTableResults() {		// Fills the main Table <div> #maintablebody
 		"order":order,
 		"limits":limits
 	}
-	
+
 	//	alert("SQL string before call -- \n " + select + "\n" + from + "\n" +
 	//		 where + "\n" + order + "\n" + limits);
-	
+
 	var postData = {
 		"functionCall":"getTableRowData",
 		"fieldName":sqlObject,
@@ -286,7 +290,7 @@ function fetchTableResults() {		// Fills the main Table <div> #maintablebody
 						"tableRow-ID":resultitem.ID,
 						"tableRow-Title":resultitem.Title,
 						"tableRow-Author":resultitem.Author,
-						"tableRow-Series":resultitem.Series,  
+						"tableRow-Series":resultitem.Series,
 					};
 					$tablebody.append(Mustache.render($templateHTML, mustacheData));
 					$("#selectPage").attr('data-numrows', resultitem.rowCount)
@@ -324,7 +328,7 @@ function fillBookForm(clickedRowID, callback) {
 			alert('In tableRowUpdate(). Error with getting row data from AudibleBooks.php.');
 		}
 	});
-	
+
 }
 
 function fillNewAudibleBook(dataMustache) {
@@ -344,7 +348,7 @@ function fillNewAudibleBook(dataMustache) {
 		"saveModifyFunction":"saveModifyAudible('insert')",
 	};
 	fillTemplateSpace("footerSpace", "modifyAudibleFooter", mustacheData);
-	setFormToModifyMode(false);	
+	setFormToModifyMode(false);
 	$( "#input-DateAdded" ).datepicker({
 		dateFormat: "yy-mm-dd"
 	});
@@ -445,7 +449,7 @@ function getLatestModifiedRowID() {
 				} else {
 					alert("Failed Ajax PHP call getLatestModifiedRowID -- " + returnData);
 				}
-				
+
 			});
 		},
 		error: function() {
@@ -458,7 +462,7 @@ function getLatestModifiedRowID() {
 		// Execute the callback function and pass the parameters to it
 	//	callback(sessionStorage.getItem("lastRowModified"));
 	//}
-	
+
 }
 
 function liveSearchKeyPress(element) {
@@ -491,7 +495,7 @@ function liveSearchKeyPress(element) {
 		"searchkey":searchKEY
 	};
 	var dataString = JSON.stringify(postData);
-	
+
 	if (key.length > 0)	{
 		$.ajax({
 			url:'AudibleBooks.php',
@@ -533,7 +537,7 @@ function liveSearchKeyPress(element) {
 }
 
 function makeBodySpace() {
-	fillTemplateSpace("bodySpace", "tableHeaderTemplate", "")	
+	fillTemplateSpace("bodySpace", "tableHeaderTemplate", "")
 }
 
 function makeFooterSpace() {
@@ -582,7 +586,7 @@ function modifyCurrentBook() {
 	//$( "#input-ReadOrderNumber" ).spinner();
 }
 
-function onclickDropdowns(element) {	//comes here for when an item in the dropdowns is clicked 
+function onclickDropdowns(element) {	//comes here for when an item in the dropdowns is clicked
 	var liID = element.id;
 	var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
 	var sqlCommand = "";
@@ -605,7 +609,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					setStateSearchBox("disabled", liText);
 					pageObjectsList("sortOrder00", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
-					var objName = "sortby";					
+					var objName = "sortby";
 					var liID = $("#sortDropdown li").last().attr('id');	//get id of first <li> in sortby dropdown
 					$("#sortby").text('Latest Modified');	//set sortby dropdown to correct display
 					break;
@@ -615,7 +619,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					setStateSearchBox("enable", liText);
 					pageObjectsList("sortOrder01", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
-					var objName = "sortby";					
+					var objName = "sortby";
 					var liID = $("#sortDropdown li").first().attr('id');	//get id of first <li> in sortby dropdown
 					$("#sortby").text('Title');	//set sortby dropdown to correct display
 					break;
@@ -625,7 +629,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					setStateSearchBox("enable", liText);
 					pageObjectsList("sortOrder03", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
-					var objName = "sortby";					
+					var objName = "sortby";
 					var liID = $("#sortDropdown li").first().attr('id');	//get id of first <li> in sortby dropdown
 					$("#sortby").text('Title');	//set sortby dropdown to correct display
 					break;
@@ -687,7 +691,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 		data: {postOBJ: dataString},
 		success:function(returnData) {
 			$.each(returnData, function(i, resultitem){
-				//alert("Success with Ajax onclickDropdowns()) -- " + resultitem.info);				
+				//alert("Success with Ajax onclickDropdowns()) -- " + resultitem.info);
 				if (resultitem.status == 'Success') {
 					//console.log("returnData -- " + returnData);
 					switch(objName) {
@@ -706,7 +710,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 				} else {
 					alert("Failed Ajax sortfield -- " + returnData);
 				}
-				
+
 			});
 		},
 		error: function() {
@@ -740,7 +744,7 @@ function pageObjectsList(searchTerm, forObject, elementID, divTemplate) {	//Get 
 		type:'POST',
 		data: {postOBJ: dataString},
 		success:function(returnData) {
-			//console.log("returnData -- " + returnData);			
+			//console.log("returnData -- " + returnData);
 			$divSection.empty();
 			switch(elementID) {
 				case "sortDropdown":
@@ -797,13 +801,13 @@ function pageObjectsList(searchTerm, forObject, elementID, divTemplate) {	//Get 
 				$divSection.append(Mustache.render($templateHTML, mustacheData));
 				//$myOBJContent.append("<li id='" + elementName + resultitem.ID + "' onclick='onclickDropdowns(this)' " +
 				//	"class='showitem'>" + resultitem.itemDisplay + "</li>");
-			});				
+			});
 		},
 		error: function() {
 			alert('In pageObjectsList().  Error with getting data from pageObjects.php');
 		}
 	});
-	
+
 }
 
 function saveModifyAudible(mode) {
@@ -868,7 +872,7 @@ function saveModifyAudible(mode) {
 			"', `ModifiedDate` = NOW()";
 			if(!(pathCoverArt == "CoverArt/")) {
 				sqlCommand = sqlCommand + ", `CoverArt` = '" + pathCoverArt + "' "
-			}			
+			}
 			var postData = {
 				"functionCall":"updateTableByID",
 				"fieldName":sqlCommand,
@@ -905,8 +909,8 @@ function saveModifyAudible(mode) {
 				"searchkey":"",		//ID of row to edit
 			};
 			break;
-	} 
-	
+	}
+
 	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
 	$.ajax({
 		url:'AudibleBooks.php',
@@ -927,7 +931,7 @@ function saveModifyAudible(mode) {
 		error: function() {
 			alert('Error in modalCloseUpdate() no return from PHP call.');
 		}
-	});	
+	});
 }
 
 function searchResults(thisID, searchText) {	//Called when item in Live Search box is clicked
@@ -944,7 +948,7 @@ function searchResults(thisID, searchText) {	//Called when item in Live Search b
 	}
 	var where = "WHERE `" + filterbyText + "` LIKE '%" + itemClickedText + "%' " ;	//get rows matching item clicked in searchbox results
 	//alert("searchResults() Clicked element innerHTML -- " + itemClickedText + "\n filterbyText -- " +
-	//	filterbyText + "\n WHERE -- " + where);	
+	//	filterbyText + "\n WHERE -- " + where);
 	sessionStorage.setItem("mainTable_Where", where);
 	sessionStorage.setItem("pageDisplayNumber", 0);
 	var rowOnPage = sessionStorage.getItem("numRowsOnPage");
@@ -981,7 +985,7 @@ function setFormToModifyMode(hideCopyButton) {
 	$("#span-ReadOrder").prop('hidden', true);
 	$("#input-ReadOrder").prop('type', 'text');
 	if ($('#input-ReadOrderNumbe').val() == 0) {
-		$('#input-ReadOrderNumber').val("");		
+		$('#input-ReadOrderNumber').val("");
 	}
 	$("#span-ReadOrderNumber").prop('hidden', false);
 	$("#input-ReadOrderNumber").prop('type', 'number');
@@ -1070,7 +1074,7 @@ function updateTableRow(element) {
 		"saveModifyFunction":"saveModifyAudible('update')",
 	};
 	fillTemplateSpace("footerSpace", "modifyAudibleFooter", mustacheData);
-	
+
 	//	alert ("In tableRowUpdate(). \n$clickedIcon -- " +
 	//		$clickedIcon + "\n ID -- " + clickedRowID);
 	fillBookForm(clickedRowID, displayBookFormData);
@@ -1089,7 +1093,7 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	//javascript session storage
 	var testSession = sessionStorage.getItem("sessionStorageInit");
 	//alert("Init Document load testSession -- " + typeof testSession);
-	
+
 	if ((typeof testSession == "undefined") || (testSession == null)) {	//Check if not true. Initilize session variables
 		alert("In if() statement. Initilize sessionStorage -- " + typeof testSession);
 		sessionStorage.setItem("sessionStorageInit", "TRUE");
@@ -1105,17 +1109,17 @@ $(document).ready(function(){	//Code to run when page finishes loading
 		var rowOnPage = sessionStorage.getItem("numRowsOnPage");
 		sessionStorage.setItem("pageDisplayNumber", 0);	//Initial page of rows being displayed session storage
 		var pageDisplayNum = sessionStorage.getItem("pageDisplayNumber");
-		
+
 		sessionStorage.setItem("lastRowModified", 0);	//Initilize last Row Modified session storage
 		sessionStorage.setItem("lastRowModifiedValid", true);	//Initilize last Row Modified ID Valid session storage
-		
+
 		sessionStorage.setItem("mainTable_Select", "SELECT `ID`, `Title`, `Author`, `Series` ");	//Initial SQL SELECT string session storage
 		sessionStorage.setItem("mainTable_From", "FROM AudibleBooks ");	//Initial SQL FROM string session storage
-		sessionStorage.setItem("mainTable_Where", "");	//Initial SQL WHERE string session storage
+		sessionStorage.setItem("mainTable_Where", "WHERE `Status` = 'In Library'");	//Initial SQL WHERE string session storage
 		sessionStorage.setItem("mainTable_Order", "ORDER BY `ModifiedDate` DESC ");	//Initial SQL ORDER BY string session storage
 		sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum.toString() + ", " + rowOnPage.toString());	//Initial SQL LIMIT string session storage
 	}
-	
+
 	document.getElementById('sortby').innerHTML = sessionStorage.getItem("sortBysearchSelected");
 	document.getElementById('filterby').innerHTML = sessionStorage.getItem("filterBysearchSelected");
 
@@ -1125,12 +1129,12 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	} else {
 		$('#searchbox').prop('disabled', false);	//Enable searchbox when not sortBy "Last Edit"  and filterBy Nothing mode.
 		$('#searchbox').attr("placeholder", sessionStorage.getItem("searchboxPlaceholder"));	//placeholder give idea of what to type
-		//alert("sortby text -- "+ sessionStorage.getItem("sortBysearchSelected") + 
+		//alert("sortby text -- "+ sessionStorage.getItem("sortBysearchSelected") +
 		//	"\n searchbox placeholder -- " + sessionStorage.getItem("searchboxPlaceholder") +
 		//	" searchbox disabled -- " + $('#searchbox').prop('disabled'));
 	}
 	makeFooterSpace();
-	
+
 	var sortBysearchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 	var filterBysearchTerm = sessionStorage.getItem("filterBysearchTerm");	//current filterBy pageObj search term
 	var utilitySearchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
@@ -1145,8 +1149,8 @@ $(document).ready(function(){	//Code to run when page finishes loading
 
 	//fetchTableResults() uses variables
 	fetchTableResults();
-	
-	
-	
+
+
+
 });
 

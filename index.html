@@ -49,33 +49,34 @@
         <div class="container-fluid">
 			<div id="titleSpace">
 				<div class="row" style="height: 60px;">
-					<div class="pt-2 col-sm-4">
+					<div class="pt-2 col-sm-6">
 						<div class="page-header clearfix">
-							<h3 class="pull-left">Audible Books</h3>
+							<h2 class="pull-left">Audible Books</h2>
 						</div>
 					</div>
-					<div class="col-sm-4">
-						<form>
-							<div class="custom-control custom-radio custom-control-inline">
-								<input type="radio" class="custom-control-input" id="customRadio" name="example" value="customEx">
-								<label class="custom-control-label" for="customRadio">Library</label>
-							</div>
-							<div class="custom-control custom-radio custom-control-inline">
-								<input type="radio" class="custom-control-input" id="customRadio2" name="example" value="customEx">
-								<label class="custom-control-label" for="customRadio2">Wish List</label>
-							<div class="custom-control custom-radio custom-control-inline">
-								<input type="radio" class="custom-control-input" id="customRadio" name="example" value="customEx">
-								<label class="custom-control-label" for="customRadio">All</label>
-							</div>
-								</div>
-						</form>
-					</div>
-					<div class="pt-2 col-sm-4">
+					<div class="pt-2 col-sm-6">
 						<a href="#" onclick="addNewAudibleBook()" class="btn btn-success pull-right">Add New Audible Book</a>
 					</div>
 				</div>
 			</div>
 			<div id="headerSpace">
+				<div class="row" style="height: 40px;">
+					<form>
+						<div class="custom-control custom-radio custom-control-inline">
+							<input type="radio" id="LibraryRadio" onclick="DisplaySelection(this)" class="custom-control-input"  name="listmode"value="Library" checked>
+							<label class="custom-control-label" for="customRadio1">Display Library</label>
+						</div>
+						<div class="custom-control custom-radio custom-control-inline">
+							<input type="radio" id="WishListadio" onclick="DisplaySelection(this)" class="custom-control-input" name="listmode" value="WishList">
+							<label class="custom-control-label" for="customRadio2">Display Wish List</label>
+						</div>
+						<div class="custom-control custom-radio custom-control-inline">
+							<input type="radio" id="AllRadio" onclick="DisplaySelection(this)" class="custom-control-input" name="listmode" value="All">
+							<label class="custom-control-label" for="customRadio3">Display All Books</label>
+						</div>
+					</form>
+				</div>
+
 				<div class="row" style="height: 60px;">
 					<div class="col-sm-4">
 						<span >Sort by:</span>

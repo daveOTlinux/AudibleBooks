@@ -424,42 +424,6 @@ function getCountCurrentTableRows(callback, element) {
 	});
 }
 
-function getIDPageItemDisplay(displayItem) {
-	sessionStorage.setItem("displayItemSQLIDValid", false);
-	var postData = {
-		"forObject":"getIDbyItemDisplay",	//forObject used in pageObjects.php by switch case for custom code
-		"sqlCommand":"",
-		"pageObject":"",	//used to get row items
-		"fieldname":"",
-		"clickedData":displayItem,
-	};
-	//alert("in pageObjectsList \n searchTerm -- " + searchTerm + "\n forObject -- " + forObject + "\n elementID -- " + elementID);
-	var dataString = JSON.stringify(postData);
-	$.ajax({
-		url:'pageObjects.php',
-		type:'POST',
-		data: {postOBJ: dataString},
-		success:function(returnData) {
-			$.each(returnData, function(i, resultitem){
-				if (resultitem.status == 'Success') {
-					sessionStorage.setItem("displayItemSQLID", resultitem.ID);
-					sessionStorage.setItem("displayItemSQLIDValid", true);
-				} else {
-					alert("Failed Ajax PHP call getIDbyItemDisplay -- " + returnData);
-				}
-			});
-		},
-		error: function() {
-			alert('AJAX Error getIDbyItemDisplay.');
-		}
-	});
-	// Make sure the callback is a function
-	//if (typeof callback === "function") {
-		// Execute the callback function and pass the parameters to it
-	//	callback(sessionStorage.getItem("lastRowModified"));
-	//}
-}
-
 function getLatestModifiedRowID() {
 	//	alert("In getLatestModifiedRowID()");
 	sessionStorage.setItem("lastRowModifiedValid", false);
@@ -495,44 +459,6 @@ function getLatestModifiedRowID() {
 	//	callback(sessionStorage.getItem("lastRowModified"));
 	//}
 	
-}
-
-function getSortOrderSQL(postData, objName) {
-	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
-	//alert("In onclickDropdowns(). JSON dataString --\n" + dataString);
-	$.ajax({
-		url:'pageObjects.php',
-		type:'POST',
-		data: {postOBJ: dataString},
-		success:function(returnData) {
-			$.each(returnData, function(i, resultitem){
-				//alert("Success with Ajax onclickDropdowns()) -- " + resultitem.info);				
-				if (resultitem.status == 'Success') {
-					//console.log("returnData -- " + returnData);
-					switch(objName) {
-						case "sortby":
-							sessionStorage.setItem("mainTable_Order", "ORDER BY " + resultitem.info + " ");
-							fetchTableResults();
-							break;
-						case "utilities":
-							//alert("Utilities clicked. resultitem.info -- " + resultitem.info);
-							window.open("https://onthebay.info" + resultitem.info);
-							break;
-						default:
-							fetchTableResults();
-							break;
-					}
-				} else {
-					alert("Failed Ajax sortfield -- " + returnData);
-				}
-				
-			});
-		},
-		error: function() {
-			alert('Error on sortby or filterby item clicked.');
-		}
-		//console.log("Out of switch");
-	});
 }
 
 function liveSearchKeyPress(element) {
@@ -657,22 +583,19 @@ function modifyCurrentBook() {
 }
 
 function onclickDropdowns(element) {	//comes here for when an item in the dropdowns is clicked 
-	var liId = element.id;
-	//var liText = document.getElementById(liId).innerHTML;	//Current text in <li>
-	var liText = $("#" + liId).text();	//Current text in <li>
+	var liID = element.id;
+	var liText = document.getElementById(liID).innerHTML;	//Current text in <li>
 	var sqlCommand = "";
-	var displayItem = "none";
-	//alert("onclickDropdowns() element click ID -- " + liId + " clicked element text -- " + liText);
-	switch(liId.slice(0,5)) {
+	//alert("onclickDropdowns() element click ID -- " + liID + " clicked element text -- " + liText);
+	switch(element.id.slice(0,5)) {
 		case 'sortI':
-			//document.getElementById('sortby').innerHTML = liText;
-			$("#sortby").html(liText);
+			document.getElementById('sortby').innerHTML = liText;
 			sessionStorage.setItem("sortBysearchSelected", liText);	//Set storage variable to new value in sortBy
 			var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 			var objName = "sortby";
 			var forObject = "getsqlItemByID";
 			//var sqlCommand = "";
-			//console.log("sortItem text -- " + liText + " li ID -- " + liId);
+			//console.log("sortItem text -- " + liText + " li ID -- " + liID);
 			break;
 		case 'filte':
 			switch(liText) {
@@ -683,7 +606,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					pageObjectsList("sortOrder00", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 					var objName = "sortby";					
-					var liID = $("#sortDropdown li").last().attr('data-id');	//get id of first <li> in sortby dropdown
+					var liID = $("#sortDropdown li").last().attr('id');	//get id of first <li> in sortby dropdown
 					$("#sortby").text('Latest Modified');	//set sortby dropdown to correct display
 					break;
 				case 'Author':
@@ -693,7 +616,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					pageObjectsList("sortOrder01", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 					var objName = "sortby";					
-					var liID = $("#sortDropdown li").first().attr('data-id');	//get id of first <li> in sortby dropdown
+					var liID = $("#sortDropdown li").first().attr('id');	//get id of first <li> in sortby dropdown
 					$("#sortby").text('Title');	//set sortby dropdown to correct display
 					break;
 				case 'Title':
@@ -703,7 +626,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					pageObjectsList("sortOrder03", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 					var objName = "sortby";					
-					var liID = $("#sortDropdown li").first().attr('data-id');	//get id of first <li> in sortby dropdown
+					var liID = $("#sortDropdown li").first().attr('id');	//get id of first <li> in sortby dropdown
 					$("#sortby").text('Title');	//set sortby dropdown to correct display
 					break;
 				case 'Series':
@@ -714,8 +637,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 					var objName = "sortby";
 					//var liID = $("#" + element.id).attr('data-id');
-					//var liID = $("#sortDropdown li").first().attr('data-id');	//get id of first <li> in sortby dropdown
-					displayItem = 
+					var liID = $("#sortDropdown li").first().attr('data-id');	//get id of first <li> in sortby dropdown
 					$("#sortby").text('Book Number');	//set sortby dropdown to correct display
 					break;
 				case "Reading List":
@@ -725,7 +647,7 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					pageObjectsList("sortOrder02", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 					var objName = "sortby";
-					var liID = $("#sortDropdown li").first().attr('data-id');	//get id of first <li> in sortby dropdown
+					var liID = $("#sortDropdown li").first().attr('id');	//get id of first <li> in sortby dropdown
 					$("#sortby").text('Read Order');	//set sortby dropdown to correct display
 					break;
 				case 'ID':
@@ -735,21 +657,20 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 					pageObjectsList("sortOrder00", 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 					var searchTerm = sessionStorage.getItem("sortBysearchTerm");	//current sortBy pageObj search term
 					var objName = "sortby";
-					var liId = $("#sortDropdown li").last().attr('id');	//get id of first <li> in sortby dropdown
+					var liID = $("#sortDropdown li").last().attr('id');	//get id of first <li> in sortby dropdown
 					$("#sortby").text('ID');	//set sortby dropdown to correct display
 					break;
 			}
-			$("#filterby").text(liText);
-			//document.getElementById('filterby').innerHTML = liText;
+			document.getElementById('filterby').innerHTML = liText;
 			sessionStorage.setItem("filterBysearchSelected", liText);	//set filterby current selection session storage
 			var forObject = "getsqlItemByID";	//used pageObject.php to get itemSQL for and ID
-			//console.log("filterItem text -- " + liText + " li ID -- " + liId);
+			//console.log("filterItem text -- " + liText + " li ID -- " + liID);
 			break;
-		case 'utili':
-			var searchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
-			var objName = "utilities";	//used in success: switch
-			var forObject = "getsqlItemByID";	//used pageObject.php to get itemSQL for and ID
-			break;
+				case 'utili':
+					var searchTerm = sessionStorage.getItem("utilitySearchTerm");	//current utility pageObj search term
+					var objName = "utilities";	//used in success: switch
+					var forObject = "getsqlItemByID";	//used pageObject.php to get itemSQL for and ID
+					break;
 	}
 	var postData = {
 		"forObject":forObject,	//used in switch() to customize code and function called in pageObjects.php
@@ -758,30 +679,42 @@ function onclickDropdowns(element) {	//comes here for when an item in the dropdo
 		"fieldname":liText,
 		"clickedData":liID,
 	};
-	onclickDropdownsPart2(postData, displayItem, objName);
+	var dataString = JSON.stringify(postData);	//convert dataString string to JSON
+	//alert("In onclickDropdowns(). JSON dataString --\n" + dataString);
+	$.ajax({
+		url:'pageObjects.php',
+		type:'POST',
+		data: {postOBJ: dataString},
+		success:function(returnData) {
+			$.each(returnData, function(i, resultitem){
+				//alert("Success with Ajax onclickDropdowns()) -- " + resultitem.info);				
+				if (resultitem.status == 'Success') {
+					//console.log("returnData -- " + returnData);
+					switch(objName) {
+						case "sortby":
+							sessionStorage.setItem("mainTable_Order", "ORDER BY " + resultitem.info + " ");
+							fetchTableResults();
+							break;
+						case "utilities":
+							//alert("Utilities clicked. resultitem.info -- " + resultitem.info);
+							window.open("https://onthebay.info" + resultitem.info);
+							break;
+						default:
+							fetchTableResults();
+							break;
+					}
+				} else {
+					alert("Failed Ajax sortfield -- " + returnData);
+				}
+				
+			});
+		},
+		error: function() {
+			alert('Error on sortby or filterby item clicked.');
+		}
+		//console.log("Out of switch");
+	});
 }
-
-function onclickDropdownsPart2(postData, displayItem, objName) {
-	if(displayItem == "none") {
-		getSortOrderSQL(postData, objName);
-	}else {
-		var deferred = $.Deferred();
-		deferred
-		.then(getIDPageItemDisplay(displayItem))
-		.done(onclickDropdownsPart3(postData, objName));
-		deferred.resolve();
-		
-	}
-}
-
-function onclickDropdownsPart3(postData, objName) {
-	if (sessionStorage.getItem("displayItemSQLIDValid") == true) {
-		postData.clickedData = sessionStorage.getItem("displayItemSQLID");
-	}else{
-		alert("Error in onclickDropdownsPart3(postData). \n sessionStorage.getItem('displayItemSQLID') is false. \n Should be true in this function");
-	}
-	getSortOrderSQL(postData, objName);
-} 
 
 function pageObjectsList(searchTerm, forObject, elementID, divTemplate) {	//Get row data from pageObjects table where = searchTerm
 	var $divSection = $('#' + elementID);
@@ -999,21 +932,15 @@ function saveModifyAudible(mode) {
 
 function searchResults(thisID, searchText) {	//Called when item in Live Search box is clicked
 	if (searchText == "") {
-		//var itemClickedText = document.getElementById(thisID.id).innerText;	//use this value on searchbox clicked LI
-		var itemClickedText = $("#" + thisID.id).text();	//use this value on searchbox clicked LI
+		var itemClickedText = document.getElementById(thisID.id).innerText;	//use this value on searchbox clicked LI
 	} else {
 		var itemClickedText = searchText;	//current Title or Author. use this value when saving row.
 	}
-	var filterbyText = $("#filterby").text();
-/*	if (objText.indexOf("<") == -1) {
+	var objText = $("#filterby").html();
+	if (objText.indexOf("<") == -1) {
 		var filterbyText = objText;
 	} else {
 		var filterbyText = objText.slice(0, objText.indexOf("<"));	//Get the first word
-	}	*/
-	switch (filterbyText) {
-		case "Series":
-			sessionStorage.setItem("mainTable_Order", "ORDER BY `ModifiedDate` DESC ");
-			break;
 	}
 	var where = "WHERE `" + filterbyText + "` LIKE '%" + itemClickedText + "%' " ;	//get rows matching item clicked in searchbox results
 	//alert("searchResults() Clicked element innerHTML -- " + itemClickedText + "\n filterbyText -- " +
@@ -1181,8 +1108,6 @@ $(document).ready(function(){	//Code to run when page finishes loading
 		
 		sessionStorage.setItem("lastRowModified", 0);	//Initilize last Row Modified session storage
 		sessionStorage.setItem("lastRowModifiedValid", true);	//Initilize last Row Modified ID Valid session storage
-		
-		sessionStorage.setItem("displayItemSQLIDValid", false);
 		
 		sessionStorage.setItem("mainTable_Select", "SELECT `ID`, `Title`, `Author`, `Series` ");	//Initial SQL SELECT string session storage
 		sessionStorage.setItem("mainTable_From", "FROM AudibleBooks ");	//Initial SQL FROM string session storage

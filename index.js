@@ -1126,6 +1126,8 @@ $(document).ready(function(){	//Code to run when page finishes loading
 	document.getElementById('sortby').innerHTML = sessionStorage.getItem("sortBysearchSelected");
 	document.getElementById('filterby').innerHTML = sessionStorage.getItem("filterBysearchSelected");
 
+	document.getElementById('radioListDisplay1').checked = true;
+
 	if (sessionStorage.getItem("filterBysearchSelected") == "Nothing") {
 		$('#searchbox').attr("placeholder", "");	//removed for disabled element
 		$('#searchbox').prop('disabled', true);	//Disable searchbox when in "Last Edit" sortBy and filterBy Nothing mode.

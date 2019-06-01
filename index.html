@@ -60,22 +60,31 @@
 				</div>
 			</div>
 			<div id="headerSpace">
-				<div class="row" style="height: 60px;">
-					<fieldset>
-						<legend style="font-size:15px">Select which list to display: </legend>
-						<div class="custom-control custom-radio custom-control-inline">
-							<label class="custom-control-label" for="radioListDisplay-1">Display Library</label>
-							<input type="radio" checked id="radioListDisplay-1" onclick="displaySelection(this)" class="custom-control-input"  name="listmodeDisplay" value="Library">
+				<div class="row" style="height: 70px;">
+					<legend style="font-size:18px">Select which list to display: </legend>
+					<div class="col-sm-3">
+						<div class="custom-control custom-radio">
+							<input type="radio" onclick="displaySelection(this)" class="custom-control-input" id="radioListDisplay1" name="radioBtnDisplay">
+							<label class="custom-control-label" for="radioListDisplay1">Display Library</label>
 						</div>
-						<div class="custom-control custom-radio custom-control-inline">
-							<label class="custom-control-label" for="radioListDisplay-2">Display Wish List</label>
-							<input type="radio" id="radioListDisplay-2" onclick="displaySelection(this)" class="custom-control-input" name="listmodeDisplay" value="WishList">
+					</div>
+					<div class="col-sm-4">
+						<div class="custom-control custom-radio">
+							<input type="radio" onclick="displaySelection(this)" class="custom-control-input" id="radioListDisplay2" name="radioBtnDisplay">
+							<label class="custom-control-label" for="radioListDisplay2">Display Wish List</label>
 						</div>
-						<div class="custom-control custom-radio custom-control-inline">
-							<label class="custom-control-label" for="radioListDisplay-3">Display All Books</label>
-							<input type="radio" id="radioListDisplay-3" onclick="displaySelection(this)" class="custom-control-input" name="listmodeDisplay" value="All">
+					</div>
+					<div class="col-sm-4">
+						<div class="custom-control custom-radio">
+							<input type="radio" onclick="displaySelection(this)" class="custom-control-input" id="radioListDisplay3" name="radioBtnDisplay">
+							<label class="custom-control-label" for="radioListDisplay3">Display All Books</label>
 						</div>
-					</fieldset>
+					</div>
+					<div class="col-sm-1">
+
+					</div>
+
+
 				</div>
 
 				<div class="row" style="height: 60px;">
@@ -146,22 +155,29 @@
 	</template>
 
 	<template id="audibleHeaderTemplate">
-	<div class="row" style="height: 60px;">
-		<fieldset>
-			<legend style="font-size:15px">Select which list to display: </legend>
-			<div class="custom-control custom-radio custom-control-inline">
-				<label class="custom-control-label" for="radioListDisplay-1">Display Library</label>
-				<input type="radio" checked id="radioListDisplay-1" onclick="displaySelection(this)" class="custom-control-input"  name="listmodeDisplay" value="Library">
+	<div class="row" style="height: 70px;">
+		<legend style="font-size:18px">Select which list to display: </legend>
+		<div class="col-sm-3">
+			<div class="custom-control custom-radio">
+				<input type="radio" onclick="displaySelection(this)" class="custom-control-input" id="radioListDisplay1" name="radioBtnDisplay">
+				<label class="custom-control-label" for="radioListDisplay1">Display Library</label>
 			</div>
-			<div class="custom-control custom-radio custom-control-inline">
-				<label class="custom-control-label" for="radioListDisplay-2">Display Wish List</label>
-				<input type="radio" id="radioListDisplay-2" onclick="displaySelection(this)" class="custom-control-input" name="listmodeDisplay" value="WishList">
+		</div>
+		<div class="col-sm-4">
+			<div class="custom-control custom-radio">
+				<input type="radio" onclick="displaySelection(this)" class="custom-control-input" id="radioListDisplay2" name="radioBtnDisplay">
+				<label class="custom-control-label" for="radioListDisplay2">Display Wish List</label>
 			</div>
-			<div class="custom-control custom-radio custom-control-inline">
-				<label class="custom-control-label" for="radioListDisplay-3">Display All Books</label>
-				<input type="radio" id="radioListDisplay-3" onclick="displaySelection(this)" class="custom-control-input" name="listmodeDisplay" value="All">
+		</div>
+		<div class="col-sm-4">
+			<div class="custom-control custom-radio">
+				<input type="radio" onclick="displaySelection(this)" class="custom-control-input" id="radioListDisplay3" name="radioBtnDisplay">
+				<label class="custom-control-label" for="radioListDisplay3">Display All Books</label>
 			</div>
-		</fieldset>
+		</div>
+		<div class="col-sm-1">
+
+		</div>
 	</div>
 	<div class="row" style="height: 60px;">
 			<div class="col-sm-4">

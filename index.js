@@ -235,6 +235,9 @@ function displayBookFormData(returnData) {
 }
 
 function displaySelection(element) {	//When DisplaySelection radio buttons pressed
+	var radioSelected = element.id;
+
+	alert("Selected Radio button: " + radioSelected);
 
 }
 

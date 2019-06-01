@@ -60,21 +60,22 @@
 				</div>
 			</div>
 			<div id="headerSpace">
-				<div class="row" style="height: 40px;">
-					<form>
-			<div class="custom-control custom-radio custom-control-inline">
-				<input type="radio" id="LibraryRadio" onclick="displaySelection(this)" class="custom-control-input"  name="listmode" value="Library" checked>
-				<label class="custom-control-label" for="customRadio1">Display Library</label>
-			</div>
-			<div class="custom-control custom-radio custom-control-inline">
-				<input type="radio" id="WishListRadio" onclick="displaySelection(this)" class="custom-control-input" name="listmode" value="WishList">
-				<label class="custom-control-label" for="customRadio2">Display Wish List</label>
-			</div>
-			<div class="custom-control custom-radio custom-control-inline">
-				<input type="radio" id="AllRadio" onclick="displaySelection(this)" class="custom-control-input" name="listmode" value="All">
-				<label class="custom-control-label" for="customRadio3">Display All Books</label>
-			</div>
-					</form>
+				<div class="row" style="height: 60px;">
+					<fieldset>
+						<legend style="font-size:15px">Select which list to display: </legend>
+						<div class="custom-control custom-radio custom-control-inline">
+							<label class="custom-control-label" for="radioListDisplay-1">Display Library</label>
+							<input type="radio" checked id="radioListDisplay-1" onclick="displaySelection(this)" class="custom-control-input"  name="listmodeDisplay" value="Library">
+						</div>
+						<div class="custom-control custom-radio custom-control-inline">
+							<label class="custom-control-label" for="radioListDisplay-2">Display Wish List</label>
+							<input type="radio" id="radioListDisplay-2" onclick="displaySelection(this)" class="custom-control-input" name="listmodeDisplay" value="WishList">
+						</div>
+						<div class="custom-control custom-radio custom-control-inline">
+							<label class="custom-control-label" for="radioListDisplay-3">Display All Books</label>
+							<input type="radio" id="radioListDisplay-3" onclick="displaySelection(this)" class="custom-control-input" name="listmodeDisplay" value="All">
+						</div>
+					</fieldset>
 				</div>
 
 				<div class="row" style="height: 60px;">
@@ -145,21 +146,22 @@
 	</template>
 
 	<template id="audibleHeaderTemplate">
-	<div class="row" style="height: 40px;">
-		<form>
+	<div class="row" style="height: 60px;">
+		<fieldset>
+			<legend style="font-size:15px">Select which list to display: </legend>
 			<div class="custom-control custom-radio custom-control-inline">
-				<input type="radio" id="LibraryRadio" onclick="displaySelection(this)" class="custom-control-input"  name="listmode" value="Library" checked>
-				<label class="custom-control-label" for="customRadio1">Display Library</label>
+				<label class="custom-control-label" for="radioListDisplay-1">Display Library</label>
+				<input type="radio" checked id="radioListDisplay-1" onclick="displaySelection(this)" class="custom-control-input"  name="listmodeDisplay" value="Library">
 			</div>
 			<div class="custom-control custom-radio custom-control-inline">
-				<input type="radio" id="WishListRadio" onclick="displaySelection(this)" class="custom-control-input" name="listmode" value="WishList">
-				<label class="custom-control-label" for="customRadio2">Display Wish List</label>
+				<label class="custom-control-label" for="radioListDisplay-2">Display Wish List</label>
+				<input type="radio" id="radioListDisplay-2" onclick="displaySelection(this)" class="custom-control-input" name="listmodeDisplay" value="WishList">
 			</div>
 			<div class="custom-control custom-radio custom-control-inline">
-				<input type="radio" id="AllRadio" onclick="displaySelection(this)" class="custom-control-input" name="listmode" value="All">
-				<label class="custom-control-label" for="customRadio3">Display All Books</label>
+				<label class="custom-control-label" for="radioListDisplay-3">Display All Books</label>
+				<input type="radio" id="radioListDisplay-3" onclick="displaySelection(this)" class="custom-control-input" name="listmodeDisplay" value="All">
 			</div>
-		</form>
+		</fieldset>
 	</div>
 	<div class="row" style="height: 60px;">
 			<div class="col-sm-4">

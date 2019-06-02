@@ -239,18 +239,7 @@ function displaySelection(element) {	//When DisplaySelection radio buttons press
 	var radioSelected = element.id;
 	//alert("Selected Radio button: " + radioSelected);
 	sessionStorage.setItem("radioListDisplaySelected", radioSelected);
-	switch(radioSelected) {
-		case "radioListDisplay1":
-			sessionStorage.setItem("mainTable_Where", "WHERE `Status` = 'In Library' ");
-			break;
-		case "radioListDisplay2":
-			sessionStorage.setItem("mainTable_Where", "WHERE `Status` = 'Wish List' ");
-			break;
-		case "radioListDisplay3":
-			sessionStorage.setItem("mainTable_Where", "WHERE true ");
-			break;
-	}
-	fetchTableResults()
+	setRadioListDisplaySelected(radioSelected)
 }
 
 function displayTableRows(searchText) {
@@ -282,8 +271,8 @@ function fetchTableResults() {		// Fills the main Table <div> #maintablebody
 		"limits":limits
 	}
 
-	//	alert("SQL string before call -- \n " + select + "\n" + from + "\n" +
-	//		 where + "\n" + order + "\n" + limits);
+		//alert("SQL string before call -- \n " + select + "\n" + from + "\n" +
+		//	 where + "\n" + order + "\n" + limits);
 
 	var postData = {
 		"functionCall":"getTableRowData",
@@ -1060,12 +1049,29 @@ function setNumRowOnPage(element) {
 	fetchTableResults();
 }
 
+function setRadioListDisplaySelected(radioSelected) {
+	switch(radioSelected) {
+		case "radioListDisplay1":
+			sessionStorage.setItem("mainTable_Where", "WHERE `Status` = 'In Library' ");
+			break;
+		case "radioListDisplay2":
+			sessionStorage.setItem("mainTable_Where", "WHERE `Status` = 'Wish List' ");
+			break;
+		case "radioListDisplay3":
+			sessionStorage.setItem("mainTable_Where", "WHERE true ");
+			break;
+	}
+	document.getElementById(radioSelected).checked = true;	//Set selected radio button as checked
+	fetchTableResults();
+
+}
+
 function setStateSearchBox(state, liText) {
 	if (state == "disabled") {
 		sessionStorage.setItem("searchboxPlaceholder", "");
 		$('#searchbox').attr("placeholder", "");	//removed for disabled element
 		$('#searchbox').prop('disabled', true);	//Disable searchbox when in "Last Edit" sortBy and filterBy Nothing mode.
-		sessionStorage.setItem("mainTable_Where", "");	//Set SQL to show all rows
+		setRadioListDisplaySelected(sessionStorage.getItem("radioListDisplaySelected"));
 	} else {
 		$('#searchbox').prop('disabled', false);	//Enable searchbox when not sortBy "Last Edit"  and filterBy Nothing mode.
 		$('#searchbox').attr("placeholder", "Search by " + liText);	//placeholder give idea of what to type

@@ -6,7 +6,7 @@
 	global $count, $returnStatus;
 
 	// Functions ************************************************
-	
+
 	function deleteTableRowByID($rowID) {
 		// Include config file
 		require_once 'config.php';
@@ -15,7 +15,7 @@
 		$where = "WHERE `ID` = " . $rowID;
 
 		$strSQL = $delete . $where;
-				
+
 		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 
 		$returnStatus = array(array());
@@ -34,7 +34,7 @@
 	function getAllFieldsByID($rowID) {
 		// Include config file
 		require_once 'config.php';
-		
+
 		// Prepare a select statement
 		$strSQL = "SELECT * FROM AudibleBooks WHERE ID = " . $rowID;
 
@@ -83,11 +83,11 @@
 		$select = "SELECT Count(*) AS Count ";
 		$from = $sqlQuery['from'];
 		$where = $sqlQuery['where'];
-		
+
 		$strSQL = $select . $from . $where;
-		
+
 		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
-		
+
 		$result = $mysqli->query($strSQL);
 
 		$returnStatus = array(array());
@@ -104,7 +104,7 @@
 				$returnStatus[$count]["Count"] = $row['Count'];
 				$count++;
 			}
-		}	
+		}
 		$result->close();
 		$mysqli->close();
 		return $returnStatus;
@@ -145,13 +145,13 @@
 		$mysqli->close();
 		return $returnStatus;
 	}
-	
+
 	function getLatestModifiedRowID() {
 		// Include config file
 		require_once 'config.php';
 
 		$strSQL = "SELECT `ID` FROM `AudibleBooks` ORDER BY `ModifiedDate` DESC LIMIT 1";
-				
+
 		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 
 		$result = $mysqli->query($strSQL);
@@ -174,7 +174,7 @@
 		$mysqli->close();
 		return $returnStatus;
 	}
-	
+
 	function getTableRowData($sqlQuery){
 		require_once 'config.php';
 
@@ -183,11 +183,11 @@
 		$where = $sqlQuery['where'];
 		$order = $sqlQuery['order'];
 		$limits = $sqlQuery['limits'];
-	
+
 		$strSQL = $select . $from . $where . $order . $limits;
 
 		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
-		
+
 		$result = $mysqli->query($strSQL);
 
 		$returnStatus = array(array());
@@ -244,12 +244,12 @@
 	function updateTableByID($sqlSET, $rowID) {
 		// Include config file
 		require_once 'config.php';
-		
+
 		$update = "UPDATE `AudibleBooks` ";
 		$where = "WHERE `ID` = " . $rowID;
 
 		$strSQL = $update . $sqlSET . $where;
-				
+
 		//echo $strSQL;	//uncomment to see SQL string at start of "Network" return in chrome Developer Tools
 
 		$returnStatus = array(array());
@@ -272,7 +272,7 @@
 	if($_POST['postOBJ'] && !empty($_POST['postOBJ'])){
 
 		$postOBJ = json_decode($_POST['postOBJ'], TRUE);
-		
+
 		$functionCall = $postOBJ["functionCall"];
 		$fieldName = $postOBJ["fieldName"];
 		$searchKey = $postOBJ["searchkey"];
@@ -308,14 +308,14 @@
 		}
 
 		//header('Content-type: application/json');
-		//echo json_encode($returnStatus);	         
+		//echo json_encode($returnStatus);
 	} else {
 		$returnStatus[0]["status"] = "FAILED";
 		$returnStatus[0]["info"] = "No POST data.";
-		//header('Content-type: application/json');		
-		//echo json_encode($returnStatus);		
+		//header('Content-type: application/json');
+		//echo json_encode($returnStatus);
 	}
-	header('Content-type: application/json');		
-	echo json_encode($returnStatus);		
+	header('Content-type: application/json');
+	echo json_encode($returnStatus);
 
 ?>

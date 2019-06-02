@@ -143,6 +143,7 @@ function closeModifyAudible(fetchResults) {
 	pageObjectsList(sortBysearchTerm, 'Dropdowns', 'sortDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 	pageObjectsList(filterBysearchTerm, 'Dropdowns', 'filterDropdown', 'liItemEntryTemplate');	//Fill in <li> values for sortBy dropdown
 	pageObjectsList(utilitySearchTerm, 'Dropdowns', 'utilitiesDropdown', 'liItemEntryTemplate');	//Fill in <li> values for utilities dropdown
+	document.getElementById(sessionStorage.getItem("radioListDisplaySelected")).checked = true;	//Set selected radio button as checked
 	if (fetchResults == true) {
 		fetchTableResults();
 	}
@@ -236,9 +237,20 @@ function displayBookFormData(returnData) {
 
 function displaySelection(element) {	//When DisplaySelection radio buttons pressed
 	var radioSelected = element.id;
-
-	alert("Selected Radio button: " + radioSelected);
-
+	//alert("Selected Radio button: " + radioSelected);
+	sessionStorage.setItem("radioListDisplaySelected", radioSelected);
+	switch(radioSelected) {
+		case "radioListDisplay1":
+			sessionStorage.setItem("mainTable_Where", "WHERE `Status` = 'In Library' ");
+			break;
+		case "radioListDisplay2":
+			sessionStorage.setItem("mainTable_Where", "WHERE `Status` = 'Wish List' ");
+			break;
+		case "radioListDisplay3":
+			sessionStorage.setItem("mainTable_Where", "WHERE true ");
+			break;
+	}
+	fetchTableResults()
 }
 
 function displayTableRows(searchText) {
@@ -1118,15 +1130,18 @@ $(document).ready(function(){	//Code to run when page finishes loading
 
 		sessionStorage.setItem("mainTable_Select", "SELECT `ID`, `Title`, `Author`, `Series` ");	//Initial SQL SELECT string session storage
 		sessionStorage.setItem("mainTable_From", "FROM AudibleBooks ");	//Initial SQL FROM string session storage
-		sessionStorage.setItem("mainTable_Where", "WHERE `Status` = 'In Library'");	//Initial SQL WHERE string session storage
+		sessionStorage.setItem("mainTable_Where", "WHERE `Status` = 'In Library' ");	//Initial SQL WHERE string session storage
 		sessionStorage.setItem("mainTable_Order", "ORDER BY `ModifiedDate` DESC ");	//Initial SQL ORDER BY string session storage
 		sessionStorage.setItem("mainTable_Limits", "LIMIT " + pageDisplayNum.toString() + ", " + rowOnPage.toString());	//Initial SQL LIMIT string session storage
+
+		sessionStorage.setItem("radioListDisplaySelected", "radioListDisplay1");	//Default radio button checked session storage
+
 	}
 
 	document.getElementById('sortby').innerHTML = sessionStorage.getItem("sortBysearchSelected");
 	document.getElementById('filterby').innerHTML = sessionStorage.getItem("filterBysearchSelected");
 
-	document.getElementById('radioListDisplay1').checked = true;
+	document.getElementById(sessionStorage.getItem("radioListDisplaySelected")).checked = true;	//Set selected radio button as checked
 
 	if (sessionStorage.getItem("filterBysearchSelected") == "Nothing") {
 		$('#searchbox').attr("placeholder", "");	//removed for disabled element
